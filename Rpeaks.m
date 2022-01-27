@@ -15,7 +15,7 @@ N = length(list)
 fs_Ecg = 1024;
 wind = 10*1024;
 
-for i = 1:1
+for i = 2:1
     FOLDER = fullfile(list(1).folder, list(1).name);
     file = dir(FOLDER);
     name = file.name;
@@ -31,7 +31,7 @@ for i = 1:1
     peaksFORwindow = zeros(n_window,1);
 
     %for j = 1:n_window-1
-       for j = 10:11
+       for j = 1:Ncd 
         [qrs_amp_raw,qrs_i_raw,delay,ecg_h]=pan_tompkin1(Ecg.Values((j-1)*wind+1:j*wind),fs_Ecg,0);
         n_peaks_new = size(qrs_i_raw,2);
         n_ecg_new = size(ecg_h,1)
@@ -71,6 +71,6 @@ peaksFORwindow(10) = 118 % numero di picchi
 peaksFORwindow(20) = 265 % numero di picchi
 
 figure()
-plot(ecg_FILT(10*wind:20*wind))
+plot(10*wind:20*wind,ecg_FILT(10*wind:20*wind))
 hold on 
 scatter(qrs_I(peaksFORwindow(10):peaksFORwindow(20)),qrs_AMP(peaksFORwindow(10):peaksFORwindow(20)),'m')
