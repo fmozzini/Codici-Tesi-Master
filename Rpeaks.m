@@ -15,8 +15,8 @@ N = length(list)
 fs_Ecg = 1024;
 wind = 10*1024;
 
-for i = 2:1
-    FOLDER = fullfile(list(1).folder, list(1).name);
+for i = 1:N
+    FOLDER = fullfile(list(i).folder, list(i).name);
     file = dir(FOLDER);
     name = file.name;
     load(name)
@@ -30,8 +30,7 @@ for i = 2:1
     
     peaksFORwindow = zeros(n_window,1);
 
-    %for j = 1:n_window-1
-       for j = 1:Ncd 
+    for j = 1:n_window-1
         [qrs_amp_raw,qrs_i_raw,delay,ecg_h]=pan_tompkin1(Ecg.Values((j-1)*wind+1:j*wind),fs_Ecg,0);
         n_peaks_new = size(qrs_i_raw,2);
         n_ecg_new = size(ecg_h,1)
@@ -56,8 +55,8 @@ for i = 2:1
     ecg_FILT = ecg_filt(1:num_ecg);
 
    % Save 
-%     name_PT = erase(name,"ECG-")
-%     save(['PT-' name_PT],'qrs_I','qrs_AMP',"ecg_FILT",'peaksFORwindow')
+    name_PT = erase(name,"ECG-")
+    save(['PT-' name_PT],'qrs_I','qrs_AMP',"ecg_FILT",'peaksFORwindow')
 end
 
 %%
