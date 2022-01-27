@@ -1,4 +1,5 @@
 %% PAN TOMPKING -> GOLD STANDARD FOR ECG
+% R peaks e segnale filtrato 
 clear all
 close all
 clc 
