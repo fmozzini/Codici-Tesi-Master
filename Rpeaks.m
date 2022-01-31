@@ -16,7 +16,7 @@ fs_Ecg = 1024;
 wind = 10*1024;
 
 %%
-for i = 1:Ngit 
+for i = 1:N
     FOLDER = fullfile(list(i).folder, list(i).name);
     file = dir(FOLDER);
     name = file.name;
