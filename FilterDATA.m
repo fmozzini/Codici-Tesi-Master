@@ -8,10 +8,11 @@ folder = 'C:\Users\feder\Desktop\Tesi\Data\24h Signals';
 list = dir(folder);
 list(1) = [];
 list(1) = [];
-list(14) = [];
-list(14) = [];
+list(15) = [];
+list(15) = [];
 N = length(list)
 
+ %%
 for i = 1:N
     FOLDER = fullfile(list(i).folder, list(i).name);
     file = dir(FOLDER);

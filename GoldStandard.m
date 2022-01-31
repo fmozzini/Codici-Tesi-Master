@@ -31,7 +31,7 @@ n_fin_finale = 3601;
 
 figure()
 subplot(211)
-plot(cineticar(n_fin_iniziale*wind_sig:n_fin_finale*wind_sig)),title('Rotational Kinetic Energy 2:00 per 10 sec')
+plot(n_fin_iniziale*wind_sig:n_fin_finale*wind_sig,cineticar(n_fin_iniziale*wind_sig:n_fin_finale*wind_sig)),title('Rotational Kinetic Energy 2:00 per 10 sec')
 subplot(212)
 plot(n_fin_iniziale*wind_ecg:n_fin_finale*wind_ecg,ecg_FILT(n_fin_iniziale*wind_ecg:n_fin_finale*wind_ecg)),title('ECG and R peaks per 10 sec')
 hold on 

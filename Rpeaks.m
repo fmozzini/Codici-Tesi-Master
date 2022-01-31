@@ -9,13 +9,14 @@ folder = 'C:\Users\feder\Desktop\Tesi\Data\ECG';
 list = dir(folder);
 list(1) = [];
 list(1) = [];
-list(14) = [];
+list(15) = [];
 N = length(list)
 
 fs_Ecg = 1024;
 wind = 10*1024;
 
-for i = 1:N
+%%
+for i = 1:Ngit 
     FOLDER = fullfile(list(i).folder, list(i).name);
     file = dir(FOLDER);
     name = file.name;
