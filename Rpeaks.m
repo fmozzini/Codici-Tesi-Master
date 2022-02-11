@@ -9,7 +9,7 @@ folder = 'C:\Users\feder\Desktop\Tesi\Data\ECG';
 list = dir(folder);
 list(1) = [];
 list(1) = [];
-list(15) = [];
+list(16) = [];
 N = length(list)
 
 fs_Ecg = 1024;
@@ -31,7 +31,7 @@ for i = 1:N
     
     peaksFORwindow = zeros(n_window,1);
 
-    for j = 1:n_window-1
+     for j = 1:n_window-1
         [qrs_amp_raw,qrs_i_raw,delay,ecg_h]=pan_tompkin1(Ecg.Values((j-1)*wind+1:j*wind),fs_Ecg,0);
         n_peaks_new = size(qrs_i_raw,2);
         n_ecg_new = size(ecg_h,1)
@@ -56,8 +56,8 @@ for i = 1:N
     ecg_FILT = ecg_filt(1:num_ecg);
 
    % Save 
-    name_PT = erase(name,"ECG-")
-    save(['PT-' name_PT],'qrs_I','qrs_AMP',"ecg_FILT",'peaksFORwindow')
+     name_PT = erase(name,"ECG-")
+     save(['PT-' name_PT],'qrs_I','qrs_AMP',"ecg_FILT",'peaksFORwindow')
 end
 
 %%
@@ -66,11 +66,18 @@ figure()
 plot(ecg_FILT)
 hold on 
 scatter(qrs_I,qrs_AMP,'m')
-%%
-peaksFORwindow(10) = 118 % numero di picchi
-peaksFORwindow(20) = 265 % numero di picchi
 
-figure()
-plot(10*wind:20*wind,ecg_FILT(10*wind:20*wind))
-hold on 
-scatter(qrs_I(peaksFORwindow(10):peaksFORwindow(20)),qrs_AMP(peaksFORwindow(10):peaksFORwindow(20)),'m')
+%% IMPORTANTE
+for i = 1:10
+    if i == 1
+        figure()
+        plot((i-1)*wind+1:i*wind,ecg_FILT((i-1)*wind+1:i*wind))
+        hold on
+        scatter(qrs_I(peaksFORwindow(i):peaksFORwindow(i)),qrs_AMP(peaksFORwindow(i):peaksFORwindow(i)),'m')
+    else 
+        figure()
+        plot((i-1)*wind+1:i*wind,ecg_FILT((i-1)*wind+1:i*wind))
+        hold on
+        scatter(qrs_I(peaksFORwindow(i-1)+1:peaksFORwindow(i)),qrs_AMP(peaksFORwindow(i-1)+1:peaksFORwindow(i)),'m')
+    end 
+end 
