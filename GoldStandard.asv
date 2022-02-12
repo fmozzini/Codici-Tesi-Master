@@ -21,11 +21,13 @@ wind_30sec = fs_KE*30;
 n_window = round(dim/wind_30sec);
 template = [];
 HR_picchi = zeros(dim,1);
-Pos_picchi(dim,1);
-Amp_picchi(dim,1);
+Pos_picchi = zeros(dim,1);
+Amp_picchi = zeros(dim,1);
 n_peaks = 0;
- 
-for i = 1:n_window 
+peaksFORwindow_RKE30 = zeros(n_window,1); 
+
+for i = 1:n_window-1 
+% for i = 1:2 
     [HR, pos_picchi, amp_picchi,Template] = SCG_template_matching_corr(cineticar((i-1)*wind_30sec+1:wind_30sec*i),fs_KE,'x',template)
     n_peaks_new = size(pos_picchi,1);
     if i == 1
@@ -34,15 +36,17 @@ for i = 1:n_window
             Pos_picchi(n_peaks+1:n_peaks+n_peaks_new,:) = pos_picchi+(i-1)*wind_30sec ; 
         end 
     Amp_picchi(n_peaks+1:n_peaks+n_peaks_new,:) = amp_picchi;
-    HR_picchi(n_peaks+1:n_peaks+n_peaks_new,:) = HR;
+%     HR_picchi(n_peaks+1:n_peaks+n_peaks_new,:) = HR;
     n_peaks = n_peaks + n_peaks_new;
+    peaksFORwindow_RKE30(i) = n_peaks;
 end 
 num = n_peaks;
-AMP_picchi_SCG = zeros(num,1);
-POS_picchi_SCG = zeros(num,1);
-HR_picc
-AMP_picchi_SCG = Amp_picchi(1:num);
-POS_picchi_SCG = Pos_picchi(1:num); 
+AMP_picchi_RKE = zeros(num,1);
+POS_picchi_RKE = zeros(num,1);
+%HR_picchi_RKE = zeros(num,1);
+AMP_picchi_RKE = Amp_picchi(1:num);
+POS_picchi_RKE = Pos_picchi(1:num); 
+%HR_picchi_RKE = HR_picchi(1:num);
 
 
 %% 
@@ -62,16 +66,46 @@ for i = 1:10
 end
 
 
+%% Inizio Holter 15:00
+% Notte (2-3 per essere sicuri) - 11° 12° ora 
+hour_ecg = 3600*1024;
+hour_ke = 3600*64;
 
-
-
-
+for i = 3960:
+    subplot(121)
+    % ECG + PAN TOMPKING 
+    if i == 1
+        figure()
+        plot((i-1)*wind+1:i*wind,ecg_FILT((i-1)*wind+1:i*wind))
+        hold on
+        scatter(qrs_I(peaksFORwindow(i):peaksFORwindow(i)),qrs_AMP(peaksFORwindow(i):peaksFORwindow(i)),'m')
+    else 
+        figure()
+        plot((i-1)*wind+1:i*wind,ecg_FILT((i-1)*wind+1:i*wind))
+        hold on
+        scatter(qrs_I(peaksFORwindow(i-1)+1:peaksFORwindow(i)),qrs_AMP(peaksFORwindow(i-1)+1:peaksFORwindow(i)),'m')
+    end 
+    subplot(122)
+    % ROTATIONAL KINETIC ENERGY 
+end
+%% 
+% 11°esima ora, uso finestre di 30 sec
+% 11*3600 = 39600/60 = 1320
+% 39600/10 = 3960
+wind_ecg = 10*1024;
+wind_ke = 30*64;
+subplot(211)
+plot(((3960-1)*wind_ecg+1:(3960+3)*wind_ecg)./(3600*1024),ecg_FILT((3960-1)*wind_ecg+1:(3960+3)*wind_ecg))
+hold on
+scatter((qrs_I(peaksFORwindow(3960-1)+1:peaksFORwindow(3960+3)))./(60*1024),qrs_AMP(peaksFORwindow(3960-1)+1:peaksFORwindow(3960+3)),'m')
+subplot(212)
+plot(((1320-1)*wind_ke+1:1320*wind_ke)./(3600*64),cineticar((1320-1)*wind_ke+1:1320*wind_ke))
+hold on
+plot((POS_picchi_RKE(peaksFORwindow_RKE30(1320-1)+1:peaksFORwindow_RKE30(1320)))./(64*60),AMP_picchi_RKE(peaksFORwindow_RKE30(1320-1)+1:peaksFORwindow_RKE30(1320)),'*r')
 
 % 1O Hour -> 3600 secondi in 1 ora/10 s/w = 360 wind all'ora 
 % alla decima ora ho 10*360
-windPERhour = 360;
-wind_ecg = 10*1024;
-wind_sig = 10*64;
+
 % Quante finestre ho in 10 ore? 
 
 %%

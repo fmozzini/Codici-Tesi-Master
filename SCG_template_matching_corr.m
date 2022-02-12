@@ -806,7 +806,8 @@ plot (axis,'k')
 hold on
 plot (picco_temp, axis(picco_temp),'r*')
 savefig(strcat('Picchi_TempMatch',tempAxis,'.fig'))
-pause
+%pause CON PAUSE OGNI VOLTA CHE VOGLIO ANDARE AVANTI DEVO SCHIACCIARE ENTER
+%
 close all
 
 pos_picchi = picco_temp;

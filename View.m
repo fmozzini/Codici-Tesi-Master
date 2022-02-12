@@ -3,7 +3,7 @@ clear all
 close all
 clc
 %%
-load '2021-06-30 15.20.44 COMPARIN.mat'
+load '2022-02-09 20.00.01 Subject 09'
 %% Check dimension
 Ore_SCG = (size(Acc.X_Acc,1))/(64*3600)
 Ore_ECG = (size(Ecg.Values,1))/(1024*3600)

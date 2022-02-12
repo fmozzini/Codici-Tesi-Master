@@ -8,8 +8,8 @@ folder = 'C:\Users\feder\Desktop\Tesi\Data\Filtered Signals';
 list = dir(folder);
 list(1) = [];
 list(1) = [];
-list(16) = [];
-list(16) = [];
+list(17) = [];
+list(17) = [];
 N = length(list)
 
 data = xlsread('C:\Users\feder\Desktop\Tesi\Info Pazienti.xlsx','E:G');
