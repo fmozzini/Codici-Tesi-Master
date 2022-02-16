@@ -11,26 +11,26 @@ Ore_SCG = (size(Acc.X_Acc,1))/(64*3600)
 Ore_ECG = (size(Ecg.Values,1))/(1024*3600)
 %% Check Signal
 folderACCF = 'C:\Users\feder\Desktop\Tesi\Data\Filtered Signals'
-fullFileNameACCF = fullfile(folderACCF, 'FILT-2022-02-14 22.13.53.mat');
+fullFileNameACCF = fullfile(folderACCF, 'FILT-2022-02-15 21.29.39.mat');
 load(fullFileNameACCF)
 
 figure()
-subplot(311), plot((Acc_filt.Var4./3600),Acc_filt.x_filt),title('Acc filtrata x')
-subplot(312), plot((Acc_filt.Var4./3600),Acc_filt.y_filt),title('Acc filtrata y')
-subplot(313), plot((Acc_filt.Var4./3600),Acc_filt.z_filt),title('Acc filtrata z')
+subplot(311), plot(Acc_filt.T  Acc_filt.x_filt),title('Acc filtrata x')
+subplot(312), plot(Acc_filt.y_filt),title('Acc filtrata y')
+subplot(313), plot(Acc_filt.z_filt),title('Acc filtrata z')
 
 figure()
 subplot(311), plot(Rot_filt.x_rotfilt),title('Rot filtrata x')
 subplot(312), plot(Rot_filt.y_rotfilt),title('Rot filtrata y')
 subplot(313), plot(Rot_filt.z_rotfilt),title('Rot filtrata z')
 %% Check PT 
-load 'PT-2022-02-14 22.13.53.mat'
+load 'PT-2021-01-16 15.01.53.mat'
 % figure()
 % plot(ecg_FILT)
 % hold on 
 % scatter(qrs_I,qrs_AMP,'m')
 
-wind = 30*1024;
+wind = 10*1024;
 for i = 1:10
     if i == 1
         figure()
@@ -47,18 +47,18 @@ end
 %%
 % Quanti battiti ci sono al minuto (60 sec) e quanto in ogni finestra di 10 s?
 n_finestre = size(peaksFORwindow,1);
-n_picchi_min = zeros(round(n_finestre/2),1);
-n_picchi_30s = zeros(n_finestre,1);
+n_picchi_min = zeros(round(n_finestre/6),1);
+n_picchi_10s = zeros(n_finestre,1);
 for i = 1:n_finestre-1 
     if i == 1
-        n_picchi_30s(i) = peaksFORwindow(i);
+        n_picchi_10s(i) = peaksFORwindow(i);
     else 
-        n_picchi_30s(i) = peaksFORwindow(i)-peaksFORwindow(i-1);
+        n_picchi_10s(i) = peaksFORwindow(i)-peaksFORwindow(i-1);
     end
 end 
 
-mean_picchi_30s = mean(n_picchi_30s)
-mean_picchi_min = 2*mean_picchi_30s    
+mean_picchi_10s = mean(n_picchi_10s)
+mean_picchi_min = 6*mean_picchi_10s    
 
 % %% 10 secondi
 % Hour = 3600*64;

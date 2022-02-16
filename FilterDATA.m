@@ -8,8 +8,8 @@ folder = 'C:\Users\feder\Desktop\Tesi\Data\24h Signals';
 list = dir(folder);
 list(1) = [];
 list(1) = [];
-list(17) = [];
-list(17) = [];
+list(21) = [];
+list(21) = [];
 N = length(list)
 
  %%

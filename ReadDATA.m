@@ -16,8 +16,8 @@ ris = fullfile('C:\Users\feder\Desktop\Tesi\',char(answer));
 list = dir(ris); %lista dei file contenuti nella cartella con relative path=ris
 list(1) = []; %cancella la prima riga --> the current folder: '.'
 list(1) = [];%cancella di nuovo la prima riga --> the 'up a level' folder: '..'
-list(17) = []; 
-list(17) = [];
+list(21) = []; 
+list(21) = [];
 N = length(list); %N = numero acquisizioni = 8 da 24 ore
 %%
 
