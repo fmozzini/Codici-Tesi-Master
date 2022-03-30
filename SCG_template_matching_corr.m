@@ -54,7 +54,7 @@ corr_Zbelly = {}; % Matrice contenente le n Cross-Correlazioni
 
 %senza l'aggiustamento del ritardo. La lunghezza di queste sarà pari alla
 
-%lunghezza dell'intervallo da 30" corrispondente in modo da evitare i
+%lunghezza dell'intervallo da 30" corrispwavesnte in modo da evitare i
 
 %valori nulli creati dallo zero padding (Il Template è molto più corto del segnale preso
 
@@ -98,7 +98,7 @@ Soglia = []; % Matrice contentente gli n diversi valori della soglia
 
 for i=1:blocchi
 
-    Soglia = cat(1,Soglia,sqrt(mean((corr_Zbelly{i,1}).^2))*1.5); % Calcolo automatico della soglia (RMS*1.5)
+    Soglia = cat(1,Soglia,sqrt(mean((corr_Zbelly{i,1}).^2))*1.5); % Calcolo automatico della soglia (RMS*1.5) 
 
     for j=1:length(corr_Zbelly{i,1})
 
@@ -124,6 +124,7 @@ clc
 
 %par_ricerca_cc = 40; % Giustificare la scelta di questo parametro
 par_ricerca_cc = 0.4*fs; % SARAH 7.10.2021
+% par_ricerca_cc = 0.5*fs; % SARAH 7.10.2021
 for r = 1:blocchi
 
     for i= 1:length(round(corr_Zbelly{r,1}))
@@ -192,9 +193,9 @@ for r= 1:blocchi
 
 end
 
-figure
-plot(corr_Zbelly{1, 1}  ) 
-title('Z corr')
+% figure
+% plot(corr_Zbelly{1, 1}  ) 
+% title('Z corr')
 
 
 %% Unione del segnale e della cross-correlazione
@@ -203,7 +204,7 @@ title('Z corr')
 
 % vengono uniti in variabili uniche in modo da evitare la gestione di
 
-% strutture che appesantiscono il codice.
+% strutture che Zaxispesantiscono il codice.
 
 clc
 
@@ -770,10 +771,10 @@ end
 %%
 close all
 
-figure(1)
-plot (Template)
-savefig(strcat('Template',tempAxis,'.fig'))
-close all
+% figure(1)
+% plot (Template)
+% savefig(strcat('Template',tempAxis,'.fig'))
+% close all
 %%
 
 corr_Zbfilt_dritto = corr_Zbfilt_REV(end:-1:1,1);
@@ -788,7 +789,9 @@ for i = 1:size(picco_temp)-1
     if strcmp (picco_temp(i), NaN) ==1
         continue
     end
-    if (picco_temp(i+1,1) - picco_temp(i,1)) < 0.4*fs
+% CAMBIAMENTO FEDE 
+    if (picco_temp(i+1,1) - picco_temp(i,1)) < 0.4*fs 
+%     if (picco_temp(i+1,1) - picco_temp(i,1)) < 0.5*fs
         picco_temp (i+1) = NaN;
     end
 end
@@ -800,16 +803,15 @@ picco_temp = picco_temp(isnan(picco_temp)==0);
 % plot (picco_temp, axis(picco_temp),'r*')
 
 
-
-figure
-plot (axis,'k')
-hold on
-plot (picco_temp, axis(picco_temp),'r*')
-savefig(strcat('Picchi_TempMatch',tempAxis,'.fig'))
-%pause CON PAUSE OGNI VOLTA CHE VOGLIO ANDARE AVANTI DEVO SCHIACCIARE ENTER
-%
-close all
-
+% 
+% figure
+% plot (axis,'k')
+% hold on
+% plot (picco_temp, axis(picco_temp),'r*')
+% savefig(strcat('Picchi_TempMatch',tempAxis,'.fig'))
+% % pause CON PAUSE OGNI VOLTA DEVO SCHIACCHIARE ENTER 
+% close all
+% 
 pos_picchi = picco_temp;
 amp_picchi = axis(picco_temp);
 pos_picchi(isnan(amp_picchi)) = [];

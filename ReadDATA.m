@@ -16,8 +16,9 @@ ris = fullfile('C:\Users\feder\Desktop\Tesi\',char(answer));
 list = dir(ris); %lista dei file contenuti nella cartella con relative path=ris
 list(1) = []; %cancella la prima riga --> the current folder: '.'
 list(1) = [];%cancella di nuovo la prima riga --> the 'up a level' folder: '..'
-list(21) = []; 
-list(21) = [];
+N = length(list)
+list(N-1) = []; 
+list(N-1) = [];
 N = length(list); %N = numero acquisizioni = 8 da 24 ore
 %%
 
@@ -50,8 +51,9 @@ for i = 1:N %Tutti i soggetti.
     Ecg = [ Ecg Time_Ecg ];
     
     namefile = list(i).name
-    save([namefile '.mat'],'Acc','Rot','Ecg')
-    save(['ECG-' namefile '.mat'],'Ecg')
+
+    save(['C:\Users\feder\Desktop\Tesi\Data\24h Signals\' namefile '.mat'],'Acc','Rot','Ecg')
+    save(['C:\Users\feder\Desktop\Tesi\Data\ECG\' 'ECG-' namefile '.mat'],'Ecg')
     
 end 
 

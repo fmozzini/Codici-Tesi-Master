@@ -8,9 +8,11 @@ folder = 'C:\Users\feder\Desktop\Tesi\Data\24h Signals';
 list = dir(folder);
 list(1) = [];
 list(1) = [];
-list(21) = [];
-list(21) = [];
+N = length(list);
+list(N-1) = [];
+list(N-1) = [];
 N = length(list)
+%addpath 'C:\Users\feder\Desktop\Tesi\Data\24h Signals'
 
  %%
 for i = 1:N
@@ -36,6 +38,7 @@ for i = 1:N
     Acc_filt = table(x_filt,y_filt,z_filt,Acc.Time_Acc);
     Rot_filt = table(x_rotfilt,y_rotfilt,z_rotfilt,Rot.Time_Rot);
 
-    save(['FILT-' name ],'Acc_filt','Rot_filt')
+    %save(['FILT-' name ],'Acc_filt','Rot_filt')
+    save(['C:\Users\feder\Desktop\Tesi\Data\Filtered Signals\' 'FILT-' name ],'Acc_filt','Rot_filt')
 end 
 
