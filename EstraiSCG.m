@@ -29,10 +29,6 @@ N = length(list)
 
 
 %% Parto da ECG, per ogni battito di ECG considero una finestra a sx e a dx del picco R.. 
-% prendo la stessa finestra in SCG, se all'interno di quella finestra c'è un picco, allora prendola finestra 
-% R - 200 ms / R+1 - 200 ms
-% -> R-T = RS + QT = 0.49 sec (max)
-
 for m = 1:1
     FOLDERSCG = fullfile(list(m).folder, list(m).name)
     file = dir(FOLDERSCG);
@@ -66,15 +62,16 @@ for m = 1:1
     amp_IVCAO = zeros(peaksFORwindow(end-1),2);
     amp_IVCAC = zeros(peaksFORwindow(end-1),2);
     slope_IVCAO = zeros(peaksFORwindow(end-1),2);
-% CAPIRE COME SALVARE TUTTO IN UN FILE 
-% finestrabattito_ECG = zeros(peaksFORwindow(end-1),1200);
-% finestrabattito_SCG = zeros(peaksFORwindow(end-1),150);
+
+    %% non prendo dal primo picco - taglio i primi 5 minuti 
+    cinqueminuti = 150;
+    iniziopicchi = peaksFORwindow(cinqueminuti);
+
  %%
-%  for i = 100:peaksFORwindow(end-1) %scorro tutti i picchi ECG
-for i = 140
+ for i = iniziopicchi:peaksFORwindow(end-1) %scorro tutti i picchi ECG
+% for i = 400:420
     qrs1 = (qrs_I(i)/1024)*64;
     qrs2 = (qrs_I(i+1)/1024)*64;
-%     finestra_dopo = qrs2-window_SCG
     finestra_dopo = qrs2
     finestra_prima = qrs1-window_SCG
     [row]=find(POS_picchi_SCG<finestra_dopo & POS_picchi_SCG>finestra_prima)
@@ -82,64 +79,78 @@ for i = 140
     
     if (n_picchi == 0)
         % non faccio niente
-
-    elseif (n_picchi==1)
-        % probabilmente ho già trovato il picco A0
+    elseif (n_picchi >= 3)
+        % non faccio niente, probabilmente il segnale è troppo corrotto 
+    else 
+%     elseif (n_picchi == 1)
         picchi = POS_picchi_SCG(row)
-%       finestrabattito_ECG(i,:) = ECG_filt(qrs_I(i)-window_ECG:qrs_I(i+1)-window_ECG);
-%       finestrabattito_SCG(i,:) = Acc_z(qrs1-window_SCG:qrs2-window_SCG);
         finestrabattito_ECG = ECG_filt(qrs_I(i)-window_ECG:qrs_I(i+1))';
         finestrabattito_SCG = Acc_z(qrs1-window_SCG:qrs2)';
-%         RR = Acc_z(qrs1:qrs2);
-%         lunghezza_sistole = 1/3*length(RR); % 14 campioni
-%         lunghezza_diastole = 2/3*length(RR); % 28 campioni
-      
 
-%         if i == 1
-%         FINESTREBATTITO_ECG = table(finestrabattito_ECG)
-%         FINESTREBATTITO_SCG = table(finestrabattito_SCG)
-%         else 
-%             FINESTREBATTITO_ECG = [FINESTREBATTITO_ECG;finestrabattito_ECG];
-%             FINESTREBATTITO_SCG = [FINESTREBATTITO_SCG;finestrabattito_SCG];
-%         end 
-        
-%%
-% figure()
-%         a = subplot(211)
-%         plot((qrs_I(i)-window_ECG:qrs_I(i+1))./1024,finestrabattito_ECG); hold on; plot(qrs_I(i)./1024,qrs_AMP(i),'*r') 
-%         b = subplot(212)
-%         plot((qrs1-window_SCG:qrs2)./64,finestrabattito_SCG); hold on; plot((POS_picchi_SCG(row(1)):POS_picchi_SCG(row(end)))./64,AMP_picchi_SCG(row(1)):AMP_picchi_SCG(row(end)),'*r')
+        if i == iniziopicchi 
+        FINESTREBATTITO_ECG = {finestrabattito_ECG};
+        FINESTREBATTITO_SCG = {finestrabattito_SCG};
+        else 
+            FINESTREBATTITO_ECG = {FINESTREBATTITO_ECG,finestrabattito_ECG};
+            FINESTREBATTITO_SCG = {FINESTREBATTITO_SCG,finestrabattito_SCG};
+        end 
+        % All_variables = {a,b,c}
   %%      
-        % io ristringerei ancora la finestra e guardo da dopo il picco R 
-%         finestrabattito_SCGcorta = Acc_z(qrs1:qrs2);
-%         [pks,locs] = findpeaks(finestrabattito_SCGcorta(i,:))
-%         [pksNeg,locsNeg] = findpeaks(-finestrabattito_SCGcorta(i,:))
         [pks,locs] = findpeaks(finestrabattito_SCG)
         [pksNeg,locsNeg] = findpeaks(-finestrabattito_SCG)
         pksNeg = - pksNeg;
 
         % Voglio calcolare i primi 3 massimi sapendo che sono dopo il picco
-        % R
-        locsqrs1 = qrs1/(qrs1-window_SCG)
-        locsafterR = find(locs>locsqrs1)
-        for p = 1:length(locsafterR)
-            locsafterR(p) = locs(p)
-            pksafterR(p) = pks(p)
+        % R --> Calcolo la posizione all'interno della finestra del picco
+        locsqrs1 = round(window_SCG);% sarebbe 12,8 ma le posizioni sono sempre interi, meglio mettere round 
+
+        locsafterpicco = find(locs>locsqrs1)
+        for p = 1:length(locsafterpicco)
+            locsafterR(p) = locs(locsafterpicco(p))
+            pksafterR(p) = pks(locsafterpicco(p))
         end 
 
         maxpks = maxk(pksafterR,3) % ho i 3 picchi di ampiezza maggiore dopo R
-        for p = 1:3
+        for p = 1:length(maxpks)
             maxlocs(p) = find(finestrabattito_SCG == maxpks(p))
-            max(p,:) = [maxpks(p),maxlocs(p)]
+            maxp(p,:) = [maxpks(p),maxlocs(p)]
         end
-        maxsort = sortrows(max,2);
+        maxsort = sortrows(maxp,2);
+        AO(i,:) = [qrs1-window_SCG+maxsort(1,2)-1 maxsort(1,1)];
+        RF(i,:) = [qrs1-window_SCG+maxsort(2,2)-1 maxsort(2,1)];
+
+        possibleXAC = qrs1-window_SCG+maxsort(3,2)-1;
+        distance = (possibleXAC - AO(i,1))./64;
+        if distance >= 0.2 %distanza maggiore di 200 ms, è il terzo massimo 
+            AC(i,:) = [qrs1-window_SCG+maxsort(3,2)-1 maxsort(3,1)];
+        else % vado dopo AO + 200 ms e cerco il massimo
+            locsafter200ms = find(locs>(maxsort(1,2)+window_SCG)) %locs>AO + 200 ms
+            for p = 1:length(locsafter200ms)
+                locspossibleAC(p) = locs(locsafter200ms(p))
+                pkspossibleAC(p) = pks(locsafter200ms(p))
+            end 
+%             pksAC = max(pkspossibleAC);
+%             locsAC = find(finestrabattito_SCG == pksAC);
+%             AC(i,:) = [qrs1-window_SCG+locsAC-1 pksAC];
+            % PRENDO I 3 MASSIMI E CONSIDERO IL PRIMO IN ORDINE TEMPORALE 
+            pksAC = maxk(pkspossibleAC,3);
+            for p = 1:length(pksAC)
+                locsAC(p) = find(finestrabattito_SCG == pksAC(p))
+                pkslocsAC(p,:) = [pksAC(p),locsAC(p)]
+            end
+            sortAC = sortrows(pkslocsAC)
+            AC(i,:) = [qrs1-window_SCG+sortAC(1,2)-1 sortAC(1,1)];
+%             AC(i,:) = [qrs1-window_SCG+locsAC-1 pksAC]
+        end 
 
 
-        % troviamo anche MC, è il picco prima di AO
-        locsbeforeAO = find(locs < maxlocs(1))
+        % MC, è il picco prima di AO
+        locsbeforeAO = find(locs < maxsort(1,2))
         MClocs = locs(locsbeforeAO(end))
         MCpks = pks(locsbeforeAO(end))
         MC(i,:) = [qrs1-window_SCG+MClocs-1 MCpks];
+
+        
      
 %         minpks = mink(pksNeg,3) % ho i 3 picchi negativi di ampiezza maggiore
 %         for p = 1:3
@@ -158,47 +169,8 @@ for i = 140
                 peakIVC = [pksNeg(p),locsNeg(p)]
             end
         end 
+       IVC(i,:) = [qrs1-window_SCG+peakIVC(2)-1 peakIVC(1)];
        
-
-        AO(i,:) = [qrs1-window_SCG+maxsort(1,2)-1 maxsort(1,1)];
-        RF(i,:) = [qrs1-window_SCG+maxsort(2,2)-1 maxsort(2,1)];
-        AC(i,:) = [qrs1-window_SCG+maxsort(3,2)-1 maxsort(3,1)];
-        IVC(i,:) = [qrs1-window_SCG+peakIVC(1,2)-1 peakIVC(1,1)];
-        
-        distanza = (AC(i,1)-AO(i,1))./64
-
-
-
-%         locsIVC = find(locsNeg < locs(2) & locsNeg > locs(1))
-%         x_MC = find(finestrabattito_SCG(i,:) == pks(1))
-%         x_IVC = find(finestrabattito_SCG(i,:) == pksNeg(locsIVC))
-%         x_AO = find(finestrabattito_SCG(i,:) == pks(2))
-%         x_AC = find(finestrabattito_SCG(i,:) == pks(end))
-%       
-%         MC(i,:) = [qrs1-window_SCG+x_MC-1 pks(1)]; 
-%         IVC(i,:) = [qrs1-window_SCG+x_IVC-1 pksNeg(1)];
-% %         AO(i,:) = [locs(2)+qrs1 pks(2)];
-%         AO(i,:) = [qrs1-window_SCG+x_AO-1 pks(2)];
-%         AC(i,:) = [qrs1-window_SCG+x_AC-1 pks(end)];
-       
-%         figure()
-%         a = subplot(211)
-%         plot(qrs_I(i)-window_ECG:qrs_I(i+1),finestrabattito_ECG(i,:)); hold on; plot(qrs_I(i),qrs_AMP(i),'*r'); hold on;
-%         xline(qrs_I(i))
-%         b = subplot(212)
-%         plot(qrs1-window_SCG:qrs2,finestrabattito_SCG(i,:)); hold on; 
-%         xline(qrs1); hold on 
-%         plot(MC(i,1),MC(i,2),'*r'); hold on;
-%         plot(IVC(i,1),IVC(i,2),'*r'); hold on
-%         plot(AO(i,1),AO(i,2),'*r'); hold on;
-%         plot(AC(i,1),AC(i,2),'*r')
-%         text(MC(i,1),MC(i,2),' MC')
-%         text(IVC(i,1),IVC(i,2),' IVC')
-%         text(AO(i,1),AO(i,2),' AO')
-%         text(AC(i,1),AC(i,2),' AC')
-%       
-
-     
         %%
         figure()
         a = subplot(211)
@@ -206,25 +178,44 @@ for i = 140
         xline(qrs_I(i)/1024)
         b = subplot(212)
         plot((qrs1-window_SCG:qrs2)./64,finestrabattito_SCG),xlabel('[s]'); hold on; 
-        plot((POS_picchi_SCG(row(1)):POS_picchi_SCG(row(end)))./64,AMP_picchi_SCG(row(1)):AMP_picchi_SCG(row(end)),'mo'); hold on
+        for r = 1:length(row)
+            plot((POS_picchi_SCG(row(r)))./64,AMP_picchi_SCG(row(r)),'mo')
+        end 
+%         plot((POS_picchi_SCG(row(1)):POS_picchi_SCG(row(end)))./64,AMP_picchi_SCG(row(1)):AMP_picchi_SCG(row(end)),'mo'); hold on
         xline(qrs1/64); hold on
+        xline((AO(i,1)+window_SCG)./64); hold on
         plot(IVC(i,1)/64,IVC(i,2),'*r'); hold on
         plot(AO(i,1)/64,AO(i,2),'*r'); hold on;
         plot(RF(i,1)/64,RF(i,2),'*r'); hold on;
-        plot(AC(i,1)/64,AC(i,2),'*r'); hold on;
+        %plot(AC(i,1)/64,AC(i,2),'*r'); hold on;
         plot(MC(i,1)/64,MC(i,2),'*r'); hold on;
         line([AO(i,1)/64 IVC(i,1)/64],[AO(i,2) IVC(i,2)])
         text(IVC(i,1)/64,IVC(i,2),' IVC')
         text(AO(i,1)/64,AO(i,2),' AO')
         text(RF(i,1)/64,RF(i,2),' RF')
-        text(AC(i,1)/64,AC(i,2),' AC')
+        %text(AC(i,1)/64,AC(i,2),' AC')
         text(MC(i,1)/64,MC(i,2),' MC')
         sgtitle(i)
-        
-       
-        pause
+%         
+%        
+%         pause
 %%
 %     elseif (n_picchi==2)     
+%         finestrabattito_ECG = ECG_filt(qrs_I(i)-window_ECG:qrs_I(i+1))';
+%         finestrabattito_SCG = Acc_z(qrs1-window_SCG:qrs2)';
+%         figure()
+%         a = subplot(211)
+%         plot((qrs_I(i)-window_ECG:qrs_I(i+1))./1024,finestrabattito_ECG); hold on; plot(qrs_I(i)./1024,qrs_AMP(i),'*r') 
+%         b = subplot(212)
+%         plot((qrs1-window_SCG:qrs2)./64,finestrabattito_SCG); hold on;
+%         for r = 1:length(row)
+%             plot((POS_picchi_SCG(row(r)))./64,AMP_picchi_SCG(row(r)),'mo')
+%         end 
+%         sgtitle(i)
+        
+        % SE IL PRIMO PICCO E' PRIMA DI R, ALLORA CONSIDERO SOLO IL
+        % SECONDO! (i = 200 )
+        
 %     elseif (n_picchi > 2)
 %     else % n_picchi = 0
     end 
@@ -242,18 +233,51 @@ for i = 140
     t_IVCAC(i,1) = tIVCAC;
     amp_IVCAO(i,1) = ampIVCAO;
     amp_IVCAC(i,1) = ampIVCAC;
-    slope_IVCAO(i,1) = slopeIVCAO;
+    if isnan(slopeIVCAO)
+        slope_IVCAO(i,1) = 0;
+    else
+        slope_IVCAO(i,1) = slopeIVCAO;
+    end 
 
-    % Salvo i dati (fiducial points e parameters)
-%     name = erase(name,"ECG-FILT-")
-%     save(['C:\Users\feder\Desktop\Tesi\Data\Parameters SCG' 'Parameters SCG-' name],'t_IVCAO','t_IVCAC','amp_IVCAO','amp_IVCAC','slope_IVCAO')
-%     save(['C:\Users\feder\Desktop\Tesi\Data\Fiducial Points SCG' 'Fiducials SCG-' name],'AO','RF','IVC','AC','MC')
+   
+    clearvars locsafterpicco locafterR pksafterR maxpks maxlocs max maxsort locsbeforeAO peakIVC locsafter200ms locspossibileAC pkspossibleAC pksAC locsAC pkslocsAC 
 
-    
 end
+    % Salvo i dati (fiducial points e parameters)
+    name = erase(name,"ECG-FILT-")
+    save(['C:\Users\feder\Desktop\Tesi\Data\Parameters SCG' 'Parameters SCG-' name],'t_IVCAO','t_IVCAC','amp_IVCAO','amp_IVCAC','slope_IVCAO')
+    save(['C:\Users\feder\Desktop\Tesi\Data\Fiducial Points SCG' 'Fiducials SCG-' name],'AO','RF','IVC','AC','MC')
+%     save(['C:\Users\feder\Desktop\Tesi\Data\Windows SCG' 'Windows SCG-' name],'picchi,FINESTREEEEEEE)
+
 end 
 
 
 
+%%
+figure()
+a = subplot(311)
+plot((qrs_I(i)-window_ECG:qrs_I(i+1))./1024,finestrabattito_ECG),xlabel('[s]'); hold on; plot(qrs_I(i)./1024,qrs_AMP(i),'*r'); hold on;
+xline(qrs_I(i)/1024)
+b = subplot(312)
+plot((qrs1-window_SCG:qrs2)./64,finestrabattito_SCG),xlabel('[s]'); hold on; 
+for r = 1:length(row)
+    plot((POS_picchi_SCG(row(r)))./64,AMP_picchi_SCG(row(r)),'mo')
+end 
+%         plot((POS_picchi_SCG(row(1)):POS_picchi_SCG(row(end)))./64,AMP_picchi_SCG(row(1)):AMP_picchi_SCG(row(end)),'mo'); hold on
+xline(qrs1/64); hold on
+%plot(IVC(i,1)/64,IVC(i,2),'*r'); hold on
+plot(AO(i,1)/64,AO(i,2),'*r'); hold on;
+plot(RF(i,1)/64,RF(i,2),'*r'); hold on;
+%plot(AC(i,1)/64,AC(i,2),'*r'); hold on;
+%plot(MC(i,1)/64,MC(i,2),'*r'); hold on;
+%line([AO(i,1)/64 IVC(i,1)/64],[AO(i,2) IVC(i,2)])+
+%text(IVC(i,1)/64,IVC(i,2),' IVC')
+text(AO(i,1)/64,AO(i,2),' AO')
+text(RF(i,1)/64,RF(i,2),' RF')
+%text(AC(i,1)/64,AC(i,2),' AC')
+%text(MC(i,1)/64,MC(i,2),' MC')
+sgtitle(i)
+subplot(313)
+plot(finestrabattito_SCG); hold on;xline(locsqrs1)
 
      

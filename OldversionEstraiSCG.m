@@ -29,9 +29,9 @@ N = length(list)
 %% Parto da ECG, per ogni battito di ECG considero una finestra a sx e a dx del picco R.. 
 % prendo la stessa finestra in SCG, se all'interno di quella finestra c'è un picco, allora prendola finestra 
 % R - 200 ms / R+1 - 200 ms
-% -> R-T = RS + Qcd T = 0.49 sec (max)
+% -> R-T = RS + QT = 0.49 sec (max)
 
-for m = 1:1\delete
+for m = 1:1
     FOLDERSCG = fullfile(list(m).folder, list(m).name)
     file = dir(FOLDERSCG);
     name = file.name;
