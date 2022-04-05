@@ -72,7 +72,7 @@ for m = 1:1
 % for i = 400:420
     qrs1 = (qrs_I(i)/1024)*64;
     qrs2 = (qrs_I(i+1)/1024)*64;
-    finestra_dopo = qrs2
+    finestra_dopo = qrs2;
     finestra_prima = qrs1-window_SCG
     [row]=find(POS_picchi_SCG<finestra_dopo & POS_picchi_SCG>finestra_prima)
     n_picchi = size(row,1)
@@ -87,14 +87,8 @@ for m = 1:1
         finestrabattito_ECG = ECG_filt(qrs_I(i)-window_ECG:qrs_I(i+1))';
         finestrabattito_SCG = Acc_z(qrs1-window_SCG:qrs2)';
 
-        if i == iniziopicchi 
-        FINESTREBATTITO_ECG = {finestrabattito_ECG};
-        FINESTREBATTITO_SCG = {finestrabattito_SCG};
-        else 
-            FINESTREBATTITO_ECG = {FINESTREBATTITO_ECG,finestrabattito_ECG};
-            FINESTREBATTITO_SCG = {FINESTREBATTITO_SCG,finestrabattito_SCG};
-        end 
-        % All_variables = {a,b,c}
+%    AGGIUNGERE PARTE DI CUTSIGNALS
+        
   %%      
         [pks,locs] = findpeaks(finestrabattito_SCG)
         [pksNeg,locsNeg] = findpeaks(-finestrabattito_SCG)
@@ -187,13 +181,13 @@ for m = 1:1
         plot(IVC(i,1)/64,IVC(i,2),'*r'); hold on
         plot(AO(i,1)/64,AO(i,2),'*r'); hold on;
         plot(RF(i,1)/64,RF(i,2),'*r'); hold on;
-        %plot(AC(i,1)/64,AC(i,2),'*r'); hold on;
+        plot(AC(i,1)/64,AC(i,2),'*r'); hold on;
         plot(MC(i,1)/64,MC(i,2),'*r'); hold on;
         line([AO(i,1)/64 IVC(i,1)/64],[AO(i,2) IVC(i,2)])
         text(IVC(i,1)/64,IVC(i,2),' IVC')
         text(AO(i,1)/64,AO(i,2),' AO')
         text(RF(i,1)/64,RF(i,2),' RF')
-        %text(AC(i,1)/64,AC(i,2),' AC')
+        text(AC(i,1)/64,AC(i,2),' AC')
         text(MC(i,1)/64,MC(i,2),' MC')
         sgtitle(i)
 %         
