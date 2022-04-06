@@ -5,7 +5,8 @@ close all
 clc
 
 %%
-folderSCG = 'C:\Users\feder\Desktop\Tesi\Data\Filtered Signals';
+% folderSCG = 'C:\Users\feder\Desktop\Tesi\Data\Filtered Signals';
+folderSCG = 'C:\Users\feder\Desktop\Tesi\Data\PostProc SCG';
 list = dir(folderSCG);
 list(1) = [];
 list(1) = [];
@@ -18,10 +19,11 @@ N = length(list)
 txtdata(1,:) = [];
 Inizio_Holter = txtdata(:,1);
 Periodo_Sonno = txtdata(:,2);
-addpath 'C:\Users\feder\Desktop\Tesi'\Data\'Filtered Signals'\
+% addpath 'C:\Users\feder\Desktop\Tesi'\Data\'Filtered Signals'\
+addpath 'C:\Users\feder\Desktop\Tesi'\Data\'PostProc SCG'\
 addpath 'C:\Users\feder\Desktop\Tesi'\Codes\
 %% 
-for i = 25:25
+for i = 1:1
     FOLDERSCG = fullfile(list(i).folder, list(i).name)
     file = dir(FOLDERSCG);
     name = file.name;

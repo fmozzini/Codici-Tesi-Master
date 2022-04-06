@@ -31,8 +31,9 @@ for i = 1:N
     cineticar = KEr(weight,heigth,Rot_filt.x_rotfilt,Rot_filt.y_rotfilt,Rot_filt.z_rotfilt);
    
     name_KE = erase(name,"FILT-")
-    save(['LinearKE-' name_KE],'cinetical')
-    save(['RotationalKE-' name_KE],'cineticar')
+    save(['C:\Users\feder\Desktop\Tesi\Data\LinearKE\' 'LinearKE-' name_KE],'cinetical')
+    save(['C:\Users\feder\Desktop\Tesi\Data\RotationalKE\' 'RotationalKE-' name_KE],'cineticar')
     %save(['DatiKE-' name_KE],'weight','heigth')
+    
 end 
 
