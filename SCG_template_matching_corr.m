@@ -36,8 +36,16 @@ if isempty(template)
 else
     Template = template;
     Zbfilt_REV=axis;
+    % fede
+%      for l = 1:length(Zbfilt_REV)
+%             if (Zbfilt_REV(l,1) < 0 )
+%                 Zbfilt_REV(l,1) = 0;
+%             end 
+%      end 
+%      %fine fede
     Zb30sec = {Zbfilt_REV};
     blocchi = 1;
+    
 end
 
 %% Calcolo della Cross-Correlazione
@@ -54,7 +62,7 @@ corr_Zbelly = {}; % Matrice contenente le n Cross-Correlazioni
 
 %senza l'aggiustamento del ritardo. La lunghezza di queste sarà pari alla
 
-%lunghezza dell'intervallo da 30" corrispwavesnte in modo da evitare i
+%lunghezza dell'intervallo da 30" corrispondente in modo da evitare i
 
 %valori nulli creati dallo zero padding (Il Template è molto più corto del segnale preso
 
@@ -129,12 +137,12 @@ for r = 1:blocchi
 
     for i= 1:length(round(corr_Zbelly{r,1}))
 
-        if (corr_Zbelly{r,1}(i,1) > 0)
+        if (corr_Zbelly{r,1}(i,1) > 0) 
 
             pos = i;
 
-            if (length(corr_Zbelly{r,1}) < pos+par_ricerca_cc)
-
+            if (length(corr_Zbelly{r,1}) < pos+par_ricerca_cc) 
+                
                 [massimo,indice] = max(corr_Zbelly{r,1}(pos:end,1));
 
                 for j= pos:length(corr_Zbelly{r,1})

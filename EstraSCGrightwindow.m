@@ -67,6 +67,9 @@ for m = 1:1
 
     FINESTREBATTITO_ECG = zeros(peaksFORwindow(end-1),2000);
     FINESTREBATTITO_SCG = zeros(peaksFORwindow(end-1),100);
+    % prova per trovare la lunghezza massima?
+    maxlength_SCG = 0;
+    maxlength_ECG = 0;
     count = 0;
 
  %%
@@ -97,6 +100,14 @@ for m = 1:1
         FINESTREBATTITO_ECG(count,1:length(finestrabattito_ECG)) = finestrabattito_ECG;
         FINESTREBATTITO_SCG(count,1:length(finestrabattito_SCG)) = finestrabattito_SCG;
         
+        length_SCG = length(finestrabattito_SCG);
+        length_ECG = length(finestrabattito_ECG);
+        if length_ECG > maxlength_ECG
+            maxlength_ECG = length_ECG
+        end 
+        if length_SCG > maxlength_SCG
+            maxlength_SCG = length_SCG
+        end 
   %%      
         [pks,locs] = findpeaks(finestrabattito_SCG)
         [pksNeg,locsNeg] = findpeaks(-finestrabattito_SCG)
@@ -145,11 +156,11 @@ for m = 1:1
         pks2T = maxk(pksdopoR_ECG,2)
         for p = 1:length(pks2T)
             locs_2T(p) = find(finestrabattito_ECG == pks2T(p))
-            dueT(p,:) = [locs_2T(p) pks2T(p)] 
-         end
+            dueT(p,:) = [pks2T(p) locs_2T(p)] 
+        end
         dueT = sortrows(dueT,2);
-        locs_T = dueT(1,1);
-        pksT = dueT(1,2);
+        locs_T = dueT(1,2);
+        pksT = dueT(1,1);
        end 
        % prendo T come il primo picco in ordine temporale, non è detto
        % infatti che sia per forza il picco maggiore
@@ -174,7 +185,7 @@ for m = 1:1
        locsmaxdopofineT = find(locs > fine_T_SCG);
        pksmaxdopofineT = pks(locsmaxdopofineT);
        possibileAC = maxk(pksmaxdopofineT,2);
-       if isempty(possibileAC)
+       if isempty(possibileAC) || (possibileAC(1)<0)
            % prendo il picco appena prima della fine dell'onda T
            locsprimadifineT = find(locs < fine_T_SCG);
            nuovalocsAC = locs(locsprimadifineT(end));
@@ -185,8 +196,6 @@ for m = 1:1
        end
        
 
-       % se AC non c'è, allora devo prendere il picco prima della fine
-       % dell'onda T 
        %% MC: mitral valve closure 
        % è il picco prima di AO
         locsbeforeAO = find(locs < maxsort(1,2))
@@ -216,9 +225,26 @@ for m = 1:1
             RE(i,:) = [qrs1-window_SCG+locs(locsafterIVC(2))-1 pks(locsafterIVC(2))];
             locsbeforeIVC = find(locs < new_posIVC)
             MC(i,:) = [qrs1-window_SCG+locs(locsbeforeIVC(end))-1 pks(locsbeforeIVC(end))];
+            % se AC corrisponde con RE, dico che AC e' il picco
+            % successivo... ha senso? direi di si ma non sono certa di
+            % questa cosa. A noi non interessa l'onda RE ma c'è comunque un
+            % ordine temporale ed è presente!
+            if (RE(i,1) == AC(i,1))
+                if (length(locsafterIVC)>=3)
+                    AC(i,:) = [qrs1-window_SCG+locs(locsafterIVC(3))-1 pks(locsafterIVC(3))];
+                end 
+            end 
+            % e se non ci fosse un terzo picco...? allora rimane così
+            % com'è... FORSE 
         end
-
-        picchi(i,1) = n_picchi;
+        %% check su RE ed AC
+        if (RE(i,1) == AC(i,1))
+            locsACnew = locsafterR(poslocsRE(2)); %primo picco dopo AO
+            posACnew = pksafterR(poslocsRE(2));
+            AC(i,:) = [qrs1-window_SCG+locsACnew-1 posACnew];
+        end 
+%% 
+        picchi_parziali(count,1) = n_picchi;
         %%
         figure()
         a = subplot(211)
@@ -230,19 +256,18 @@ for m = 1:1
         for r = 1:length(row)
             plot((POS_picchi_SCG(row(r)))./64,AMP_picchi_SCG(row(r)),'mo')
         end 
-%         plot((POS_picchi_SCG(row(1)):POS_picchi_SCG(row(end)))./64,AMP_picchi_SCG(row(1)):AMP_picchi_SCG(row(end)),'mo'); hold on
         xline(qrs1/64); hold on; xline(T(i,1)/1024,'--g'); hold on; xline(fine_T(1)/1024,'--b')
         xline((AO(i,1)+window_SCG)./64); hold on
         plot(IVC(i,1)/64,IVC(i,2),'*r'); hold on
         plot(AO(i,1)/64,AO(i,2),'*r'); hold on;
         plot(RE(i,1)/64,RE(i,2),'*r'); hold on;
-%         plot(AC(i,1)/64,AC(i,2),'*r'); hold on;
+        plot(AC(i,1)/64,AC(i,2),'*r'); hold on;
         plot(MC(i,1)/64,MC(i,2),'*r'); hold on;
         line([AO(i,1)/64 IVC(i,1)/64],[AO(i,2) IVC(i,2)])
         text(IVC(i,1)/64,IVC(i,2),' IVC')
         text(AO(i,1)/64,AO(i,2),' AO')
-        text(RE(i,1)/64,RE(i,2),' RF')
-%         text(AC(i,1)/64,AC(i,2),' AC')
+        text(RE(i,1)/64,RE(i,2),' RE')
+        text(AC(i,1)/64,AC(i,2),' AC')
         text(MC(i,1)/64,MC(i,2),' MC')
         sgtitle(i)
          pause
@@ -260,18 +285,26 @@ for m = 1:1
         end   
     end
 
+    picchi_totali(i,1) = n_picchi;
+    
+
     clearvars locsafterpicco locafterR pksafterR maxpks maxlocs maxp maxsort ...
         poslocsRE locsdopoR_ECG pksdopoR_ECG numero locsmindopoT pksmindopoT ...
         locsmaxdopofineT pksmaxdopofineT locsprimadifineT possibileAC locsbeforeAO ...
         peakIVC locs_negdopoR pks_negdopoR locsafterIVC locsbeforeIVC pksmindopoT ...
         locsmindopoT
 
-end
+ end
+
+    %Tolgo le colonne che non avevo messo a zero a caso
+    FINESTREBATTITO_SCG = FINESTREBATTITO_SCG(:,1:maxlength_SCG);
+    FINESTREBATTITO_ECG = FINESTREBATTITO_ECG(:,1:maxlength_ECG);
+
     % Salvo i dati (fiducial points e parameters)
     name = erase(name,"ECG-FILT-")
     save(['C:\Users\feder\Desktop\Tesi\Data\Parameters SCG\' 'Parameters SCG-' name],'t_IVCAO','t_IVCAC','amp_IVCAO','amp_IVCAC','slope_IVCAO')
     save(['C:\Users\feder\Desktop\Tesi\Data\Fiducial Points SCG\' 'Fiducials SCG-' name],'AO','RE','IVC','AC','MC')
-    save(['C:\Users\feder\Desktop\Tesi\Data\Windows\' 'Windows-' name],'picchi','FINESTREBATTITO_ECG','FINESTREBATTITO_SCG')
+    save(['C:\Users\feder\Desktop\Tesi\Data\Windows\' 'Windows-' name],'picchi_totali','picchi_parziali','FINESTREBATTITO_ECG','FINESTREBATTITO_SCG')
 
 end 
 

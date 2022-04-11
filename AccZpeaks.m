@@ -10,10 +10,10 @@ folderSCG = 'C:\Users\feder\Desktop\Tesi\Data\PostProc SCG';
 list = dir(folderSCG);
 list(1) = [];
 list(1) = [];
-N = length(list);
-list(N-1) = [];
-list(N-1) = [];
-N = length(list)
+% N = length(list);
+% list(N-1) = [];
+% list(N-1) = [];
+% N = length(list)
 
 [~,txtdata] = xlsread('C:\Users\feder\Desktop\Tesi\Info Pazienti.xlsx','H:I');
 txtdata(1,:) = [];
@@ -76,7 +76,8 @@ for i = 1:1
     HR_SCG = 60./(diff(POS_picchi_SCG))*fs_SCG;
 
     % Save
-    name_SCG = erase(name,"FILT-")
+%     name_SCG = erase(name,"FILT-")
+    name_SCG = erase(name,"PP_SCG-")
     Acc_z = Acc_filt.z_filt;
      save(['C:\Users\feder\Desktop\Tesi\Data\Picchi SCG - Acc z\' 'SCG(Az)_picchi-' name_SCG],'Acc_z','AMP_picchi_SCG',"POS_picchi_SCG",'peaksFORwindow_SCG30',"HR_SCG")
 %    save(['SCG(Az)_picchi-' name_SCG],'Acc_z','AMP_picchi_SCG',"POS_picchi_SCG",'peaksFORwindow_SCG30',"HR_SCG")
