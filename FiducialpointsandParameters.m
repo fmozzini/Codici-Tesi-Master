@@ -47,6 +47,12 @@ for m = 1:1
     name = file.name;
     load(name)
 
+    % Aggiunto dopo il controllo di RR 
+    load 'Dati importanti.mat'
+    qrs_I = R_post_processing(:,1)';
+    qrs_AMP = R_post_processing(:,2);
+    %
+
     fs_ECG = 1024;
     fs_SCG = 64;
     window_SCG = 0.2*fs_SCG;
@@ -59,22 +65,44 @@ for m = 1:1
     iniziopicchi = peaksFORwindow(n_finestre);
     numero_picchi_totale = peaksFORwindow(end-1)-iniziopicchi;
  
-% Fiducial Points
-    MC = zeros(peaksFORwindow(end-1),2); % in realtà non mi serve
-    RE = zeros(peaksFORwindow(end-1),2); % in realtà non mi serve
-    AO = zeros(peaksFORwindow(end-1),2);
-    AC = zeros(peaksFORwindow(end-1),2);
-    IVC = zeros(peaksFORwindow(end-1),2); 
-    R = zeros(peaksFORwindow(end-1),2);
-% Parameters from SCG
-    t_IVCAO = zeros(peaksFORwindow(end-1),1);
-    t_IVCAC = zeros(peaksFORwindow(end-1),1);
-    amp_IVCAO = zeros(peaksFORwindow(end-1),1);
-    amp_IVCAC = zeros(peaksFORwindow(end-1),1);
-    slope_IVCAO = zeros(peaksFORwindow(end-1),1);
+% % Fiducial Points
+%     MC = zeros(peaksFORwindow(end-1),2); % in realtà non mi serve
+%     RE = zeros(peaksFORwindow(end-1),2); % in realtà non mi serve
+%     AO = zeros(peaksFORwindow(end-1),2);
+%     AC = zeros(peaksFORwindow(end-1),2);
+%     IVC = zeros(peaksFORwindow(end-1),2); 
+%     R = zeros(peaksFORwindow(end-1),2);
+%     minAO_RE = zeros(peaksFORwindow(end-1),2);
+%     minbeforeAC = zeros(peaksFORwindow(end-1),2);
+% % Parameters from SCG
+%     t_IVCAO = zeros(peaksFORwindow(end-1),1);
+%     t_IVCAC = zeros(peaksFORwindow(end-1),1);
+%     amp_IVCAO = zeros(peaksFORwindow(end-1),1);
+%     amp_IVCAC = zeros(peaksFORwindow(end-1),1);
+%     slope_IVCAO = zeros(peaksFORwindow(end-1),1);
+% 
+%     FINESTREBATTITO_ECG = zeros(peaksFORwindow(end-1),2000);
+%     FINESTREBATTITO_SCG = zeros(peaksFORwindow(end-1),100);
 
-    FINESTREBATTITO_ECG = zeros(peaksFORwindow(end-1),2000);
-    FINESTREBATTITO_SCG = zeros(peaksFORwindow(end-1),100);
+% Fiducial Points
+    MC = zeros(length(qrs_I),2); % in realtà non mi serve
+    RE = zeros(length(qrs_I),2); % in realtà non mi serve
+    AO = zeros(length(qrs_I),2);
+    AC = zeros(length(qrs_I),2);
+    IVC = zeros(length(qrs_I),2); 
+    R = zeros(length(qrs_I),2);
+    minAO_RE = zeros(length(qrs_I),2);
+    minbeforeAC = zeros(length(qrs_I),2);
+% Parameters from SCG
+    t_IVCAO = zeros(length(qrs_I),1);
+    t_IVCAC = zeros(length(qrs_I),1);
+    amp_IVCAO = zeros(length(qrs_I),1);
+    amp_IVCAC = zeros(length(qrs_I),1);
+    slope_IVCAO = zeros(length(qrs_I),1);
+
+    FINESTREBATTITO_ECG = zeros(length(qrs_I),2000);
+    FINESTREBATTITO_SCG = zeros(length(qrs_I),100);
+
     % prova per trovare la lunghezza massima?
     maxlength_SCG = 0;
     maxlength_ECG = 0;
@@ -83,14 +111,14 @@ for m = 1:1
     
  %%
 %  for i = 1:peaksFORwindow(end-1) %scorro tutti i picchi ECG
-    for i = iniziopicchi:peaksFORwindow(end-1)-1 %scorro tutti i picchi ECG
-
+% for i = iniziopicchi:peaksFORwindow(end-1)-1 %scorro tutti i picchi ECG
+for i = iniziopicchi:length(qrs_I)-1 %scorro tutti i picchi ECG
     qrs1 = (qrs_I(i)/1024)*64;
     qrs2 = (qrs_I(i+1)/1024)*64;
-    finestra_dopo = qrs2-window_SCG %cambiato
-    finestra_prima = qrs1-window_SCG
-    [row]=find(POS_picchi_SCG<finestra_dopo & POS_picchi_SCG>finestra_prima)
-    n_picchi = size(row,1)
+    finestra_dopo = qrs2-window_SCG; %cambiato
+    finestra_prima = qrs1-window_SCG;
+    [row]=find(POS_picchi_SCG<finestra_dopo & POS_picchi_SCG>finestra_prima);
+    n_picchi = size(row,1);
     R(i,:) = [qrs_I(i) qrs_AMP(i)];
 
     if (n_picchi == 0) || (n_picchi >= 3)
@@ -103,7 +131,7 @@ for m = 1:1
 
     else %% n_picchi == 1 or n_picchi == 2
 %         count = count+1;
-        picchi = POS_picchi_SCG(row)
+        picchi = POS_picchi_SCG(row);
         finestrabattito_ECG = ECG_filt(qrs_I(i)-window_ECG:qrs_I(i+1)-window_ECG)';
         finestrabattito_SCG = Acc_z(qrs1-window_SCG:qrs2-window_SCG)';
 
@@ -140,10 +168,10 @@ for m = 1:1
             length_SCG = length(finestrabattito_SCG);
             length_ECG = length(finestrabattito_ECG);
             if length_ECG > maxlength_ECG
-                maxlength_ECG = length_ECG
+                maxlength_ECG = length_ECG;
             end 
             if length_SCG > maxlength_SCG
-                maxlength_SCG = length_SCG
+                maxlength_SCG = length_SCG;
             end 
         
         %%
@@ -176,17 +204,17 @@ for m = 1:1
                end 
            end 
            if numero == 1 %prendo il massimo, sono certa di prendere solo picchi positivi e non un picco positivo ed il minor negativo
-            pksT = max(pksdopoR_ECG);
-            locs_T = find(finestrabattito_ECG == pksT);
+               pksT = max(pksdopoR_ECG);
+               locs_T = find(finestrabattito_ECG == pksT);
            else % se ho 2 picchi positivi, prendo il primo in ordine temporale 
-            pks2T = maxk(pksdopoR_ECG,2);
-            for p = 1:length(pks2T)
-                locs_2T(p) = find(finestrabattito_ECG == pks2T(p));
-                dueT(p,:) = [pks2T(p) locs_2T(p)];
-            end
-            dueT = sortrows(dueT,2);
-            locs_T = dueT(1,2);
-            pksT = dueT(1,1);
+                pks2T = maxk(pksdopoR_ECG,2);
+                for p = 1:length(pks2T)
+                    locs_2T(p) = find(finestrabattito_ECG == pks2T(p));
+                    dueT(p,:) = [pks2T(p) locs_2T(p)];
+                end
+                dueT = sortrows(dueT,2);
+                locs_T = dueT(1,2);
+                pksT = dueT(1,1);
            end 
            % prendo T come il primo picco in ordine temporale, non è detto
            % infatti che sia per forza il picco maggiore
@@ -277,6 +305,33 @@ for m = 1:1
                     AC(i,:) = [qrs1-window_SCG+locsACnew-1 posACnew];
                 end 
             end 
+
+       %% Picco di minimo tra AO ed RE
+       for p = 1:length(pksNeg)
+            if (locsNeg(p) > maxsort(1,2) && locsNeg(p) < locsRE)
+                peakminAO_RE = [pksNeg(p),locsNeg(p)];
+            end
+       end 
+       % se dovesse essercene più di uno, li metto in ordine dal più
+       % negativo ad il meno negativo e prendo il più negativo
+       % CONTROLLA CHE FUNZIONI! 
+       if (size(peakminAO_RE,1)>1)
+           peakminAO_RE = sortrows(peakminAO_RE,1); % riordino in base al valore della prima colonna, ampiezza dei picchi 
+           peakminAO_RE = peakminAO_RE(1,:); % la prima riga dovrebbe corrispondere al valore più piccolo (più negativo)
+       end 
+       minAO_RE(i,:) = [qrs1-window_SCG+peakminAO_RE(2)-1 peakminAO_RE(1)];
+     
+       %% Picco minimo prima di AC (dal punto di vista temporale)
+       LOCSAC = AC(i,1)-qrs1+window_SCG+1;
+       % trovo i picchi negativi prima di AC e prendo l'ultimo (end)
+       locsbeforeAC = find(locsNeg < LOCSAC);
+       minbeforeAC(i,:) = [qrs1-window_SCG+locsNeg(locsbeforeAC(end))-1 pksNeg(locsbeforeAC(end))];
+       % E se dovessero esserci due minimi?? L'ultimo minimo non è quello
+       % di ampiezza negativa maggiore?? Potrei prendere gli ultimi 2
+       % picchi negativi prima di AC e dire che il picco minimo prima di AC
+       % è quello di ampiezza negativa massima tra i 2 ( il più negativo)
+
+    
 %% 
             picchi_parziali(count,1) = n_picchi;
         %%
@@ -284,27 +339,35 @@ for m = 1:1
 %         a = subplot(211)
 %         plot((qrs_I(i)-window_ECG:qrs_I(i+1)-window_ECG)./1024,finestrabattito_ECG),xlabel('[s]'); hold on; plot(qrs_I(i)./1024,qrs_AMP(i),'*r'); hold on; plot(T(i,1)/1024,T(i,2),'*g'); hold on;
 %         xline(qrs_I(i)/1024); hold on; xline(T(i,1)/1024,'--g'); hold on;
-%         %plot(fine_T(1)/1024,fine_T(2),'*b'); hold on; %xline(fine_T(1)/1024,'--b')
+%         plot(fine_T(1)/1024,fine_T(2),'*b'); hold on; xline(fine_T(1)/1024,'--b')
+%         text(qrs_I(i)./1024,qrs_AMP(i),' R')
+%         text(T(i,1)/1024,T(i,2),' T')
+%         text(fine_T(1)/1024,fine_T(2),' fine onda T')
 %         b = subplot(212)
 %         plot((qrs1-window_SCG:qrs2-window_SCG)./64,finestrabattito_SCG),xlabel('[s]'); hold on; 
 %         for r = 1:length(row)
 %             plot((POS_picchi_SCG(row(r)))./64,AMP_picchi_SCG(row(r)),'mo')
 %         end 
-%         xline(qrs1/64); hold on; xline(T(i,1)/1024,'--g'); hold on; %xline(fine_T(1)/1024,'--b')
+%         xline(qrs1/64); hold on; xline(T(i,1)/1024,'--g'); hold on; xline(fine_T(1)/1024,'--b')
 %         xline((AO(i,1)+window_SCG)./64); hold on
 %         plot(IVC(i,1)/64,IVC(i,2),'*r'); hold on
 %         plot(AO(i,1)/64,AO(i,2),'*r'); hold on;
 %         plot(RE(i,1)/64,RE(i,2),'*r'); hold on;
 %         plot(AC(i,1)/64,AC(i,2),'*r'); hold on;
 %         plot(MC(i,1)/64,MC(i,2),'*r'); hold on;
-%         line([AO(i,1)/64 IVC(i,1)/64],[AO(i,2) IVC(i,2)])
+%         line([AO(i,1)/64 IVC(i,1)/64],[AO(i,2) IVC(i,2)],'Color','red','LineStyle','--'); hold on;
+%         plot(minAO_RE(i,1)/64,minAO_RE(i,2),'*r'); hold on;
+%         plot(minbeforeAC(i,1)/64,minbeforeAC(i,2),'*r');
 %         text(IVC(i,1)/64,IVC(i,2),' IVC')
 %         text(AO(i,1)/64,AO(i,2),' AO')
 %         text(RE(i,1)/64,RE(i,2),' RE')
 %         text(AC(i,1)/64,AC(i,2),' AC')
 %         text(MC(i,1)/64,MC(i,2),' MC')
+%         text(minAO_RE(i,1)/64,minAO_RE(i,2),' min AO-RE');
+%         text(minbeforeAC(i,1)/64,minbeforeAC(i,2), 'min before AC')
 %         sgtitle(i)
 %          pause
+%          close all
 
 %% Estraggo i parameters 
             [tIVCAO,tIVCAC,ampIVCAO,ampIVCAC,slopeIVCAO] = extractfeatures(AO(i,1),AO(i,2),IVC(i,1),IVC(i,2),AC(i,1),AC(i,2),64);
@@ -327,7 +390,7 @@ for m = 1:1
         poslocsRE locsdopoR_ECG pksdopoR_ECG numero locsmindopoT pksmindopoT ...
         locsmaxdopofineT pksmaxdopofineT locsprimadifineT possibileAC locsbeforeAO ...
         peakIVC locs_negdopoR pks_negdopoR locsafterIVC locsbeforeIVC pksmindopoT ...
-        locsmindopoT
+        locsmindopoT peakminAO_RE locsbeforeAC
  end
 
     %Tolgo le colonne che non avevo messo a zero a caso
@@ -341,6 +404,8 @@ for m = 1:1
     AO(1:iniziopicchi-1,:) = []; 
     AC(1:iniziopicchi-1,:) = []; 
     IVC(1:iniziopicchi-1,:) = []; 
+    minAO_RE(1:iniziopicchi-1,:) = []; 
+    minbeforeAC(1:iniziopicchi-1,:) = []; 
     t_IVCAO(1:iniziopicchi-1,:) = []; 
     t_IVCAC(1:iniziopicchi-1,:) = [];
     amp_IVCAO(1:iniziopicchi-1,:) = [];
@@ -349,16 +414,81 @@ for m = 1:1
     picchi_totali(1:iniziopicchi-1,:) = [];
     FINESTREBATTITO_ECG(count+1:end,:) = [];
     FINESTREBATTITO_SCG(count+1:end,:) = [];
-    R(1:iniziopicchi-1,:) = [];cd 
+    R(1:iniziopicchi-1,:) = [];
 
-    % Salvo i dati (fiducial points e parameters)
+%     Salvo i dati (fiducial points e parameters)
     name = erase(name,"ECG_FILT-")
     save(['C:\Users\feder\Desktop\Tesi\Data\Parameters SCG\' 'Parameters SCG-' name],'t_IVCAO','t_IVCAC','amp_IVCAO','amp_IVCAC','slope_IVCAO')
-    save(['C:\Users\feder\Desktop\Tesi\Data\Fiducial Points SCG\' 'Fiducials SCG-' name],'AO','RE','IVC','AC','MC','R')
+    save(['C:\Users\feder\Desktop\Tesi\Data\Fiducial Points SCG\' 'Fiducials SCG-' name],'AO','RE','IVC','AC','MC','R','minAO_RE','minbeforeAC')
     save(['C:\Users\feder\Desktop\Tesi\Data\Windows\' 'Windows-' name],'picchi_totali','picchi_parziali','FINESTREBATTITO_ECG','FINESTREBATTITO_SCG')
 
 %% Variable 'FINESTREBATTITO_ECG' was not saved. For variables larger than 2GB use MAT-file version 7.3 or later --> PROBLEMA NEL SALVATAGGIO DI FINESTRANATTITO_ECG  
 end % chiude il numero di soggetti
 
 
+%% studio che faccio dopo aver aggiustato RR - in base a quello che salta fuori capisco come studiare i fiducial points 
+% ho 84616 picchi, tolto altri per il discorso delle finestre che non
+% voglio analizzare 
+% STUD DI HIST
+R_SCG = (R(:,1)./1024)*64;
+MC_nozero = MC;
+AC_nozero = AC;
+zero_MC = find(MC(:,1) == 0);
+for zero = length(zero_MC):-1:1
+    % elimino le righe da R, MC ed AC
+    R_SCG(zero_MC(zero),:) = [];
+    MC_nozero(zero_MC(zero),:) = [];
+    AC_nozero(zero_MC(zero),:) = [];
+end 
+
+R_MC = R_SCG(:,1)-MC_nozero(:,1); % se positivo R è dopo MC, se negativo R è prima di MC --> la maggior parte delle volte R dovrebbe essere dopo MC, quindi +
+
+R_AC = AC_nozero(:,1)-R_SCG(:,1); % se positivo AC è dopo R, se negativo AC è prima di AC
+h = histogram(R_MC), title('Histogram MC-R'),xlabel('campioni')
+h1 = histogram(R_AC), title('Histogram R-AC'), xlabel('campioni')
+
+R_MC_sec = R_MC./64;
+R_AC_sec = R_AC./64;
+h2 = histogram(R_MC_sec), title('Histogram MC-R SEC'),xlabel('[s]')
+h3 = histogram(R_AC_sec), title('Histogram R-AC SEC'), xlabel('[s]')
+
+%%
+i = 23
+qrs1 = (qrs_I(i)/1024)*64;
+qrs2 = (qrs_I(i+1)/1024)*64;
+finestrabattito_ECG = ECG_filt(qrs_I(i)-window_ECG:qrs_I(i+1)-window_ECG)';
+finestrabattito_SCG = Acc_z(qrs1-window_SCG:qrs2-window_SCG)';
+
+figure()
+a = subplot(211)
+plot((qrs_I(i)-window_ECG:qrs_I(i+1)-window_ECG)./1024,finestrabattito_ECG),xlabel('[s]'); hold on; plot(qrs_I(i)./1024,qrs_AMP(i),'*r'); hold on; 
+% plot(T(i,1)/1024,T(i,2),'*g'); hold on;
+% xline(qrs_I(i)/1024); hold on; xline(T(i,1)/1024,'--g'); hold on;
+% plot(fine_T(1)/1024,fine_T(2),'*b'); hold on; xline(fine_T(1)/1024,'--b')
+% text(qrs_I(i)./1024,qrs_AMP(i),' R')
+% text(T(i,1)/1024,T(i,2),' T')
+% text(fine_T(1)/1024,fine_T(2),' fine onda T')
+b = subplot(212)
+plot((qrs1-window_SCG:qrs2-window_SCG)./64,finestrabattito_SCG),xlabel('[s]'); hold on; 
+% for r = 1:length(row)
+%     plot((POS_picchi_SCG(row(r)))./64,AMP_picchi_SCG(row(r)),'mo')
+% end 
+% xline(qrs1/64); hold on; xline(T(i,1)/1024,'--g'); hold on; xline(fine_T(1)/1024,'--b')
+% xline((AO(i,1)+window_SCG)./64); hold on
+% plot(IVC(i,1)/64,IVC(i,2),'*r'); hold on
+% plot(AO(i,1)/64,AO(i,2),'*r'); hold on;
+% plot(RE(i,1)/64,RE(i,2),'*r'); hold on;
+% plot(AC(i,1)/64,AC(i,2),'*r'); hold on;
+plot(MC(i,1)/64,MC(i,2),'*r'); hold on;
+% line([AO(i,1)/64 IVC(i,1)/64],[AO(i,2) IVC(i,2)],'Color','red','LineStyle','--'); hold on;
+% plot(minAO_RE(i,1)/64,minAO_RE(i,2),'*r'); hold on;
+% plot(minbeforeAC(i,1)/64,minbeforeAC(i,2),'*r');
+% text(IVC(i,1)/64,IVC(i,2),' IVC')
+% text(AO(i,1)/64,AO(i,2),' AO')
+% text(RE(i,1)/64,RE(i,2),' RE')
+% text(AC(i,1)/64,AC(i,2),' AC')
+% text(MC(i,1)/64,MC(i,2),' MC')
+% text(minAO_RE(i,1)/64,minAO_RE(i,2),' min AO-RE');
+% text(minbeforeAC(i,1)/64,minbeforeAC(i,2), 'min before AC')
+% sgtitle(i)
 

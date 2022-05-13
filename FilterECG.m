@@ -28,8 +28,16 @@ for i = 1:N
 end 
 
 %% 
-wind_ecg = 10*60*1024;
-for i = 30:36
+load 'ECG_FILT-2021-01-16 15.01.53.mat'
+load 'ECG-2021-01-16 15.01.53.mat'
+
 figure()
-plot(((i-1)*wind_ecg+1:(i)*wind_ecg)./(1*1024),ECG_filt((i-1)*wind_ecg+1:(i)*wind_ecg)),xlabel('[s]'),title('Ecg PT')
+subplot(121), plot(Ecg.Values)
+subplot(122), plot(ECG_filt)
+
+wind_ecg = 10*1024;
+for i = 405:410
+figure()
+subplot(211),plot(((i-1)*wind_ecg+1:(i)*wind_ecg)./(1*1024),Ecg.Values((i-1)*wind_ecg+1:(i)*wind_ecg)),xlabel('[s]'),title('Ecg')
+subplot(212),plot(((i-1)*wind_ecg+1:(i)*wind_ecg)./(1*1024),ECG_filt((i-1)*wind_ecg+1:(i)*wind_ecg)),xlabel('[s]'),title('Filtered Ecg')
 end

@@ -5,8 +5,7 @@ close all
 clc 
 
 %%
-% folder = 'C:\Users\feder\Desktop\Tesi\Data\Filtered ECG';
-folder = 'C:\Users\feder\Desktop\Tesi\Data\PostProc ECG';
+folder = 'C:\Users\feder\Desktop\Tesi\Data\Filtered ECG';
 list = dir(folder);
 list(1) = [];
 list(1) = [];
@@ -17,10 +16,9 @@ N = length(list)
 fs_Ecg = 1024;
 % wind = 10*1024;
 wind = 30*1024;
-% addpath 'C:\Users\feder\Desktop\Tesi\Data\Filtered ECG'
-addpath 'C:\Users\feder\Desktop\Tesi\Data\PostProc ECG'
+addpath 'C:\Users\feder\Desktop\Tesi\Data\Filtered ECG'
 %%
-for i = 1:1
+for i = 1:N
     FOLDER = fullfile(list(i).folder, list(i).name);
     file = dir(FOLDER);
     name = file.name;
