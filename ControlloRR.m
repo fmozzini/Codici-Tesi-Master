@@ -83,7 +83,7 @@ N = length(list)
     end 
    % ne ho eliminati 480 ma rimane qualcosina (pochi pochi outliers)
    figure()
-   plot(RR_pp(:,2),RR_pp(:,1)),xlabel('[s]'),ylabel('RR[s]'),title('RR interval POST PROCESSING'); 
+   plot(RR_pp(2:end-1,2),RR_pp(2:end-1,1)),xlabel('[s]'),ylabel('RR[s]'),title('RR interval POST PROCESSING'); 
 
 %%
     outliers = isoutlier(RR_pp(:,1)); % individuo altri 6 outliers, volendo posso vedere cosa sono
@@ -178,35 +178,17 @@ N = length(list)
         % non vado ad aggiungere gli intervalli RR nuovi 
 
         % SALVO IL RISULTATO
-        name = erase(name,"ECG_FILT-")
-        save(['C:\Users\feder\Desktop\Tesi\Data\PostProc PT\' 'PostProc PT-' name],'R_post_processingfin','RR_pp2','peaksFORwindow')
+%         name = erase(name,"ECG_FILT-")
+%         save(['C:\Users\feder\Desktop\Tesi\Data\PostProc PT\' 'PostProc PT-' name],'R_post_processingfin','RR_pp2','peaksFORwindow')
  end 
 
         %% RIFACCIAMO L'ANALISI (ultima finale finale)
         
         figure()
-        plot(RR_pp2(:,2),RR_pp2(:,1)),xlabel('[s]'),ylabel('RR[s]'),title('RR interval POST PROCESSING'); 
-        figure()
-        boxplot(RR_pp2(:,1)),title('RR interval POST PROCESSING')
+        a=subplot(211),plot(RR_pp2(2:end,2),RR_pp2(2:end,1)),xlabel('[s]'),ylabel('RR[s]'),title('RR interval POST PROCESSING'); 
+        b=subplot(212),boxplot(RR_pp2(2:end,1)),title('RR interval POST PROCESSING')
 
         figure()
         a = subplot(211),plot(RR_tempo(2:end,:),RR_sec(2:end,:)); hold on; plot(PUNTI(:,1),PUNTI(:,2),'*r'),title('RR before post_processing')
         b = subplot(212), plot(RR_pp2(2:end,2),RR_pp2(2:end,1)),xlabel('[s]'),ylabel('RR[s]'),title('RR interval POST PROCESSING'); 
         linkaxes([a b],'x')
-
-
-     
-
-        
-
-  
-
- 
-
-
-
- 
-
-
-    
-
