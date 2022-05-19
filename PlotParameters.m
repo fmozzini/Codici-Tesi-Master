@@ -53,15 +53,22 @@ listFP(1) = [];
             a_count = a_count + 1;
             AO_stud(a_count,:) = AO(a,:);
             R_stud(a_count,:) = R(a,:);
-            amp_IVCAO_stud(a_count,:) = amp_IVCAO(a,:);
-            amp_IVCAC_stud(a_count,:) = amp_IVCAC(a,:);
-            t_IVCAO_stud(a_count,:) = t_IVCAO(a,:);
-            t_IVCAC_stud(a_count,:) = t_IVCAC(a,:);
-            slope_IVCAO_stud(a_count,:) = slope_IVCAO(a,:);
-            LVET_stud(a_count,:) = LVET(a,:);
-            QS2_stud(a_count,:) = QS2(a,:);
-            QT_stud(a_count,:) = QT(a,:);
-            QTc_stud(a_count,:) = QTc(a,:);
+            amp_IVCAO_stud(a_count,:) = amp_IVCAO(a,1);
+            amp_IVCAC_stud(a_count,:) = amp_IVCAC(a,1);
+            t_IVCAO_stud(a_count,:) = t_IVCAO(a,1);
+            t_IVCAC_stud(a_count,:) = t_IVCAC(a,1);
+            slope_IVCAO_stud(a_count,:) = slope_IVCAO(a,1);
+            LVET_stud(a_count,:) = LVET(a,1);
+            QS2_stud(a_count,:) = QS2(a,1);
+        end 
+    end 
+
+    q_count = 0;
+    for q = 1:length(QT)
+        if (AO(q,3) == 0)
+            q_count = q_count + 1;
+            QT_stud(q_count,:) = QT(q,1);
+            QTc_stud(q_count,:) = QTc(q,1);
         end 
     end 
       
@@ -168,18 +175,25 @@ listFP(1) = [];
        
    %%
     figure()
-    subplot(221), boxplot(amp_IVCAO), ylabel(['mV']),title('Ampiezza IVC-AO')
-    subplot(222), histogram(amp_IVCAO), ylabel(['mV']),title('Ampiezza IVC-AC')
-    subplot(223), boxplot(amp_IVCAC), ylabel(['mV']),title('Ampiezza IVC-AC')
-    subplot(224), histogram(amp_IVCAC), ylabel(['mV']),title('Ampiezza IVC-AO')
+    subplot(221), boxplot(amp_IVCAO_stud), ylabel(['mV'])
+    subplot(222), histogram(amp_IVCAO_stud), ylabel(['mV'])
+    subplot(223), boxplot(amp_IVCAC_stud), ylabel(['mV'])
+    subplot(224), histogram(amp_IVCAC_stud), ylabel(['mV'])
 
     figure()
-    subplot(221), boxplot(t_IVCAO), ylabel('[s]'),title('Tempo IVC-AO')
-    subplot(222), histogram(t_IVCAO), ylabel('[s]'),title('Tempo IVC-AO')
-    subplot(223), boxplot(t_IVCAC), ylabel('[s]'),title('Tempo IVC-AC')
-    subplot(224), histogram(t_IVCAC), ylabel('[s]'),title('Tempo IVC-AO')
+    subplot(221), boxplot(t_IVCAO_stud), ylabel('[s]')
+    subplot(222), histogram(t_IVCAO_stud), ylabel('[s]')
+    subplot(223), boxplot(t_IVCAC_stud), ylabel('[s]')
+    subplot(224), histogram(t_IVCAC_stud), ylabel('[s]')
 
     figure()
-    subplot(121), boxplot(slope_IVCAO),title('Slope IVC-AO')
-    subplot(122), histogram(slope_IVCAO),title('Slope IVC-AO')
+    subplot(121), boxplot(slope_IVCAO_stud)
+    subplot(122), histogram(slope_IVCAO_stud)
+
+    figure()
+    subplot(221), boxplot(LVET_stud), ylabel('[s]')
+    subplot(222), histogram(LVET_stud), ylabel('[s]')
+    subplot(223), boxplot(QS2_stud), ylabel('[s]')
+    subplot(224), histogram(QS2_stud), ylabel('[s]')
+
  end 

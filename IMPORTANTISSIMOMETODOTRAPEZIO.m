@@ -29,6 +29,8 @@ N = length(list)
  addpath 'C:\Users\feder\Desktop\Tesi'\Codes\
 
 data = xlsread('C:\Users\feder\Desktop\Tesi\Info Pazienti.xlsx','P:P');
+[~, sex] = xlsread('C:\Users\feder\Desktop\Tesi\Info Pazienti.xlsx','D:D');
+sex(1) = [];
 
 %% Parto da ECG, per ogni battito di ECG considero una finestra a sx e a dx del picco R.. 
 for m = 1:1
@@ -74,17 +76,25 @@ for m = 1:1
     Q = zeros(length(qrs_I)-finepicchi,3);
     minAO_RE = zeros(length(qrs_I)-finepicchi,3);
     minbeforeAC = zeros(length(qrs_I)-finepicchi,3);
+    T = zeros(length(qrs_I)-finepicchi,3);
     fine_T = zeros(length(qrs_I)-finepicchi,3);
-    LVET = zeros(length(qrs_I)-finepicchi,3); % AC-AO
-    QS2 = zeros(length(qrs_I)-finepicchi,3); % P-AC
-    QT = zeros(length(qrs_I)-finepicchi,3); % Q-fine onda T
-    QTc = zeros(length(qrs_I)-finepicchi,3); % Q-fine onda T (corretto) 
+    RR = zeros(length(qrs_I)-finepicchi-1,2);
+
 % Parameters from SCG
-    t_IVCAO = zeros(length(qrs_I)-finepicchi,2);
-    t_IVCAC = zeros(length(qrs_I)-finepicchi,2);
-    amp_IVCAO = zeros(length(qrs_I)-finepicchi,2);
-    amp_IVCAC = zeros(length(qrs_I)-finepicchi,2);
-    slope_IVCAO = zeros(length(qrs_I)-finepicchi,2);
+    t_IVCAO = zeros(length(qrs_I)-finepicchi,2); t_IVCAC = zeros(length(qrs_I)-finepicchi,2);
+    t_IVCMC = zeros(length(qrs_I)-finepicchi,2); t_IVCRE = zeros(length(qrs_I)-finepicchi,2);
+    t_IVCminAORE = zeros(length(qrs_I)-finepicchi,2); t_IVCminAC = zeros(length(qrs_I)-finepicchi,2);
+    amp_IVCAO = zeros(length(qrs_I)-finepicchi,2); amp_IVCAC = zeros(length(qrs_I)-finepicchi,2);
+    amp_IVCMC = zeros(length(qrs_I)-finepicchi,2); amp_IVCRE = zeros(length(qrs_I)-finepicchi,2);
+    amp_IVCminAORE = zeros(length(qrs_I)-finepicchi,2); amp_IVCminAC = zeros(length(qrs_I)-finepicchi,2);
+    slope_IVCAO = zeros(length(qrs_I)-finepicchi,2); slope_minAORERE = zeros(length(qrs_I)-finepicchi,2);
+    slope_minACAC = zeros(length(qrs_I)-finepicchi,2); 
+    LVET = zeros(length(qrs_I)-finepicchi,2); % AC-AO
+    QS2 = zeros(length(qrs_I)-finepicchi,2); % P-AC
+    QT = zeros(length(qrs_I)-finepicchi,2); % Q-fine onda T
+    QTc = zeros(length(qrs_I)-finepicchi,2); % Q-fine onda T (corretto) 
+    R_div_T = zeros(length(qrs_I)-finepicchi,2);
+
 
     FINESTREBATTITO_ECG = zeros(length(qrs_I)-finepicchi,2000);
     FINESTREBATTITO_SCG = zeros(length(qrs_I)-finepicchi,100);
@@ -92,9 +102,11 @@ for m = 1:1
     maxlength_SCG = 0;
     maxlength_ECG = 0;
     count = 0;
-    no_sistoleediastole = 0;
-    n_0_3_picchi = 0;
-    n_no3picchidopoR = 0;
+    tag1 = 0;
+    tag2 = 0;
+    tag3 = 0;
+    tag4 = 0;
+    tag5 = 0;
  %%
 for i = iniziopicchi:length(qrs_I)-finepicchi-1 %scorro tutti i picchi ECG
 % for i = 420:440
@@ -105,15 +117,20 @@ for i = iniziopicchi:length(qrs_I)-finepicchi-1 %scorro tutti i picchi ECG
     [row]=find(POS_picchi_SCG<finestra_dopo & POS_picchi_SCG>finestra_prima);
     n_picchi = size(row,1);
     R(i,1:2) = [qrs_I(i) qrs_AMP(i)];
+    RR(i,1) = [qrs_I(i+1)-qrs_I(i) qrs_I(i)];
 
     if (n_picchi == 0) || (n_picchi >= 3)
         % tutti i parameters per questa finestra sono NaN
-        n_0_3_picchi = n_0_3_picchi + 1;
+        tag1 = tag1+1;
         t_IVCAO(i,1) = NaN;
         t_IVCAC(i,1) = NaN;
         amp_IVCAO(i,1) = NaN;
         amp_IVCAC(i,1) = NaN;
         slope_IVCAO(i,1) = NaN;
+        LVET(i,1) =  NaN;
+        QS2(i,1) =  NaN;
+        QT(i,1) =  NaN;
+        QTc(i,1) =  NaN;
         t_IVCAO(i,2) = 1;
         t_IVCAC(i,2) = 1;
         amp_IVCAO(i,2) = 1;
@@ -129,11 +146,11 @@ for i = iniziopicchi:length(qrs_I)-finepicchi-1 %scorro tutti i picchi ECG
         minAO_RE(i,3) =  1;
         minbeforeAC(i,3) =  1;
         fine_T(i,3) = 1;
-        LVET(i,3) =  1;
-        QS2(i,3) =  1;
-        QT(i,3) =  1;
-        QTc(i,3) =  1;
-        R(i,3) = 1;
+        LVET(i,2) =  1;
+        QS2(i,2) =  1;
+        QT(i,2) =  1;
+        QTc(i,2) =  1;
+        R(i,2) = 1;
 
     else %% n_picchi == 1 or n_picchi == 2
         picchi = POS_picchi_SCG(row);
@@ -175,6 +192,9 @@ for i = iniziopicchi:length(qrs_I)-finepicchi-1 %scorro tutti i picchi ECG
                 pksprimaR_ECG = picchiECG(locsprimaR_ECG);
                 Q(i,1:2) = [qrs_I(i)-window_ECG+locspicchiECG(locsprimaR_ECG(end))-1 pksprimaR_ECG(end)]; %così è pos in sec in ECG
                 Q_SCG_locs = (locspicchiECG(locsprimaR_ECG(end))/1024)*64;
+                Q_ECG_locs = (locspicchiECG(locsprimaR_ECG(end)));
+                Q_SCG = [qrs1-window_SCG+Q_SCG_locs-1]; 
+
                 QS2maxline = Q_SCG_locs + 0.39*64; 
                 QS2maxline = qrs1-window_SCG+QS2maxline-1; % AC si trova ad un massimo di Q + 390 ms
             %% AO: aortic valve opening
@@ -192,31 +212,30 @@ for i = iniziopicchi:length(qrs_I)-finepicchi-1 %scorro tutti i picchi ECG
                 RE(i,1:2) = [qrs1-window_SCG+locsRE-1 posRE];
             %% T waves and AC: aortic valve closure
          % INDIVIDUO MASSIMO DI ONDA T, il picco AC si trova dopo
-    %            [picchiECG,locspicchiECG] = findpeaks(finestrabattito_ECG); 
-    %            piccoR = [find(finestrabattito_ECG == max(picchiECG)) max(picchiECG)]
-    %            pksdopoR_ECG = picchiECG(find(locspicchiECG > piccoR(1)))
+
                locsdopoR_ECG = locspicchiECG(find(locspicchiECG > piccoR(1)));
+%              pksdopoR_ECG = picchiECG(locsdopoR_ECG)
                pksdopoR_ECG = picchiECG(find(locspicchiECG > piccoR(1)));
-               Q_ECG_locs = (locspicchiECG(locsprimaR_ECG(end)));
-               
-               PROVA = ((qrs_I(i+1)-qrs_I(i))*440)/800; % MAX -> sono secondi 
-               QS2maxline_ECG = Q_ECG_locs + (PROVA/1000)*1024; 
-               QS2maxline_ECGd = qrs_I(i)-window_ECG+QS2maxline_ECG-1;
-               locsdopoRprimaQT_ECG = find(locsdopoR_ECG < QS2maxline_ECG);
-    %            pksdopoR_ECG = picchiECG(locsdopoR_ECG)
-               pksdopoRprimaQT_ECG = pksdopoR_ECG(locsdopoRprimaQT_ECG);
+% 
+%                Q_ECG_locs = (locspicchiECG(locsprimaR_ECG(end)));
+%                PROVA = ((qrs_I(i+1)-qrs_I(i))*440)/800; % MAX -> sono secondi 
+%                QS2maxline_ECG = Q_ECG_locs + (PROVA/1000)*1024; 
+%                QS2maxline_ECGd = qrs_I(i)-window_ECG+QS2maxline_ECG-1;
+%                locsdopoRprimaQT_ECG = find(locsdopoR_ECG < QS2maxline_ECG);
+%                pksdopoRprimaQT_ECG = pksdopoR_ECG(locsdopoRprimaQT_ECG);
+
                % POSSO CONTARE IL NUMERO DI POSITIVI DOPO ECG
                numero = 0;
-               for p = 1:length(pksdopoRprimaQT_ECG)
-                   if (pksdopoRprimaQT_ECG(p) > 0)
+               for p = 1:length(pksdopoR_ECG)
+                   if (pksdopoR_ECG(p) > 0)
                        numero = numero + 1;
                    end 
                end 
                if numero == 1 %prendo il massimo, sono certa di prendere solo picchi positivi e non un picco positivo ed il minor negativo
-                   pksT = max(pksdopoRprimaQT_ECG);
+                   pksT = max(pksdopoR_ECG);
                    locs_T = find(finestrabattito_ECG == pksT);
                else % se ho 2 picchi positivi, prendo il primo in ordine temporale 
-                    pks2T = maxk(pksdopoRprimaQT_ECG,2);
+                    pks2T = maxk(pksdopoR_ECG,2);
                     for p = 1:length(pks2T)
                         locs_2T(p) = find(finestrabattito_ECG == pks2T(p));
                         dueT(p,:) = [pks2T(p) locs_2T(p)];
@@ -227,72 +246,114 @@ for i = iniziopicchi:length(qrs_I)-finepicchi-1 %scorro tutti i picchi ECG
                end 
                % prendo T come il primo picco in ordine temporale, non è detto
                % infatti che sia per forza il picco maggiore
-               T(i,1:2) = [qrs_I(i)-window_ECG+locs_T-1 pksT];
-    
-               T40 = locs_T + 0.04*1024;
-               T40d = qrs_I(i)-window_ECG+T40-1;
-               T80 = locs_T + 0.08*1024;
-               T80d = qrs_I(i)-window_ECG+T80-1;
-               % se T è abbastanza avanti ed il segnale è corto, devo ridurre la finestra di xr
-               if length(finestrabattito_ECG)<T80
-                   T80 = length(finestrabattito_ECG);
-                   T40 = (T80-locs_T)/2+locs_T
+
+               if sex{m} == 'F'
+                   QTmax_cost = 460;
+               else
+                   QTmax_cost = 440;
                end 
-    
-               finestraxm = finestrabattito_ECG(locs_T:T40);
-               derivatam = gradient(finestraxm);
-               xm = find(derivatam == max(derivatam));
-               ym = finestraxm(xm);
-               Xm = locs_T+xm;
-               Xmd = qrs_I(i)-window_ECG+Xm-1;
-    
-               finestraxr = finestrabattito_ECG(T40:T80);
-               derivatar = gradient(finestraxr);
-               absderivatar = abs(derivatar);
-               xr = find(absderivatar == min(absderivatar));
-               yr = finestraxr(xr);
-               Xr = T40+xr;
-               Xrd = qrs_I(i)-window_ECG+Xr-1;
-    
-                % mi interessa l'area massima 
-               Area = 0;
-               Area1 = zeros(round(Xr)-round(Xm),1);
-               step = 0;
-               for x = round(Xm):round(Xr)
-                   step = step+1;
-                   y = finestrabattito_ECG(x);
-                   A = 1/2*(ym-y)*(2*Xr-Xm-x);
-                   Area1(step) = A;
-                   if A > Area
-                       Area = A;
-                       xi = x;
+               QTmax = ((qrs_I(i+1)-qrs_I(i))*QTmax_cost)/800; % MAX -> sono secondi 
+               % QUI METTO L'IF SULLA DISTANZA
+               if locs_T > QTmax
+                   % La posizione di T è troppo avanti
+                   tag3 = tag3+1;
+                   t_IVCAO(i,2) = 3;
+                   t_IVCAC(i,2) = 3;
+                   amp_IVCAO(i,2) = 3;
+                   amp_IVCAC(i,2) = 3;
+                   slope_IVCAO(i,2) = 3;
+                   MC(i,3) = 3;
+                   RE(i,3) = 3;
+                   AO(i,3) = 3;
+                   AC(i,3) = 3;
+                   IVC(i,3) = 3;
+                   R(i,3) = 3;
+                   Q(i,3) = 3;
+                   minAO_RE(i,3) = 3;
+                   minbeforeAC(i,3) = 3;
+                   fine_T(i,3) = 3;
+                   LVET(i,2) = 3;
+                   QS2(i,2) = 3;
+                   QT(i,2) = 3;
+                   QTc(i,2) = 3;
+                   R(i,3) = 3;
+                   t_IVCAO(i,1) = NaN;
+                   t_IVCAC(i,1) = NaN;
+                   amp_IVCAO(i,1) = NaN;
+                   amp_IVCAC(i,1) = NaN;
+                   slope_IVCAO(i,1) = NaN;
+                   LVET(i,1) =  NaN;
+                   QS2(i,1) =  NaN;
+                   QT(i,1) =  NaN;
+                   QTc(i,1) =  NaN;
+                   continue
+               else
+                   T(i,1:2) = [qrs_I(i)-window_ECG+locs_T-1 pksT];
+                   % Cerco la fine dell'onda T
+                   T40 = locs_T + 0.04*1024;
+                   T40d = qrs_I(i)-window_ECG+T40-1;
+                   T80 = locs_T + 0.08*1024;
+                   T80d = qrs_I(i)-window_ECG+T80-1;
+                   % se T è abbastanza avanti ed il segnale è corto, devo ridurre la finestra di xr
+                   if length(finestrabattito_ECG)<T80
+                       T80 = length(finestrabattito_ECG);
+                       T40 = (T80-locs_T)/2+locs_T;
                    end 
-               end 
-               yi = finestrabattito_ECG(xi);
-               Xid = qrs_I(i)-window_ECG+xi-1;
-    
-               fine_T(i,1:2) = [Xid yi];
-               fine_T_conv = (fine_T(i,1)/1024)*64;
-               fine_T_SCG = fine_T_conv-qrs1+window_SCG+1;
-               locsmaxdopofineT = find(locs > fine_T_SCG);
-               pksmaxdopofineT = pks(locsmaxdopofineT);
-               if ~isempty(locsmaxdopofineT) % se esiste allora posso trovare AC ed il minimo prima di AC
-                   nuovalocsAC = locs(locsmaxdopofineT(1));
-                   nuovapksAC = pks(locsmaxdopofineT(1));
-                   AC(i,1:2) = [qrs1-window_SCG+nuovalocsAC-1 nuovapksAC];
-                    %% Picco minimo prima di AC (dal punto di vista temporale)
-                   LOCSAC = AC(i,1)-qrs1+window_SCG+1;
-                   locsbeforeAC = find(locsNeg < LOCSAC);
-                   minbeforeAC(i,1:2) = [qrs1-window_SCG+locsNeg(locsbeforeAC(end))-1 pksNeg(locsbeforeAC(end))];
-                    %% check su RE ed AC
-                    if (RE(i,1) == AC(i,1)) 
-                        if (length(poslocsRE)>=2)
-                            locsACnew = locsafterR(poslocsRE(2)); %primo picco dopo AO
-                            posACnew = pksafterR(poslocsRE(2));
-                            AC(i,1:2) = [qrs1-window_SCG+locsACnew-1 posACnew];
+        
+                   finestraxm = finestrabattito_ECG(locs_T:T40);
+                   derivatam = gradient(finestraxm);
+                   xm = find(derivatam == max(derivatam));
+                   ym = finestraxm(xm);
+                   Xm = locs_T+xm;
+                   Xmd = qrs_I(i)-window_ECG+Xm-1;
+        
+                   finestraxr = finestrabattito_ECG(T40:T80);
+                   derivatar = gradient(finestraxr);
+                   absderivatar = abs(derivatar);
+                   xr = find(absderivatar == min(absderivatar));
+                   yr = finestraxr(xr);
+                   Xr = T40+xr;
+                   Xrd = qrs_I(i)-window_ECG+Xr-1;
+        
+                    % mi interessa l'area massima 
+                   Area = 0;
+                   Area1 = zeros(round(Xr)-round(Xm),1);
+                   step = 0;
+                   for x = round(Xm):round(Xr)
+                       step = step+1;
+                       y = finestrabattito_ECG(x);
+                       A = 1/2*(ym-y)*(2*Xr-Xm-x);
+                       Area1(step) = A;
+                       if A > Area
+                           Area = A;
+                           xi = x;
+                       end 
+                   end 
+                   yi = finestrabattito_ECG(xi);
+                   Xid = qrs_I(i)-window_ECG+xi-1;
+        
+                   fine_T(i,1:2) = [Xid yi];
+                   fine_T_conv = (fine_T(i,1)/1024)*64;
+                   fine_T_SCG = fine_T_conv-qrs1+window_SCG+1;
+                   locsmaxdopofineT = find(locs > fine_T_SCG);
+                   pksmaxdopofineT = pks(locsmaxdopofineT);
+                   if ~isempty(locsmaxdopofineT) % se esiste allora posso trovare AC ed il minimo prima di AC
+                       nuovalocsAC = locs(locsmaxdopofineT(1));
+                       nuovapksAC = pks(locsmaxdopofineT(1));
+                       AC(i,1:2) = [qrs1-window_SCG+nuovalocsAC-1 nuovapksAC];
+                        %% Picco minimo prima di AC (dal punto di vista temporale)
+                       LOCSAC = AC(i,1)-qrs1+window_SCG+1;
+                       locsbeforeAC = find(locsNeg < LOCSAC);
+                       minbeforeAC(i,1:2) = [qrs1-window_SCG+locsNeg(locsbeforeAC(end))-1 pksNeg(locsbeforeAC(end))];
+                        %% check su RE ed AC
+                        if (RE(i,1) == AC(i,1)) 
+                            if (length(poslocsRE)>=2)
+                                locsACnew = locsafterR(poslocsRE(2)); %primo picco dopo AO
+                                posACnew = pksafterR(poslocsRE(2));
+                                AC(i,1:2) = [qrs1-window_SCG+locsACnew-1 posACnew];
+                            end 
                         end 
-                    end 
-               end 
+                   end 
     
     %%
     %         AC_prima = maxsort(1,2)+0.2*64;
@@ -338,8 +399,6 @@ for i = iniziopicchi:length(qrs_I)-finepicchi-1 %scorro tutti i picchi ECG
                             AC(i,1:2) = [qrs1-window_SCG+locs(locsafterIVC(3))-1 pks(locsafterIVC(3))];
                         end 
                     end 
-                    % e se non ci fosse un terzo picco...? allora rimane così
-                    % com'è... FORSE 
                 end
    
            %% Picco di minimo tra AO ed RE
@@ -367,15 +426,7 @@ for i = iniziopicchi:length(qrs_I)-finepicchi-1 %scorro tutti i picchi ECG
            % picchi negativi prima di AC e dire che il picco minimo prima di AC
            % è quello di ampiezza negativa massima tra i 2 ( il più negativo)
     
-           %% LVET, QS2, QT e QTc
-           RR = qrs_I(i+1)-qrs_I(i);
-           LVET(i,1) = (AC(i,1)-AO(i,1))/64; % [s]
-           Q_SCG_locs1 = qrs1-window_SCG+Q_SCG_locs-1;
-           QS2(i,1) = (AC(i,1)-Q_SCG_locs1)/64; % [s]
-           QT = locs_T-locspicchiECG(locsprimaR_ECG(end));
-           QTc = QT/(sqrt(RR)); % campioni
-           QTc(i,1) = QTc/1024; % [s]
-           QT(i,1) = QT/1024; % [s]
+
     %% 
                 picchi_parziali(count,1) = n_picchi;
             
@@ -383,16 +434,17 @@ for i = iniziopicchi:length(qrs_I)-finepicchi-1 %scorro tutti i picchi ECG
             a = subplot(211)
             plot((qrs_I(i)-window_ECG:qrs_I(i+1)-window_ECG)./1024,finestrabattito_ECG),xlabel('[s]'); hold on; plot(qrs_I(i)./1024,qrs_AMP(i),'*r'); hold on; plot(T(i,1)/1024,T(i,2),'*g'); hold on;
             xline(qrs_I(i)/1024); hold on; xline(T(i,1)/1024,'--g'); hold on;
-            xline(T40d/1024,'--b'); hold on; xline(T80d/1024,'--b'); hold on;
-    %         plot(Xmd/1024,ym,'*m'); hold on; plot(Xrd/1024,yr,'*m'); hold on;
-    %         plot(Xid/1024,yi,'*b'); hold on;
+            xline(T40d/1024,'--m'); hold on; xline(T80d/1024,'--m'); hold on;
+            plot(Xmd/1024,ym,'*m'); hold on; plot(Xrd/1024,yr,'*m'); hold on;
+            plot(Xid/1024,yi,'*b'); hold on;
             plot(Q(i,1)/1024,Q(i,2),'*b'); hold on;
 %             xline(QS2maxline_ECGd/1024,'--r'); hold on;
             plot(fine_T(i,1)/1024,fine_T(i,2),'*b');
             hold on; xline(fine_T(i,1)/1024,'--b')
-    %         text(qrs_I(i)./1024,qrs_AMP(i),' R')
+            text(qrs_I(i)./1024,qrs_AMP(i),' R')
             text(T(i,1)/1024,T(i,2),' T')
-    %         text(fine_T(1)/1024,fine_T(2),' fine onda T')
+            text(fine_T(1)/1024,fine_T(2),' fine onda T')
+            text(Q(i,1)/1024,Q(i,2),' Q')
             b = subplot(212)
             plot((qrs1-window_SCG:qrs2-window_SCG)./64,finestrabattito_SCG),xlabel('[s]'); hold on; 
             for r = 1:length(row)
@@ -400,7 +452,7 @@ for i = iniziopicchi:length(qrs_I)-finepicchi-1 %scorro tutti i picchi ECG
             end 
             xline(qrs1/64); hold on; xline(T(i,1)/1024,'--g'); hold on; 
             xline(fine_T(i,1)/1024,'--b'); hold on;
-            xline((AO(i,1)+window_SCG)./64); hold on
+%             xline((AO(i,1)+window_SCG)./64); hold on
             xline(AC_dopo/64,'--r'); hold on; 
             xline(QS2maxline/64,'--m'); hold on;
             plot(IVC(i,1)/64,IVC(i,2),'*r'); hold on
@@ -423,16 +475,28 @@ for i = iniziopicchi:length(qrs_I)-finepicchi-1 %scorro tutti i picchi ECG
              close all
 %     
     %% Estraggo i parameters 
-                [tIVCAO,tIVCAC,ampIVCAO,ampIVCAC,slopeIVCAO] = extractfeatures(AO(i,1),AO(i,2),IVC(i,1),IVC(i,2),AC(i,1),AC(i,2),64);
-                t_IVCAO(i,1) = tIVCAO;
-                t_IVCAC(i,1) = tIVCAC;
-                amp_IVCAO(i,1) = ampIVCAO;
-                amp_IVCAC(i,1) = ampIVCAC;
+                [tIVCAO,tIVCAC,ampIVCAO,ampIVCAC,slopeIVCAO,LVET,QS2,QT,QTc,tIVCMC,tIVCRE,tIVCminAORE,tIVCminAC,ampIVCMC,ampIVCRE,ampIVCminAORE,...
+                    ampIVCminAC,slopeminAORERE,slopeminACAC,RdivT] = extractfeatures(64,1024,AO(i,1),AO(i,2),IVC(i,1),IVC(i,2),AC(i,1),AC(i,2),...
+                    RR(i,1),Q_SCG,fine_T(i,1),T(i,2),Q(i,1),MC(i,1),MC(i,2),RE(i,1),RE(i,2),minAO_RE(i,1),minAO_RE(i,2),minbeforeAC(i,1),...
+                    minbeforeAC(i,2),R(i,2));
+                t_IVCAO(i,1) = tIVCAO; t_IVCAC(i,1) = tIVCAC; t_IVCRE(i,1) = tIVCRE; t_IVCminAORE(i,1) = tIVCminAORE; t_IVCminAC(i,1) = tIVCminAC;
+                amp_IVCAO(i,1) = ampIVCAO; amp_IVCAC(i,1) = ampIVCAC; amp_IVCMC(i,1) = ampIVCMC; amp_IVCRE(i,1)= ampIVCRE; 
+                amp_IVCminAORE(i,1) = ampIVCminAORE; amp_IVCminAC(i,1) = ampIVCminAC; R_div_T(i,1) = RdivT;
                 if isnan(slopeIVCAO)
                     slope_IVCAO(i,1) = 0;
                 else
                     slope_IVCAO(i,1) = slopeIVCAO;
-                end   
+                end  
+                if isnan(slopeminAORERE)
+                    slope_minAORERE(i,1) = 0;
+                else
+                    slope_minAORERE(i,1) = slopeminAORERE;
+                end  
+                if isnan(slopeminACAC)
+                    slope_minACAC(i,1) = 0;
+                else
+                    slope_minACAC(i,1) = slopeminACAC;
+                end  
 
                  % QUI FACCIO IL CONTROLLO E VEDO SE DEVO METTERE ALTRI TAG O LASCIARE 0
                 R_SCG = (R(i,1)/1024)*64;
@@ -441,31 +505,40 @@ for i = iniziopicchi:length(qrs_I)-finepicchi-1 %scorro tutti i picchi ECG
     
                 if R_MC1 < 0 % non sono in grado di trovare la sistole --> devo settare qualcosa a zero? Allora non trovo nemmeno la sistole
                     % no sistole e no diastole 
-                    no_sistoleediastole = no_sistoleediastole+1;
-                    t_IVCAO(i,2) = 3;
-                    t_IVCAC(i,2) = 3;
-                    amp_IVCAO(i,2) = 3;
-                    amp_IVCAC(i,2) = 3;
-                    slope_IVCAO(i,2) = 3;
-                    MC(i,3) = 3;
-                    RE(i,3) = 3;
-                    AO(i,3) = 3;
-                    AC(i,3) = 3;
-                    IVC(i,3) = 3;
-                    R(i,3) = 3;
-                    Q(i,3) = 3;
-                    minAO_RE(i,3) = 3;
-                    minbeforeAC(i,3) = 3;
-                    fine_T(i,3) = 3;
-                    LVET(i,3) = 3;
-                    QS2(i,3) = 3;
-                    QT(i,3) = 3;
-                    QTc(i,3) = 3;
-                    R(i,3) = 3;
+                    tag4 = tag4+1;
+                    t_IVCAO(i,2) = 4;
+                    t_IVCAC(i,2) = 4;
+                    amp_IVCAO(i,2) = 4;
+                    amp_IVCAC(i,2) = 4;
+                    slope_IVCAO(i,2) = 4;
+                    MC(i,3) = 4;
+                    RE(i,3) = 4;
+                    AO(i,3) = 4;
+                    AC(i,3) = 4;
+                    IVC(i,3) = 4;
+                    R(i,3) = 4;
+                    Q(i,3) = 4;
+                    minAO_RE(i,3) = 4;
+                    minbeforeAC(i,3) = 4;
+                    fine_T(i,3) = 4;
+                    LVET(i,2) = 4;
+                    QS2(i,2) = 4;
+                    QT(i,2) = 4;
+                    QTc(i,2) = 4;
+                    R(i,3) = 4;
                 end 
-
+                if R_AC1 > 
         else 
-            n_no3picchidopoR = n_no3picchidopoR + 1;
+            tag2 = tag2+1;
+            t_IVCAO(i,1) = NaN;
+            t_IVCAC(i,1) = NaN;
+            amp_IVCAO(i,1) = NaN;
+            amp_IVCAC(i,1) = NaN;
+            slope_IVCAO(i,1) = NaN;
+            LVET(i,1) =  NaN;
+            QS2(i,1) =  NaN;
+            QT(i,1) =  NaN;
+            QTc(i,1) =  NaN;
             t_IVCAO(i,2) = 2;
             t_IVCAC(i,2) = 2;
             amp_IVCAO(i,2) = 2;
@@ -481,13 +554,13 @@ for i = iniziopicchi:length(qrs_I)-finepicchi-1 %scorro tutti i picchi ECG
             minAO_RE(i,3) = 2;
             minbeforeAC(i,3) = 2;
             fine_T(i,3) = 2;
-            LVET(i,3) = 2;
-            QS2(i,3) = 2;
-            QT(i,3) = 2;
-            QTc(i,3) = 2;
-            R(i,3) = 2;
+            LVET(i,2) = 2;
+            QS2(i,2) = 2;
+            QT(i,2) = 2;
+            QTc(i,2) = 2;
+            R(i,2) = 2; 
 
-
+               end % chiunde il check sulla posizione del picco T 
         end % chiude il check dei 3 picchi dopo R
     end % chiude il numero di picchi = 1 o 2
     
@@ -509,28 +582,16 @@ for i = iniziopicchi:length(qrs_I)-finepicchi-1 %scorro tutti i picchi ECG
 
     % Prima di salvare tolgo tutte le righe prima di iniziopicchi!!!
     % IMPORTANTE!!!! [] devo eliminarle da tutti
-    MC(1:iniziopicchi-1,:) = []; 
-    RE(1:iniziopicchi-1,:) = []; 
-    AO(1:iniziopicchi-1,:) = []; 
-    AC(1:iniziopicchi-1,:) = []; 
-    IVC(1:iniziopicchi-1,:) = []; 
-    minAO_RE(1:iniziopicchi-1,:) = []; 
-    minbeforeAC(1:iniziopicchi-1,:) = []; 
-    t_IVCAO(1:iniziopicchi-1,:) = []; 
-    t_IVCAC(1:iniziopicchi-1,:) = [];
-    amp_IVCAO(1:iniziopicchi-1,:) = [];
-    amp_IVCAC(1:iniziopicchi-1,:) = [];
-    slope_IVCAO(1:iniziopicchi-1,:) = [];
-    picchi_totali(1:iniziopicchi-1,:) = [];
-    FINESTREBATTITO_ECG(count+1:end,:) = [];
-    FINESTREBATTITO_SCG(count+1:end,:) = [];
-    R(1:iniziopicchi-1,:) = [];
-    Q(1:iniziopicchi-1,:) = [];
-    LVET(1:iniziopicchi-1,:) = [];
-    QS2(1:iniziopicchi-1,:) = [];
-    QT(1:iniziopicchi-1,:) = [];
-    QTc(1:iniziopicchi-1,:) = [];
-    fine_T(1:iniziopicchi-1,:) = [];
+    MC(1:iniziopicchi-1,:) = []; RE(1:iniziopicchi-1,:) = []; AO(1:iniziopicchi-1,:) = []; AC(1:iniziopicchi-1,:) = []; R(1:iniziopicchi-1,:) = [];
+    IVC(1:iniziopicchi-1,:) = []; minAO_RE(1:iniziopicchi-1,:) = []; minbeforeAC(1:iniziopicchi-1,:) = []; Q(1:iniziopicchi-1,:) = [];
+    fine_T(1:iniziopicchi-1,:) = []; T(1:iniziopicchi-1,:) = []; RR(1:iniziopicchi-1,:) = [];
+    t_IVCAO(1:iniziopicchi-1,:) = []; t_IVCAC(1:iniziopicchi-1,:) = []; t_IVCMC(1:iniziopicchi-1,:) = []; t_IVCRE(1:iniziopicchi-1,:) = [];
+    t_IVCminAORE(1:iniziopicchi-1,:) = []; t_IVCminAC(1:iniziopicchi-1,:) = []; 
+    amp_IVCAO(1:iniziopicchi-1,:) = []; amp_IVCAC(1:iniziopicchi-1,:) = []; amp_IVCMC(1:iniziopicchi-1,:) = []; amp_IVCRE(1:iniziopicchi-1,:) = []; 
+    amp_IVCminAORE(1:iniziopicchi-1,:) = []; amp_IVCminAC(1:iniziopicchi-1,:) = []; R_div_T= zeros(length(qrs_I)-finepicchi,3);
+    slope_IVCAO(1:iniziopicchi-1,:) = []; slope_minAORERE(1:iniziopicchi-1,:) = []; slope_minACAC(1:iniziopicchi-1,:) = [];
+    LVET(1:iniziopicchi-1,:) = []; QS2(1:iniziopicchi-1,:) = []; QT(1:iniziopicchi-1,:) = []; QTc(1:iniziopicchi-1,:) = [];
+    FINESTREBATTITO_ECG(count+1:end,:) = []; FINESTREBATTITO_SCG(count+1:end,:) = []; picchi_totali(1:iniziopicchi-1,:) = [];
 
 %     Salvo i dati (fiducial points e parameters)
     name = erase(name,"ECG_FILT-")
@@ -565,16 +626,17 @@ for zero = length(zero_MC):-1:1
     AC_nozero(zero_MC(zero),:) = [];
 end 
 
-R_MC = R_SCG(:,1)-MC_nozero(:,1); % se positivo R è dopo MC, se negativo R è prima di MC --> la maggior parte delle volte R dovrebbe essere dopo MC, quindi +
-
+R_MC = R_SCG(:,1)-MC_nozero(:,1);% se positivo R è dopo MC, se negativo R è prima di MC --> la maggior parte delle volte R dovrebbe essere dopo MC, quindi +
 R_AC = AC_nozero(:,1)-R_SCG(:,1); % se positivo AC è dopo R, se negativo AC è prima di AC
-h = histogram(R_MC), title('Histogram MC-R'),xlabel('campioni')
-h1 = histogram(R_AC), title('Histogram R-AC'), xlabel('campioni')
+% h = histogram(R_MC), title('Histogram MC-R'),xlabel('campioni')
+% h1 = histogram(R_AC), title('Histogram R-AC'), xlabel('campioni')
 
 R_MC_sec = R_MC./64;
 R_AC_sec = R_AC./64;
+R_MC_ms = R_MC_sec./1000;
+R_AC_ms = R_AC_sec./1000;
 figure()
-subplot(121); histogram(R_MC_sec), title('Histogram MC-R SEC'),xlabel('[s]')
-subplot(122); histogram(R_AC_sec), title('Histogram R-AC SEC'), xlabel('[s]')
+subplot(121); hist(R_MC_ms), title('Histogram MC-R SEC'),xlabel('[ms]')
+subplot(122); hist(R_AC_ms), title('Histogram R-AC SEC'), xlabel('[ms]')
 
 LVETpaper = -0.0016*bpm_min+0.418 %[s]
