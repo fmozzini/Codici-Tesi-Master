@@ -388,12 +388,12 @@ listFP(1) = [];
  
  % Histogram - Other parameters
  figure()
- subplot(221),histogram(LVET_G0); hold on; histogram(LVET_N0),ylabel(['s']),title('Left Ventricular Ejection Time'),legend('Day','Night')
- subplot(222),histogram(QS2_G0); hold on; histogram(QS2_N0),ylabel(['s']),title('QS2'),legend('Day','Night')
- subplot(223),histogram(QT_G0); hold on; histogram(QT_N0),ylabel(['s']),title('QT'),legend('Day','Night')
- subplot(224),histogram(QTc_G0); hold on; histogram(QTc_N0),ylabel(['s']),title('Corrected QT'),legend('Day','Night')
-
-
+ subplot(321),histogram(LVET_G0); hold on; histogram(LVET_N0),ylabel(['s']),title('Left Ventricular Ejection Time'),legend('Day','Night')
+ subplot(322),histogram(QS2_G0); hold on; histogram(QS2_N0),ylabel(['s']),title('QS2'),legend('Day','Night')
+ subplot(323),histogram(QT_G0); hold on; histogram(QT_N0),ylabel(['s']),title('QT'),legend('Day','Night')
+ subplot(324),histogram(QTc_G0); hold on; histogram(t_IVCRE_N0),ylabel(['s']),title('Time interval IVC-RE'),legend('Day','Night')
+ subplot(325),histogram(t_IVCminAC_G0); hold on; histogram(t_IVCminAC_N0),ylabel(['s']),title('Time interval IVC-minimum before AC'),legend('Day','Night')
+ subplot(326),histogram(t_IVCminAORE_G0); hold on; histogram(t_IVCminAORE_N0),ylabel(['s']),title('Time interval IVC-minimum between AO and RE'),legend('Day','Night')
  figure()
     subplot(221), boxplot(amp_IVCAO_G0), ylabel(['mV'])
     subplot(222), histogram(amp_IVCAO_stud), ylabel(['mV'])
