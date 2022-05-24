@@ -18,7 +18,7 @@ fs_Ecg = 1024;
 wind = 30*1024;
 addpath 'C:\Users\feder\Desktop\Tesi\Data\Filtered ECG'
 %%
-for i = 1:N
+for i = 1:1
     FOLDER = fullfile(list(i).folder, list(i).name);
     file = dir(FOLDER);
     name = file.name;
@@ -63,9 +63,13 @@ for i = 1:N
     for i = 1:peaksFORwindow(end-1)
         qrs_AMP(i) = ECG_filt(qrs_I(i));
     end 
+
+    % Una volta che ho qrs_I, posso calcoare direttamente HR al minuto ed
+    % ogni 5 minuti per 24 ore
+    [HR_min,HR_5min] = HR(qrs_I,fs_Ecg);
    % Save 
      name_PT = erase(name,"ECG_FILT-")
-     save(['C:\Users\feder\Desktop\Tesi\Data\Pan-Tompkins\' 'PT-' name_PT],'qrs_I','qrs_AMP','peaksFORwindow')
+     save(['C:\Users\feder\Desktop\Tesi\Data\Pan-Tompkins\' 'PT-' name_PT],'qrs_I','qrs_AMP','peaksFORwindow','HR_5min','HR_min')
      %save(['PT-' name_PT],'qrs_I','qrs_AMP','peaksFORwindow')
 end
 

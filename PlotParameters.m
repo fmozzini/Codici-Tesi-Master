@@ -60,6 +60,7 @@ listFP(1) = [];
             slope_IVCAO_stud(a_count,:) = slope_IVCAO(a,1);
             LVET_stud(a_count,:) = LVET(a,1);
             QS2_stud(a_count,:) = QS2(a,1);
+            GN_stud(a_count,:) = GN(a,1);
         end 
     end 
 
@@ -195,5 +196,38 @@ listFP(1) = [];
     subplot(222), histogram(LVET_stud), ylabel('[s]')
     subplot(223), boxplot(QS2_stud), ylabel('[s]')
     subplot(224), histogram(QS2_stud), ylabel('[s]')
+
+    
+    notte = 0;
+    giorno = 0;
+    for g = 1:length(GN)
+        if GN(g) == 1 %NOTTE
+            notte = notte+1;
+            AO_studioN(notte,:) = AO_stud(g,:);
+            R_studN(notte,:) = R_stud(g,:);
+            amp_IVCAO_studN(notte,:) = amp_IVCAO_stud(g,:);
+            amp_IVCAC_studN(notte,:) = amp_IVCAC_stud(g,:);
+            t_IVCAO_studN(notte,:) = t_IVCAO_stud(g,:);
+            t_IVCAC_studN(notte,:) = t_IVCAC_stud(g,:);
+            slope_IVCAO_studN(notte,:) = slope_IVCAO_stud(g,:);
+            LVET_studN(notte,:) = LVET_stud(g,:);
+            QS2_studN(notte,:) = QS2_stud(g,:);
+            QT_studN(notte,:) = QT_stud(g,:);
+            QTc_studN(notte,:) = QTc_stud(g,:);
+        else % GN(i) == 0 %giorno
+            giorno = giorno+1;
+            AO_studioG(giorno,:) = AO_stud(g,:);
+            R_studG(giorno,:) = R_stud(g,:);
+            amp_IVCAO_studG(giorno,:) = amp_IVCAO_stud(g,:);
+            amp_IVCAC_studG(giorno,:) = amp_IVCAC_stud(g,:);
+            t_IVCAO_studG(giorno,:) = t_IVCAO_stud(g,:);
+            t_IVCAC_studG(giorno,:) = t_IVCAC_stud(g,:);
+            slope_IVCAO_studG(giorno,:) = slope_IVCAO_stud(g,:);
+            LVET_studG(giorno,:) = LVET_stud(g,:);
+            QS2_studG(giorno,:) = QS2_stud(g,:);
+            QT_studG(giorno,:) = QT_stud(g,:);
+            QTc_studG(giorno,:) = QTc_stud(g,:);
+        end 
+    end
 
  end 
