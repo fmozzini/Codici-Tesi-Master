@@ -21,7 +21,7 @@ function [tIVCAO,tIVCAC,ampIVCAO,ampIVCAC,slopeIVCAO,LVET,QS2,QT,QTc,tIVCMC,tIVC
     slopeminAORERE = (ampRE-ampminAORE)/(posRE-posminAORE);
     slopeminACAC = (ampAC-ampminAC)/(posAC-posminAC);
        %% LVET, QS2, QT e QTc
-    LVET = (posAC-posAO)/fs_scg; % [s]
+    LVET = (posAC-posAO)/fs_scg; % [s] 
     QS2 = (posAC-posQ_SCG)/fs_scg; % [s]
     QT = (posfineT-posQ_ECG)./fs_ecg;
     QTc = (QT/(sqrt(RR)))./fs_ecg; % [s]

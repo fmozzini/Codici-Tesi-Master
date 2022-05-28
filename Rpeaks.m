@@ -18,7 +18,7 @@ fs_Ecg = 1024;
 wind = 30*1024;
 addpath 'C:\Users\feder\Desktop\Tesi\Data\Filtered ECG'
 %%
-for i = 1:1
+for i = 2:N
     FOLDER = fullfile(list(i).folder, list(i).name);
     file = dir(FOLDER);
     name = file.name;

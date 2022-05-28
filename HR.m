@@ -1,5 +1,5 @@
 function [HR_min,HR_5min] = HR(qrs_I,fs_ECG)
-    qrs_min =  (qrs_I./fs_ECG)./60;
+    qrs_min =  (qrs_I./fs_ECG)./60; 
     n_cinqueminuti = round(qrs_min(end)/5);
     n_min = round(qrs_min(end));
     HR_5min = zeros(n_cinqueminuti,1);

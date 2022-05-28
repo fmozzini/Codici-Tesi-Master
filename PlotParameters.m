@@ -339,61 +339,60 @@ listFP(1) = [];
      else 
          tagN0 = tagN0+1;
          R_notte0(tagN0,:) = R_notte(i,3);
-         amp_IVCAC_N0(tagN0,:) = amp_IVCAC_N(i,:);
-         amp_IVCAO_N0(tagN0,:) = amp_IVCAO_N(i,:);
-         amp_IVCMC_N0(tagN0,:) = amp_IVCMC_N(i,:);
-         amp_IVCRE_N0(tagN0,:) = amp_IVCRE_N(i,:);
-         amp_IVCminAC_N0(tagN0,:) = amp_IVCminAC_N(i,:);
-         amp_IVCminAORE_N0(tagN0,:) = amp_IVCminAORE_N(i,:);
-         t_IVCAC_N0(tagN0,:) = t_IVCAC_N(i,:);
-         t_IVCAO_N0(tagN0,:) = t_IVCAO_N(i,:);
-         t_IVCMC_N0(tagN0,:) = t_IVCMC_N(i,:);
-         t_IVCRE_N0(tagN0,:) = t_IVCRE_N(i,:);
-         t_IVCminAC_N0(tagN0,:) = t_IVCminAC_N(i,:);
-         t_IVCminAORE_N0(tagN0,:) = t_IVCminAORE_N(i,:);
-         slope_IVCAO_N0(tagN0,:) = slope_IVCAO_N(i,:);
-         slope_minACAC_N0(tagN0,:) = slope_minACAC_N(i,:);
-         slope_minAORERE_N0(tagN0,:) = slope_minAORERE_N(i,:);
-         LVET_N0(tagN0,:) = LVET_N(i,:);
-         QT_N0(tagN0,:) = QT_N(i,:);
-         QTc_N0(tagN0,:) = QTc_N(i,:);
-         QS2_N0(tagN0,:) = QS2_N(i,:);
+         amp_IVCAC_N0(tagN0,1) = amp_IVCAC_N(i,1);
+         amp_IVCAO_N0(tagN0,1) = amp_IVCAO_N(i,1);
+         amp_IVCMC_N0(tagN0,1) = amp_IVCMC_N(i,1);
+         amp_IVCRE_N0(tagN0,1) = amp_IVCRE_N(i,1);
+         amp_IVCminAC_N0(tagN0,1) = amp_IVCminAC_N(i,1);
+         amp_IVCminAORE_N0(tagN0,1) = amp_IVCminAORE_N(i,1);
+         t_IVCAC_N0(tagN0,1) = t_IVCAC_N(i,1);
+         t_IVCAO_N0(tagN0,1) = t_IVCAO_N(i,1);
+         t_IVCMC_N0(tagN0,1) = t_IVCMC_N(i,1);
+         t_IVCRE_N0(tagN0,1) = t_IVCRE_N(i,1);
+         t_IVCminAC_N0(tagN0,1) = t_IVCminAC_N(i,1);
+         t_IVCminAORE_N0(tagN0,1) = t_IVCminAORE_N(i,1);
+         slope_IVCAO_N0(tagN0,1) = slope_IVCAO_N(i,1);
+         slope_minACAC_N0(tagN0,1) = slope_minACAC_N(i,1);
+         slope_minAORERE_N0(tagN0,1) = slope_minAORERE_N(i,1);
+         LVET_N0(tagN0,1) = LVET_N(i,1);
+         QT_N0(tagN0,1) = QT_N(i,1);
+         QTc_N0(tagN0,1) = QTc_N(i,1);
+         QS2_N0(tagN0,1) = QS2_N(i,1);
      end 
  end 
-
+%%
  % Histogram - Amplitudes 
  figure()
- subplot(321),histogram(amp_IVCAO_G0); hold on; histogram(amp_IVCAO_N0),ylabel(['mV']),title('Amplitude IVC-AO'),legend('Day','Night')
- subplot(322),histogram(amp_IVCAC_G0); hold on; histogram(amp_IVCAC_N0),ylabel(['mV']),title('Amplitude IVC-AC'),legend('Day','Night')
- subplot(323),histogram(amp_IVCMC_G0); hold on; histogram(amp_IVCMC_N0),ylabel(['mV']),title('Amplitude IVC-MC'),legend('Day','Night')
- subplot(324),histogram(amp_IVCRE_G0); hold on; histogram(amp_IVCRE_N0),ylabel(['mV']),title('Amplitude IVC-RE'),legend('Day','Night')
- subplot(325),histogram(amp_IVCminAC_G0); hold on; histogram(amp_IVCminAC_N0),ylabel(['mV']),title('Amplitude IVC-minimum before AC'),legend('Day','Night')
- subplot(326),histogram(amp_IVCminAORE_G0); hold on; histogram(amp_IVCminAORE_N0),ylabel(['mV']),title('Amplitude IVC-minimum between AO and RE'),legend('Day','Night')
+ subplot(321),histogram(amp_IVCAO_G0); hold on; histogram(amp_IVCAO_N0),xlabel(['mV']),title('Amplitude IVC-AO'),legend('Day','Night')
+ subplot(322),histogram(amp_IVCAC_G0); hold on; histogram(amp_IVCAC_N0),xlabel(['mV']),title('Amplitude IVC-AC'),legend('Day','Night')
+ subplot(323),histogram(amp_IVCMC_G0); hold on; histogram(amp_IVCMC_N0),xlabel(['mV']),title('Amplitude IVC-MC'),legend('Day','Night')
+ subplot(324),histogram(amp_IVCRE_G0); hold on; histogram(amp_IVCRE_N0),xlabel(['mV']),title('Amplitude IVC-RE'),legend('Day','Night')
+ subplot(325),histogram(amp_IVCminAC_G0); hold on; histogram(amp_IVCminAC_N0),xlabel(['mV']),title('Amplitude IVC-minimum before AC'),legend('Day','Night')
+ subplot(326),histogram(amp_IVCminAORE_G0); hold on; histogram(amp_IVCminAORE_N0),xlabel(['mV']),title('Amplitude IVC-minimum between AO and RE'),legend('Day','Night')
 
-% Histogram - Time intervals 
+%% Histogram - Time intervals 
  figure()
- subplot(321),histogram(t_IVCAO_G0); hold on; histogram(t_IVCAO_N0),ylabel(['s']),title('Time interval IVC-AO'),legend('Day','Night')
- subplot(322),histogram(t_IVCAC_G0); hold on; histogram(t_IVCAC_N0),ylabel(['s']),title('Time interval IVC-AC'),legend('Day','Night')
- subplot(323),histogram(t_IVCMC_G0); hold on; histogram(t_IVCMC_N0),ylabel(['s']),title('Time interval IVC-MC'),legend('Day','Night')
- subplot(324),histogram(t_IVCRE_G0); hold on; histogram(t_IVCRE_N0),ylabel(['s']),title('Time interval IVC-RE'),legend('Day','Night')
- subplot(325),histogram(t_IVCminAC_G0); hold on; histogram(t_IVCminAC_N0),ylabel(['s']),title('Time interval IVC-minimum before AC'),legend('Day','Night')
- subplot(326),histogram(t_IVCminAORE_G0); hold on; histogram(t_IVCminAORE_N0),ylabel(['s']),title('Time interval IVC-minimum between AO and RE'),legend('Day','Night')
- % GUARDA LE UNITA' DI MISURA... C'E' QUALCOSA CHE NON VA !!! 
+ subplot(321),histogram(t_IVCAO_G0./1000); hold on; histogram(t_IVCAO_N0./1000),xlabel(['ms']),title('Time interval IVC-AO'),legend('Day','Night')
+ subplot(322),histogram(t_IVCAC_G0./1000); hold on; histogram(t_IVCAC_N0./1000),xlabel(['ms']),title('Time interval IVC-AC'),legend('Day','Night')
+ subplot(323),histogram(t_IVCMC_G0./1000); hold on; histogram(t_IVCMC_N0./1000),xlabel(['ms']),title('Time interval IVC-MC'),legend('Day','Night')
+ subplot(324),histogram(t_IVCRE_G0./1000); hold on; histogram(t_IVCRE_N0./1000),xlabel(['ms']),title('Time interval IVC-RE'),legend('Day','Night')
+ subplot(325),histogram(t_IVCminAC_G0./1000); hold on; histogram(t_IVCminAC_N0./1000),xlabel(['ms']),title('Time interval IVC-minimum before AC'),legend('Day','Night')
+ subplot(326),histogram(t_IVCminAORE_G0./1000); hold on; histogram(t_IVCminAORE_N0./1000),xlabel(['ms']),title('Time interval IVC-minimum between AO and RE'),legend('Day','Night')
  
- % Histogram - Slope
+ %% Histogram - Slope
  figure()
  subplot(221),histogram(slope_IVCAO_G0); hold on; histogram(slope_IVCAO_N0),title('Slope IVC-AO'),legend('Day','Night')
  subplot(222),histogram(slope_minAORERE_G0); hold on; histogram(slope_minAORERE_N0),title('Slope minimum between AO and RE-RE'),legend('Day','Night')
  subplot(223),histogram(slope_minACAC_G0); hold on; histogram(slope_minACAC_N0),title('Slope minimum before AC-AC'),legend('Day','Night')
  
- % Histogram - Other parameters
+ %% Histogram - Other parameters
  figure()
- subplot(221),histogram(LVET_G0); hold on; histogram(LVET_N0),ylabel(['s']),title('Left Ventricular Ejection Time'),legend('Day','Night')
- subplot(222),histogram(QS2_G0); hold on; histogram(QS2_N0),ylabel(['s']),title('QS2'),legend('Day','Night')
- subplot(223),histogram(QT_G0); hold on; histogram(QT_N0),ylabel(['s']),title('QT'),legend('Day','Night')
- subplot(224),histogram(QTc_G0); hold on; histogram(QTc_N0),ylabel(['s']),title('Corrected QT'),legend('Day','Night')
-
-
+ subplot(221),histogram(LVET_G0./1000); hold on; histogram(LVET_N0./1000),xlabel(['ms']),title('Left Ventricular Ejection Time'),legend('Day','Night')
+ subplot(222),histogram(QS2_G0./1000); hold on; histogram(QS2_N0./1000),xlabel(['ms']),title('QS2'),legend('Day','Night')
+ subplot(223),histogram(QT_G0./1000); hold on; histogram(QT_N0./1000),xlabel(['ms']),title('QT'),legend('Day','Night')
+ subplot(224),histogram(QTc_G0./1000); hold on; histogram(QTc_N0./1000),xlabel(['ms']),title('Corrected QT'),legend('Day','Night')
+%%
+% Forse dovrei aggiungere anche le info di Cinque ! BOHHHH
  figure()
     subplot(221), boxplot(amp_IVCAO_G0), ylabel(['mV'])
     subplot(222), histogram(amp_IVCAO_stud), ylabel(['mV'])

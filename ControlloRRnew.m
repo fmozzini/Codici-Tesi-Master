@@ -1,3 +1,4 @@
+%% Federica Mozzini - 946400
 % Ricalcoliamo gli intervalli RR e guardiamo cosa succede in ECG quando RR
 % è strano
 
@@ -20,9 +21,9 @@ list = dir(folderSCG);
 list(1) = [];
 list(1) = [];
 N = length(list);
-list(N-1) = [];
-list(N-1) = [];
-N = length(list)
+% list(N-1) = [];
+% list(N-1) = [];
+% N = length(list)
 
  addpath 'C:\Users\feder\Desktop\Tesi'\Data\'Filtered ECG'\
  addpath 'C:\Users\feder\Desktop\Tesi'\Data\Pan-Tompkins\
@@ -30,7 +31,7 @@ N = length(list)
  addpath 'C:\Users\feder\Desktop\Tesi'\Codes\
 
  %% 
- for m = 1:1
+ for m = 16:16
     FOLDERSCG = fullfile(list(m).folder, list(m).name)
     file = dir(FOLDERSCG);
     name = file.name;
@@ -60,7 +61,7 @@ N = length(list)
     RR_sec = RR./1024; % lo plotto in sec sulle y, 84163
     RR_tempo = R(1:end-1,1);
     RR_tempo = RR_tempo./1024;
-    plot(RR_tempo,RR_sec)
+%     plot(RR_tempo,RR_sec),title('RR interval PRE PROCESSING')
 
 %% CERCHIAMO UN MODO PER TROVARE GLI OUTLIERS -> elimino i picchi se sono diversi dal 30% della media tra valore precedente e successivo
 % https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6931967/ 
@@ -82,14 +83,14 @@ N = length(list)
         RR_pp(ELIMINARE(n,3),:) = [];
     end 
    % ne ho eliminati 480 ma rimane qualcosina (pochi pochi outliers)
-   figure()
-   plot(RR_pp(:,2),RR_pp(:,1)),xlabel('[s]'),ylabel('RR[s]'),title('RR interval POST PROCESSING'); 
+%    figure()
+%    plot(RR_pp(:,2),RR_pp(:,1)),xlabel('[s]'),ylabel('RR[s]'),title('RR interval POST PROCESSING'); 
 
-    
 
 %     SALVO IL RISULTATO
     name = erase(name,"ECG_FILT-")
     save(['C:\Users\feder\Desktop\Tesi\Data\PostProc PT\' 'PostProc PT-' name],'R_post_processing','RR_pp','peaksFORwindow','HR_min','HR_5min')
+
  end 
 
         %% GRAFICO PER PRESENTAZIONE - TESI

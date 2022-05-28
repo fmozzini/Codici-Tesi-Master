@@ -37,7 +37,7 @@ Inizio_Holter = txtdata(:,1);
 Inizio_Periodo_Sonno = txtdata(:,2);
 Fine_Periodo_Sonno = txtdata(:,3);
 %% Parto da ECG, per ogni battito di ECG considero una finestra a sx e a dx del picco R.. 
-for m = 21:21
+for m = 1:1
 
     FOLDERSCG = fullfile(list(m).folder, list(m).name)
     file = dir(FOLDERSCG);
