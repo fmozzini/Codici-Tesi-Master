@@ -24,7 +24,7 @@ addpath 'C:\Users\feder\Desktop\Tesi'\Data\'Filtered ECG'\
 addpath 'C:\Users\feder\Desktop\Tesi'\Data\'ECG'\
 addpath 'C:\Users\feder\Desktop\Tesi'\Data\'PostProc PT'\
 %%
-for m = 21:21
+for m = 9:9
     FOLDERECG = fullfile(listECG(m).folder, listECG(m).name)
     file = dir(FOLDERECG);
     name = file.name;
@@ -54,13 +54,15 @@ for m = 21:21
     picchi_totali = length(qrs_I)-iniziopicchi-finepicchi; 
     Ecg_valori = Ecg.Values;
 %%
-    for i = iniziopicchi:length(qrs_I)-finepicchi-1
+%     for i = iniziopicchi:length(qrs_I)-finepicchi-1
+for i = 10000:10100
         finestrabattito_ECGF = ECG_filt(qrs_I(i)-window_ECG:qrs_I(i+1)-window_ECG)';
         finestrabattito_ECG = Ecg_valori(qrs_I(i)-window_ECG:qrs_I(i+1)-window_ECG)';
         figure()
         set(gcf, 'WindowState', 'maximized');
         a = subplot(211); plot((qrs_I(i)-window_ECG:qrs_I(i+1)-window_ECG)./1024,finestrabattito_ECG),xlabel('[s]'),title('Ecg')
         b = subplot(212); plot((qrs_I(i)-window_ECG:qrs_I(i+1)-window_ECG)./1024,finestrabattito_ECGF),xlabel('[s]'),title('Filtered Ecg')
+        sgtitle(i)
         pause
         close all
     end

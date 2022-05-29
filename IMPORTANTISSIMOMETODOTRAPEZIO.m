@@ -37,7 +37,7 @@ Inizio_Holter = txtdata(:,1);
 Inizio_Periodo_Sonno = txtdata(:,2);
 Fine_Periodo_Sonno = txtdata(:,3);
 %% Parto da ECG, per ogni battito di ECG considero una finestra a sx e a dx del picco R.. 
-for m = 21:21
+for m = 16:16
 
     FOLDERSCG = fullfile(list(m).folder, list(m).name)
     file = dir(FOLDERSCG);
@@ -113,6 +113,7 @@ for m = 21:21
     tag4 = 0;
     tag5 = 0;
     tag6 = 0;
+    tag7 = 0;
 
      % Capisco se siamo durante il giorno o durante la notte
     Inizio = datevec(Inizio_Holter{m});
@@ -296,7 +297,20 @@ for i = iniziopicchi:length(qrs_I)-finepicchi-1 %scorro tutti i picchi ECG
                MC(i,1:2) = NaN; RE(i,1:2) = NaN; AO(i,1:2) = NaN; AC(i,1:2) = NaN; IVC(i,1:2) = NaN; minAO_RE(i,1:2) = NaN; minbeforeAC(i,1:2) = NaN;
                Q(i,1:2) = NaN; fine_T(i,1:2) = NaN; T(i,1:2) = NaN; RR(i,1:2) = NaN; R_MC1(i,1) = NaN; R_AC1(i,1) = NaN; R_div_T(i,1) = NaN;
                continue
-           end 
+            end 
+            if (length(finestrabattito_ECG)-Q_ECG_locs)<QTmax_cost
+                % la mia finestra finisce prima della costante, è una
+                % finestra troppo corta --> forse potrei studiarla in un
+                % altro modo ma al momento non lo so
+                tag7 = tag7+1;
+                R(i,3) = 7;
+                t_IVCAO(i,1) = NaN; t_IVCAC(i,1) = NaN; t_IVCMC(i,1) = NaN; t_IVCRE(i,1) = NaN; t_IVCminAORE(i,1) = NaN; t_IVCminAC(i,1) = NaN;
+                amp_IVCAO(i,1) = NaN; amp_IVCAC(i,1) = NaN; amp_IVCMC(i,1) = NaN; amp_IVCRE(i,1) = NaN; amp_IVCminAORE(i,1) = NaN; amp_IVCminAC(i,1) = NaN; 
+                slope_IVCAO(i,1) = NaN; slope_minAORERE(i,1) = NaN; slope_minACAC(i,1) = NaN; LVET(i,1) = NaN; QS2(i,1) = NaN; QT(i,1) = NaN; QTc(i,1) = NaN;
+                MC(i,1:2) = NaN; RE(i,1:2) = NaN; AO(i,1:2) = NaN; AC(i,1:2) = NaN; IVC(i,1:2) = NaN; minAO_RE(i,1:2) = NaN; minbeforeAC(i,1:2) = NaN;
+                Q(i,1:2) = NaN; fine_T(i,1:2) = NaN; T(i,1:2) = NaN; RR(i,1:2) = NaN; R_MC1(i,1) = NaN; R_AC1(i,1) = NaN; R_div_T(i,1) = NaN;
+                continue
+            end 
 
                 count = count+1;
                 FINESTREBATTITO_ECG(count,1:length(finestrabattito_ECG)) = finestrabattito_ECG;
@@ -446,28 +460,28 @@ for i = iniziopicchi:length(qrs_I)-finepicchi-1 %scorro tutti i picchi ECG
 
     %% 
                 picchi_parziali(count,1) = n_picchi;
-            
-            figure()
-            a = subplot(211)
-            plot((qrs_I(i)-window_ECG:qrs_I(i+1)-window_ECG)./1024,finestrabattito_ECG),xlabel('[s]'); hold on; plot(qrs_I(i)./1024,qrs_AMP(i),'*r'); hold on; plot(T(i,1)/1024,T(i,2),'*g'); hold on;
+%             
+%             figure()
+%             a = subplot(211)
+%             plot((qrs_I(i)-window_ECG:qrs_I(i+1)-window_ECG)./1024,finestrabattito_ECG),xlabel('[s]'); hold on; plot(qrs_I(i)./1024,qrs_AMP(i),'*r'); hold on; plot(T(i,1)/1024,T(i,2),'*g'); hold on;
 %             xline(qrs_I(i)/1024); hold on; xline(T(i,1)/1024,'--g'); hold on;
-            xline(T40d/1024,'--m'); hold on; xline(T80d/1024,'--m'); hold on;
-            plot(Xmd/1024,ym,'*m'); hold on; plot(Xrd/1024,yr,'*m'); hold on;
+%             xline(T40d/1024,'--m'); hold on; xline(T80d/1024,'--m'); hold on;
+%             plot(Xmd/1024,ym,'*m'); hold on; plot(Xrd/1024,yr,'*m'); hold on;
 %             plot(Xid/1024,yi,'*b'); hold on;
-            plot(Q(i,1)/1024,Q(i,2),'*b'); hold on;
+%             plot(Q(i,1)/1024,Q(i,2),'*b'); hold on;
 % %             xline(QS2maxline_ECGd/1024,'--r'); hold on;
-              xline(QTmax_costd/1024,'--r'); hold on;
+%               xline(QTmax_costd/1024,'--r'); hold on;
 %             plot(fine_T(i,1)/1024,fine_T(i,2),'*b');
 %             hold on; xline(fine_T(i,1)/1024,'--b')
 %             text(qrs_I(i)./1024,qrs_AMP(i),' R')
 %             text(T(i,1)/1024,T(i,2),' T')
 %             text(fine_T(1)/1024,fine_T(2),' fine onda T')
 %             text(Q(i,1)/1024,Q(i,2),' Q')
-            b = subplot(212)
-            plot((qrs1-window_SCG:qrs2-window_SCG)./64,finestrabattito_SCG),xlabel('[s]'); hold on; 
-            for r = 1:length(row)
-                plot((POS_picchi_SCG(row(r)))./64,AMP_picchi_SCG(row(r)),'mo')
-            end 
+%             b = subplot(212)
+%             plot((qrs1-window_SCG:qrs2-window_SCG)./64,finestrabattito_SCG),xlabel('[s]'); hold on; 
+%             for r = 1:length(row)
+%                 plot((POS_picchi_SCG(row(r)))./64,AMP_picchi_SCG(row(r)),'mo')
+%             end 
 %             xline(qrs1/64); hold on; xline(T(i,1)/1024,'--g'); hold on; 
 %             xline(fine_T(i,1)/1024,'--b'); hold on;
 % %             xline((AO(i,1)+window_SCG)./64); hold on 
@@ -606,7 +620,7 @@ end % chiude il numero dei picchi totali
          LVET(i,2) = tag; QS2(i,2) = tag; QT(i,2) = tag; QTc(i,2) = tag; R_MC1(i,2) = tag; R_AC1(i,2) = tag; R_div_T(i,2) = tag;
     end 
         
-    tag0 = length(R)-tag1-tag2-tag3-tag4-tag5-tag6;
+    tag0 = length(R)-tag1-tag2-tag3-tag4-tag5-tag6-tag7;
     Perc_analizzati = tag0/length(R);
     
 
