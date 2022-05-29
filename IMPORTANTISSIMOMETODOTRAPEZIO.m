@@ -209,7 +209,7 @@ for i = iniziopicchi:length(qrs_I)-finepicchi-1 %scorro tutti i picchi ECG
             Q_SCG = [qrs1-window_SCG+Q_SCG_locs-1]; 
 
             % Ricerco il valore corretto di HR in base alla finestra di 5
-            % min in cui si trova
+            % min in cui si trova -> mi serve per tag 5
             qrs_I_min = (qrs_I(i)./fs_ECG)./60;
             ricercariga = round(round(qrs_I_min)/5);
             bpm_min = HR_5min(ricercariga+1);
@@ -278,9 +278,15 @@ for i = iniziopicchi:length(qrs_I)-finepicchi-1 %scorro tutti i picchi ECG
            else
                QTmax_cost = 440;
            end 
-           QTmax = ((qrs_I(i+1)-qrs_I(i))*QTmax_cost)/800; % MAX -> sono secondi 
+           QTmax_costd = qrs_I(i)-window_ECG+Q_ECG_locs+(QTmax_cost/1000)*1024-1;
+%            QTmax = ((qrs_I(i+1)-qrs_I(i))*QTmax_cost)/800; % MAX -> sono
+%            secondi --> NO, SONO MS 
                % QUI METTO L'IF SULLA DISTANZA
-           if locs_T > QTmax
+%            if locs_T > QTmax_co
+            QT_Bazett = (locs_T-Q_ECG_locs)/1024; %sec
+            RR_Bazett = RR(i,1)./1024; %sec
+            QTc_Bazett = (QT_Bazett/sqrt(RR_Bazett))*1000; % ms
+            if  QTc_Bazett> QTmax_cost %ms
                % La posizione di T è troppo avanti -> elimino tutto
                tag3 = tag3+1;
                R(i,3) = 3;
@@ -441,26 +447,27 @@ for i = iniziopicchi:length(qrs_I)-finepicchi-1 %scorro tutti i picchi ECG
     %% 
                 picchi_parziali(count,1) = n_picchi;
             
-%             figure()
-%             a = subplot(211)
-%             plot((qrs_I(i)-window_ECG:qrs_I(i+1)-window_ECG)./1024,finestrabattito_ECG),xlabel('[s]'); hold on; plot(qrs_I(i)./1024,qrs_AMP(i),'*r'); hold on; plot(T(i,1)/1024,T(i,2),'*g'); hold on;
-% %             xline(qrs_I(i)/1024); hold on; xline(T(i,1)/1024,'--g'); hold on;
-%             xline(T40d/1024,'--m'); hold on; xline(T80d/1024,'--m'); hold on;
-%             plot(Xmd/1024,ym,'*m'); hold on; plot(Xrd/1024,yr,'*m'); hold on;
+            figure()
+            a = subplot(211)
+            plot((qrs_I(i)-window_ECG:qrs_I(i+1)-window_ECG)./1024,finestrabattito_ECG),xlabel('[s]'); hold on; plot(qrs_I(i)./1024,qrs_AMP(i),'*r'); hold on; plot(T(i,1)/1024,T(i,2),'*g'); hold on;
+%             xline(qrs_I(i)/1024); hold on; xline(T(i,1)/1024,'--g'); hold on;
+            xline(T40d/1024,'--m'); hold on; xline(T80d/1024,'--m'); hold on;
+            plot(Xmd/1024,ym,'*m'); hold on; plot(Xrd/1024,yr,'*m'); hold on;
 %             plot(Xid/1024,yi,'*b'); hold on;
-%             plot(Q(i,1)/1024,Q(i,2),'*b'); hold on;
+            plot(Q(i,1)/1024,Q(i,2),'*b'); hold on;
 % %             xline(QS2maxline_ECGd/1024,'--r'); hold on;
+              xline(QTmax_costd/1024,'--r'); hold on;
 %             plot(fine_T(i,1)/1024,fine_T(i,2),'*b');
 %             hold on; xline(fine_T(i,1)/1024,'--b')
 %             text(qrs_I(i)./1024,qrs_AMP(i),' R')
 %             text(T(i,1)/1024,T(i,2),' T')
 %             text(fine_T(1)/1024,fine_T(2),' fine onda T')
 %             text(Q(i,1)/1024,Q(i,2),' Q')
-%             b = subplot(212)
-%             plot((qrs1-window_SCG:qrs2-window_SCG)./64,finestrabattito_SCG),xlabel('[s]'); hold on; 
-%             for r = 1:length(row)
-%                 plot((POS_picchi_SCG(row(r)))./64,AMP_picchi_SCG(row(r)),'mo')
-%             end 
+            b = subplot(212)
+            plot((qrs1-window_SCG:qrs2-window_SCG)./64,finestrabattito_SCG),xlabel('[s]'); hold on; 
+            for r = 1:length(row)
+                plot((POS_picchi_SCG(row(r)))./64,AMP_picchi_SCG(row(r)),'mo')
+            end 
 %             xline(qrs1/64); hold on; xline(T(i,1)/1024,'--g'); hold on; 
 %             xline(fine_T(i,1)/1024,'--b'); hold on;
 % %             xline((AO(i,1)+window_SCG)./64); hold on 
@@ -483,7 +490,7 @@ for i = iniziopicchi:length(qrs_I)-finepicchi-1 %scorro tutti i picchi ECG
 %             sgtitle(i)
 %              pause
 %              close all
-% %     
+% % %     
     %% Estraggo i parameters 
             [tIVCAO,tIVCAC,ampIVCAO,ampIVCAC,slopeIVCAO,lvet,qs2,qt,qtc,tIVCMC,tIVCRE,tIVCminAORE,tIVCminAC,ampIVCMC,ampIVCRE,ampIVCminAORE,...
                 ampIVCminAC,slopeminAORERE,slopeminACAC,RdivT] = extractfeatures(64,1024,AO(i,1),AO(i,2),IVC(i,1),IVC(i,2),AC(i,1),AC(i,2),...

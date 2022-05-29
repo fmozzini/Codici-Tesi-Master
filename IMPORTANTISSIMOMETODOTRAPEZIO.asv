@@ -37,7 +37,7 @@ Inizio_Holter = txtdata(:,1);
 Inizio_Periodo_Sonno = txtdata(:,2);
 Fine_Periodo_Sonno = txtdata(:,3);
 %% Parto da ECG, per ogni battito di ECG considero una finestra a sx e a dx del picco R.. 
-for m = 1:1
+for m = 21:21
 
     FOLDERSCG = fullfile(list(m).folder, list(m).name)
     file = dir(FOLDERSCG);
@@ -209,7 +209,7 @@ for i = iniziopicchi:length(qrs_I)-finepicchi-1 %scorro tutti i picchi ECG
             Q_SCG = [qrs1-window_SCG+Q_SCG_locs-1]; 
 
             % Ricerco il valore corretto di HR in base alla finestra di 5
-            % min in cui si trova
+            % min in cui si trova -> mi serve per tag 5
             qrs_I_min = (qrs_I(i)./fs_ECG)./60;
             ricercariga = round(round(qrs_I_min)/5);
             bpm_min = HR_5min(ricercariga+1);
@@ -278,9 +278,15 @@ for i = iniziopicchi:length(qrs_I)-finepicchi-1 %scorro tutti i picchi ECG
            else
                QTmax_cost = 440;
            end 
-           QTmax = ((qrs_I(i+1)-qrs_I(i))*QTmax_cost)/800; % MAX -> sono secondi 
+           Qmax_costd = qrs_I(i)-window_ECG+((QTmax_cost/1000))*1024-1;
+%            QTmax = ((qrs_I(i+1)-qrs_I(i))*QTmax_cost)/800; % MAX -> sono
+%            secondi --> NO, SONO MS 
                % QUI METTO L'IF SULLA DISTANZA
-           if locs_T > QTmax
+%            if locs_T > QTmax_co
+            QT_Bazett = (locs_T-Q_ECG_locs)/1024; %sec
+            RR_Bazett = RR(i,1)./1024; %sec
+            QTc_Bazett = (QT_Bazett/sqrt(RR_Bazett))*1000; % ms
+            if  QTc_Bazett> QTmax_cost %ms
                % La posizione di T è troppo avanti -> elimino tutto
                tag3 = tag3+1;
                R(i,3) = 3;
@@ -450,6 +456,7 @@ for i = iniziopicchi:length(qrs_I)-finepicchi-1 %scorro tutti i picchi ECG
 %             plot(Xid/1024,yi,'*b'); hold on;
 %             plot(Q(i,1)/1024,Q(i,2),'*b'); hold on;
 % %             xline(QS2maxline_ECGd/1024,'--r'); hold on;
+              xline(QS2max/1024,'--r'); hold on;
 %             plot(fine_T(i,1)/1024,fine_T(i,2),'*b');
 %             hold on; xline(fine_T(i,1)/1024,'--b')
 %             text(qrs_I(i)./1024,qrs_AMP(i),' R')
@@ -483,7 +490,7 @@ for i = iniziopicchi:length(qrs_I)-finepicchi-1 %scorro tutti i picchi ECG
 %             sgtitle(i)
 %              pause
 %              close all
-% %     
+% % %     
     %% Estraggo i parameters 
             [tIVCAO,tIVCAC,ampIVCAO,ampIVCAC,slopeIVCAO,lvet,qs2,qt,qtc,tIVCMC,tIVCRE,tIVCminAORE,tIVCminAC,ampIVCMC,ampIVCRE,ampIVCminAORE,...
                 ampIVCminAC,slopeminAORERE,slopeminACAC,RdivT] = extractfeatures(64,1024,AO(i,1),AO(i,2),IVC(i,1),IVC(i,2),AC(i,1),AC(i,2),...

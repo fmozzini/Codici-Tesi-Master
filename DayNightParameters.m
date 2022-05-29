@@ -20,7 +20,7 @@ listFP(1) = [];
  addpath 'C:\Users\feder\Desktop\Tesi'\Data\'Fiducial Points SCG'\
  addpath 'C:\Users\feder\Desktop\Tesi'\Codes\
  %%
- for m = 3:3
+ for m = 1:1
     FOLDERPAR = fullfile(listPAR(m).folder, listPAR(m).name)
     file = dir(FOLDERPAR);
     name = file.name;
