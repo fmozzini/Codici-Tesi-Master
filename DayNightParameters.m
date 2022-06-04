@@ -20,7 +20,7 @@ listFP(1) = [];
  addpath 'C:\Users\feder\Desktop\Tesi'\Data\'Fiducial Points SCG'\
  addpath 'C:\Users\feder\Desktop\Tesi'\Codes\
  %%
- for m = 2:2
+ for m = 1:1
     FOLDERPAR = fullfile(listPAR(m).folder, listPAR(m).name)
     file = dir(FOLDERPAR);
     name = file.name;
@@ -256,9 +256,9 @@ listFP(1) = [];
  
      % Histogram - Slopes - TAG 0
      figure()
-     subplot(221),histogram(slope_IVCAO_G0); hold on; histogram(slope_IVCAO_N0),title('Slope IVC-AO'),legend('Day','Night')
-     subplot(222),histogram(slope_minAORERE_G0); hold on; histogram(slope_minAORERE_N0),title('Slope minimum between AO and RE-RE'),legend('Day','Night')
-     subplot(223),histogram(slope_minACAC_G0); hold on; histogram(slope_minACAC_N0),title('Slope minimum before AC-AC'),legend('Day','Night')
+     subplot(131),histogram(slope_IVCAO_G0); hold on; histogram(slope_IVCAO_N0),title('Slope IVC-AO'),legend('Day','Night')
+     subplot(132),histogram(slope_minAORERE_G0); hold on; histogram(slope_minAORERE_N0),title('Slope minimum between AO and RE-RE'),legend('Day','Night')
+     subplot(133),histogram(slope_minACAC_G0); hold on; histogram(slope_minACAC_N0),title('Slope minimum before AC-AC'),legend('Day','Night')
      sgtitle('Slopes - Tag 0')
  
      % Histogram - Other parameters - TAG 0
@@ -291,9 +291,9 @@ listFP(1) = [];
  
      % Histogram - Slope - TAG 0 E 5
      figure()
-     subplot(221),histogram(slope_IVCAO_G_0_5); hold on; histogram(slope_IVCAO_N_0_5),title('Slope IVC-AO'),legend('Day','Night')
-     subplot(222),histogram(slope_minAORERE_G_0_5); hold on; histogram(slope_minAORERE_N_0_5),title('Slope minimum between AO and RE-RE'),legend('Day','Night')
-     subplot(223),histogram(slope_minACAC_G_0_5); hold on; histogram(slope_minACAC_N_0_5),title('Slope minimum before AC-AC'),legend('Day','Night')
+     subplot(131),histogram(slope_IVCAO_G_0_5); hold on; histogram(slope_IVCAO_N_0_5),title('Slope IVC-AO'),legend('Day','Night')
+     subplot(132),histogram(slope_minAORERE_G_0_5); hold on; histogram(slope_minAORERE_N_0_5),title('Slope minimum between AO and RE-RE'),legend('Day','Night')
+     subplot(133),histogram(slope_minACAC_G_0_5); hold on; histogram(slope_minACAC_N_0_5),title('Slope minimum before AC-AC'),legend('Day','Night')
      sgtitle('Slopes - Tag 0 & 5')
  
      % Histogram - Other parameters - TAG 0 E 5
@@ -305,27 +305,54 @@ listFP(1) = [];
      sgtitle('Other Parameters - Tag 0 & 5')
  end 
 %%
-% Forse dovrei aggiungere anche le info di Cinque ! BOHHHH
- figure()
-    subplot(221), boxplot(amp_IVCAO_G0), ylabel(['mV'])
-    subplot(222), histogram(amp_IVCAO_stud), ylabel(['mV'])
-    subplot(223), boxplot(amp_IVCAC_stud), ylabel(['mV'])
-    subplot(224), histogram(amp_IVCAC_stud), ylabel(['mV'])
 
+     % Histogram - Amplitudes - TAG 0
+     figure()
+     subplot(311),histogram(amp_IVCAO_G0); hold on; histogram(amp_IVCAO_N0),xlabel(['mV']),title('Amplitude IVC-AO'),legend('Day','Night')
+     subplot(312),histogram(amp_IVCAC_G0); hold on; histogram(amp_IVCAC_N0),xlabel(['mV']),title('Amplitude IVC-AC'),legend('Day','Night')
+     subplot(313),histogram(amp_IVCMC_G0); hold on; histogram(amp_IVCMC_N0),xlabel(['mV']),title('Amplitude IVC-MC'),legend('Day','Night')
+     sgtitle('Amplitudes - Tag 0')
+     figure()
+     subplot(311),histogram(amp_IVCRE_G0); hold on; histogram(amp_IVCRE_N0),xlabel(['mV']),title('Amplitude IVC-RE'),legend('Day','Night')
+     subplot(312),histogram(amp_IVCminAC_G0); hold on; histogram(amp_IVCminAC_N0),xlabel(['mV']),title('Amplitude IVC-minimum before AC'),legend('Day','Night')
+     subplot(313),histogram(amp_IVCminAORE_G0); hold on; histogram(amp_IVCminAORE_N0),xlabel(['mV']),title('Amplitude IVC-minimum between AO and RE'),legend('Day','Night')
+     sgtitle('Amplitudes - Tag 0')
+
+%% 
+% Histogram - Time intervals - TAG 0
+     figure()
+     subplot(311),histogram(t_IVCAO_G0./1000); hold on; histogram(t_IVCAO_N0./1000),xlabel(['ms']),title('Time interval IVC-AO'),legend('Day','Night')
+     subplot(312),histogram(t_IVCAC_G0./1000); hold on; histogram(t_IVCAC_N0./1000),xlabel(['ms']),title('Time interval IVC-AC'),legend('Day','Night')
+     subplot(313),histogram(t_IVCMC_G0./1000); hold on; histogram(t_IVCMC_N0./1000),xlabel(['ms']),title('Time interval IVC-MC'),legend('Day','Night')
+     sgtitle('Time Intervals - Tag 0')
+     figure()
+     subplot(311),histogram(t_IVCRE_G0./1000); hold on; histogram(t_IVCRE_N0./1000),xlabel(['ms']),title('Time interval IVC-RE'),legend('Day','Night')
+     subplot(312),histogram(t_IVCminAC_G0./1000); hold on; histogram(t_IVCminAC_N0./1000),xlabel(['ms']),title('Time interval IVC-minimum before AC'),legend('Day','Night')
+     subplot(313),histogram(t_IVCminAORE_G0./1000); hold on; histogram(t_IVCminAORE_N0./1000),xlabel(['ms']),title('Time interval IVC-minimum between AO and RE'),legend('Day','Night')
+     sgtitle('Time Intervals - Tag 0')
+ %%
     figure()
-    subplot(221), boxplot(t_IVCAO_stud), ylabel('[s]')
-    subplot(222), histogram(t_IVCAO_stud), ylabel('[s]')
-    subplot(223), boxplot(t_IVCAC_stud), ylabel('[s]')
-    subplot(224), histogram(t_IVCAC_stud), ylabel('[s]')
+     subplot(311),histogram(amp_IVCAO_G_0_5); hold on; histogram(amp_IVCAO_N_0_5),xlabel(['mV']),title('Amplitude IVC-AO'),legend('Day','Night')
+     subplot(312),histogram(amp_IVCAC_G_0_5); hold on; histogram(amp_IVCAC_N_0_5),xlabel(['mV']),title('Amplitude IVC-AC'),legend('Day','Night')
+     subplot(313),histogram(amp_IVCMC_G_0_5); hold on; histogram(amp_IVCMC_N_0_5),xlabel(['mV']),title('Amplitude IVC-MC'),legend('Day','Night')
+     sgtitle('Amplitudes - Tag 0 & 5')
+     figure()
+     subplot(311),histogram(amp_IVCRE_G_0_5); hold on; histogram(amp_IVCRE_N_0_5),xlabel(['mV']),title('Amplitude IVC-RE'),legend('Day','Night')
+     subplot(312),histogram(amp_IVCminAC_G_0_5); hold on; histogram(amp_IVCminAC_N_0_5),xlabel(['mV']),title('Amplitude IVC-minimum before AC'),legend('Day','Night')
+     subplot(313),histogram(amp_IVCminAORE_G_0_5); hold on; histogram(amp_IVCminAORE_N_0_5),xlabel(['mV']),title('Amplitude IVC-minimum between AO and RE'),legend('Day','Night')
+     sgtitle('Amplitudes - Tag 0 & 5')
 
-    figure()
-    subplot(121), boxplot(slope_IVCAO_stud)
-    subplot(122), histogram(slope_IVCAO_stud)
+     %%
 
-    figure()
-    subplot(221), boxplot(LVET_stud), ylabel('[s]')
-    subplot(222), histogram(LVET_stud), ylabel('[s]')
-    subplot(223), boxplot(QS2_stud), ylabel('[s]')
-    subplot(224), histogram(QS2_stud), ylabel('[s]')
-
+     % Histogram - Time intervals  - TAG 0 E 5 
+     figure()
+     subplot(311),histogram(t_IVCAO_G_0_5./1000); hold on; histogram(t_IVCAO_N_0_5./1000),xlabel(['ms']),title('Time interval IVC-AO'),legend('Day','Night')
+     subplot(312),histogram(t_IVCAC_G_0_5./1000); hold on; histogram(t_IVCAC_N_0_5./1000),xlabel(['ms']),title('Time interval IVC-AC'),legend('Day','Night')
+     subplot(313),histogram(t_IVCMC_G_0_5./1000); hold on; histogram(t_IVCMC_N_0_5./1000),xlabel(['ms']),title('Time interval IVC-MC'),legend('Day','Night')
+     sgtitle('Time Intervals - Tag 0 & 5')
+     figure()
+     subplot(311),histogram(t_IVCRE_G_0_5./1000); hold on; histogram(t_IVCRE_N_0_5./1000),xlabel(['ms']),title('Time interval IVC-RE'),legend('Day','Night')
+     subplot(312),histogram(t_IVCminAC_G_0_5./1000); hold on; histogram(t_IVCminAC_N_0_5./1000),xlabel(['ms']),title('Time interval IVC-minimum before AC'),legend('Day','Night')
+     subplot(313),histogram(t_IVCminAORE_G_0_5./1000); hold on; histogram(t_IVCminAORE_N_0_5./1000),xlabel(['ms']),title('Time interval IVC-minimum between AO and RE'),legend('Day','Night')
+     sgtitle('Time Intervals - Tag 0 & 5')
 

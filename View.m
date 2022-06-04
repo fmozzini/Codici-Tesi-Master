@@ -4,14 +4,14 @@ close all
 clc
 %%
 folderS = 'C:\Users\feder\Desktop\Tesi\Data\24h Signals'
-fullFileNameS = fullfile(folderS, '2022-02-22 18.57.24.mat');
+fullFileNameS = fullfile(folderS, '2022-04-08 12.15.40.mat');
 load(fullFileNameS)
 %% Check dimension
 Ore_SCG = (size(Acc.X_Acc,1))/(64*3600)
 Ore_ECG = (size(Ecg.Values,1))/(1024*3600)  
 %% Check Signal
 folderACCF = 'C:\Users\feder\Desktop\Tesi\Data\Filtered Signals'
-fullFileNameACCF = fullfile(folderACCF, 'FILT-2021-06-28 16.50.44 VIANI.mat');
+fullFileNameACCF = fullfile(folderACCF, 'FILT-2022-04-08 12.15.40.mat');
 load(fullFileNameACCF)
 
 figure()
@@ -30,8 +30,8 @@ linkaxes(a,'x')
 addpath 'C:\Users\feder\Desktop\Tesi\Data'\Pan-Tompkins\
 addpath 'C:\Users\feder\Desktop\Tesi\Data\Filtered ECG'
 addpath 'C:\Users\feder\Desktop\Tesi\Data'\'Picchi SCG - Acc z'\
-load 'PT-2021-05-20 20.00.00.mat'
-load 'ECG_FILT-2021-05-20 20.00.00.mat'
+load 'PT-2022-04-08 12.15.40.mat'
+load 'ECG_FILT-2022-04-08 12.15.40.mat'
 load 'SCG(Az)_picchi-2021-05-20 20.00.00.mat'
 % figure()
 % plot(ecg_FILT)

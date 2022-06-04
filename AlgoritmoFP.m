@@ -37,9 +37,7 @@ Inizio_Holter = txtdata(:,1);
 Inizio_Periodo_Sonno = txtdata(:,2);
 Fine_Periodo_Sonno = txtdata(:,3);
 %% Parto da ECG, per ogni battito di ECG considero una finestra a sx e a dx del picco R.. 
-for m = 8:8
-
-
+for m = 16:16
     
 
     FOLDERSCG = fullfile(list(m).folder, list(m).name)
@@ -103,8 +101,8 @@ for m = 8:8
     R_MC1 = zeros(length(qrs_I)-finepicchi,2);
     Q_AC1 = zeros(length(qrs_I)-finepicchi,2);
     
-    FINESTREBATTITO_ECG = zeros(length(qrs_I)-finepicchi,2000);
-    FINESTREBATTITO_SCG = zeros(length(qrs_I)-finepicchi,100);
+%     FINESTREBATTITO_ECG = zeros(length(qrs_I)-finepicchi,2000);
+%     FINESTREBATTITO_SCG = zeros(length(qrs_I)-finepicchi,100);
 
     maxlength_SCG = 0;
     maxlength_ECG = 0;
@@ -131,7 +129,7 @@ for m = 8:8
 
  %%
 for i = iniziopicchi:length(qrs_I)-finepicchi-1 %scorro tutti i picchi ECG
-% for i = 
+% for i = 3 
     if (qrs_I(1,i)>tempofinoasonno && qrs_I(1,i)<duratasonnodainizio)
         GN(i) = 1; % notte
     else
@@ -317,8 +315,8 @@ for i = iniziopicchi:length(qrs_I)-finepicchi-1 %scorro tutti i picchi ECG
             end 
 
                 count = count+1;
-                FINESTREBATTITO_ECG(count,1:length(finestrabattito_ECG)) = finestrabattito_ECG;
-                FINESTREBATTITO_SCG(count,1:length(finestrabattito_SCG)) = finestrabattito_SCG;
+%                 FINESTREBATTITO_ECG(count,1:length(finestrabattito_ECG)) = finestrabattito_ECG;
+%                 FINESTREBATTITO_SCG(count,1:length(finestrabattito_SCG)) = finestrabattito_SCG;
                 length_SCG = length(finestrabattito_SCG);
                 length_ECG = length(finestrabattito_ECG);
                 if length_ECG > maxlength_ECG
@@ -498,7 +496,7 @@ for i = iniziopicchi:length(qrs_I)-finepicchi-1 %scorro tutti i picchi ECG
             end 
             xline(qrs1/64); hold on; xline(T(i,1)/1024,'--g'); hold on; 
             xline(fine_T(i,1)/1024,'--b'); hold on;
-%             xline((AO(i,1)+window_SCG)./64); hold on 
+            xline((AO(i,1)+window_SCG)./64); hold on 
             xline(QS2maxlined/64,'--m'); hold on;
             plot(IVC(i,1)/64,IVC(i,2),'*r'); hold on
             plot(AO(i,1)/64,AO(i,2),'*r'); hold on;
@@ -603,8 +601,8 @@ for i = iniziopicchi:length(qrs_I)-finepicchi-1 %scorro tutti i picchi ECG
 end % chiude il numero dei picchi totali 
 
     %Tolgo le colonne che non avevo messo a zero a caso
-    FINESTREBATTITO_SCG = FINESTREBATTITO_SCG(:,1:maxlength_SCG);
-    FINESTREBATTITO_ECG = FINESTREBATTITO_ECG(:,1:maxlength_ECG);
+%     FINESTREBATTITO_SCG = FINESTREBATTITO_SCG(:,1:maxlength_SCG);
+%     FINESTREBATTITO_ECG = FINESTREBATTITO_ECG(:,1:maxlength_ECG);
 
     % Prima di salvare tolgo tutte le righe prima di iniziopicchi!!!
     % IMPORTANTE!!!! [] devo eliminarle da tutti
@@ -617,7 +615,7 @@ end % chiude il numero dei picchi totali
     amp_IVCminAORE(1:iniziopicchi-1,:) = []; amp_IVCminAC(1:iniziopicchi-1,:) = []; R_div_T(1:iniziopicchi-1,:) = [];
     slope_IVCAO(1:iniziopicchi-1,:) = []; slope_minAORERE(1:iniziopicchi-1,:) = []; slope_minACAC(1:iniziopicchi-1,:) = [];
     LVET(1:iniziopicchi-1,:) = []; QS2(1:iniziopicchi-1,:) = []; QT(1:iniziopicchi-1,:) = []; QTc(1:iniziopicchi-1,:) = [];
-    FINESTREBATTITO_ECG(count+1:end,:) = []; FINESTREBATTITO_SCG(count+1:end,:) = []; picchi_totali(1:iniziopicchi-1,:) = [];
+%     FINESTREBATTITO_ECG(count+1:end,:) = []; FINESTREBATTITO_SCG(count+1:end,:) = []; picchi_totali(1:iniziopicchi-1,:) = [];
     R_AC1(1:iniziopicchi-1,:) = []; R_MC1(1:iniziopicchi-1,:) = []; GN(1:iniziopicchi-1,:) = [];
     R_ACsec = R_AC1./64;
     R_MCsec = R_MC1./64;
@@ -646,7 +644,9 @@ end % chiude il numero dei picchi totali
         'slope_minACAC','LVET','QS2','QT','QTc','RR','GN')
     save(['C:\Users\feder\Desktop\Tesi\Data\Fiducial Points SCG\' 'Fiducials SCG-' name],'MC','RE','AO','AC','R','IVC','minAO_RE','minbeforeAC',...
     'Q','fine_T','T')
-    save(['C:\Users\feder\Desktop\Tesi\Data\Windows\' 'Windows-' name],'picchi_totali','picchi_parziali','FINESTREBATTITO_ECG','FINESTREBATTITO_SCG',...
+%     save(['C:\Users\feder\Desktop\Tesi\Data\Windows\' 'Windows-' name],'picchi_totali','picchi_parziali','FINESTREBATTITO_ECG','FINESTREBATTITO_SCG',...
+%     'R','tag0','tag1','tag2','tag3','tag4','tag5','tag6','tag7','tag8','Perc_analizzati')
+    save(['C:\Users\feder\Desktop\Tesi\Data\Windows\' 'Windows-' name],'picchi_totali','picchi_parziali',...
     'R','tag0','tag1','tag2','tag3','tag4','tag5','tag6','tag7','tag8','Perc_analizzati')
 
 %% Variable 'FINESTREBATTITO_ECG' was not saved. For variables larger than 2GB use MAT-file version 7.3 or later --> PROBLEMA NEL SALVATAGGIO DI FINESTRANATTITO_ECG  

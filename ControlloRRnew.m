@@ -31,7 +31,7 @@ N = length(list);
  addpath 'C:\Users\feder\Desktop\Tesi'\Codes\
 
  %% 
- for m = 16:16
+ for m = N:N
     FOLDERSCG = fullfile(list(m).folder, list(m).name)
     file = dir(FOLDERSCG);
     name = file.name;

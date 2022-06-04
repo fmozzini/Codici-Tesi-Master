@@ -14,7 +14,7 @@ list(N) = [];
 N = length(list)
 addpath 'C:\Users\feder\Desktop\Tesi\Data\ECG'
 %%
-for i = 1:N
+for i = N:N
     FOLDER = fullfile(list(i).folder, list(i).name);
     file = dir(FOLDER);
     name = file.name;
@@ -30,8 +30,8 @@ end
 %% 
 addpath 'C:\Users\feder\Desktop\Tesi'\Data\'Filtered ECG'\
 addpath 'C:\Users\feder\Desktop\Tesi'\Data\'ECG'\
-load 'ECG_FILT-2021-01-16 15.01.53.mat'
-load 'ECG-2021-01-16 15.01.53.mat'
+load 'ECG_FILT-2022-04-08 12.15.40.mat'
+load 'ECG-2022-04-08 12.15.40.mat'
 
 figure()
 subplot(121), plot(Ecg.Values)

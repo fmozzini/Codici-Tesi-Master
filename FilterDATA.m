@@ -12,10 +12,10 @@ N = length(list);
 list(N-1) = [];
 list(N-1) = [];
 N = length(list)
-%addpath 'C:\Users\feder\Desktop\Tesi\Data\24h Signals'
+addpath 'C:\Users\feder\Desktop\Tesi\Data\24h Signals'
 
  %%
-for i = 1:N
+for i = N:N
     FOLDER = fullfile(list(i).folder, list(i).name);
     file = dir(FOLDER);
     name = file.name;

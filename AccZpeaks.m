@@ -5,25 +5,25 @@ close all
 clc
 
 %%
-% folderSCG = 'C:\Users\feder\Desktop\Tesi\Data\Filtered Signals';
-folderSCG = 'C:\Users\feder\Desktop\Tesi\Data\PostProc SCG';
+folderSCG = 'C:\Users\feder\Desktop\Tesi\Data\Filtered Signals';
+% folderSCG = 'C:\Users\feder\Desktop\Tesi\Data\PostProc SCG';
 list = dir(folderSCG);
 list(1) = [];
 list(1) = [];
-% N = length(list);
-% list(N-1) = [];
-% list(N-1) = [];
-% N = length(list)
+N = length(list);
+list(N-1) = [];
+list(N-1) = [];
+N = length(list)
 
 [~,txtdata] = xlsread('C:\Users\feder\Desktop\Tesi\Info Pazienti.xlsx','H:I');
 txtdata(1,:) = [];
 Inizio_Holter = txtdata(:,1);
 Periodo_Sonno = txtdata(:,2);
-% addpath 'C:\Users\feder\Desktop\Tesi'\Data\'Filtered Signals'\
-addpath 'C:\Users\feder\Desktop\Tesi'\Data\'PostProc SCG'\
+addpath 'C:\Users\feder\Desktop\Tesi'\Data\'Filtered Signals'\
+% addpath 'C:\Users\feder\Desktop\Tesi'\Data\'PostProc SCG'\
 addpath 'C:\Users\feder\Desktop\Tesi'\Codes\
 %% 
-for i = 1:1
+for i = N:N
     FOLDERSCG = fullfile(list(i).folder, list(i).name)
     file = dir(FOLDERSCG);
     name = file.name;
@@ -76,8 +76,8 @@ for i = 1:1
     HR_SCG = 60./(diff(POS_picchi_SCG))*fs_SCG;
 
     % Save
-%     name_SCG = erase(name,"FILT-")
-    name_SCG = erase(name,"PP_SCG-")
+    name_SCG = erase(name,"FILT-")
+%     name_SCG = erase(name,"PP_SCG-")
     Acc_z = Acc_filt.z_filt;
      save(['C:\Users\feder\Desktop\Tesi\Data\Picchi SCG - Acc z\' 'SCG(Az)_picchi-' name_SCG],'Acc_z','AMP_picchi_SCG',"POS_picchi_SCG",'peaksFORwindow_SCG30',"HR_SCG")
 %    save(['SCG(Az)_picchi-' name_SCG],'Acc_z','AMP_picchi_SCG',"POS_picchi_SCG",'peaksFORwindow_SCG30',"HR_SCG")
@@ -88,10 +88,10 @@ battici_ACCZ = peaksFORwindow_SCG30(end-1)
 
 %% Controllo se è tutto ok
 folderPT = 'C:\Users\feder\Desktop\Tesi\Data\Pan-Tompkins'
-fullFileNamePT = fullfile(folderPT, 'PT-2022-02-23 20.00.29.mat');
+fullFileNamePT = fullfile(folderPT, 'PT-2022-04-08 12.15.40.mat');
 load(fullFileNamePT)
 folderECG = 'C:\Users\feder\Desktop\Tesi\Data\Filtered ECG'
-fullFileNameECG = fullfile(folderECG, 'ECG_FILT-2022-02-23 20.00.29.mat');
+fullFileNameECG = fullfile(folderECG, 'ECG_FILT-2022-04-08 12.15.40.mat');
 load(fullFileNameECG)
 % folderSCG = 'C:\Users\feder\Desktop\Tesi\Data\Picchi SCG - Acc z'
 % fullFileNameSCG = fullfile(folderSCG, 'SCG(Az)_picchi-2022-01-18 18.40.01 Subject 05.mat');
