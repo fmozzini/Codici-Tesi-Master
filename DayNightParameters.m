@@ -21,6 +21,7 @@ listFP(1) = [];
  addpath 'C:\Users\feder\Desktop\Tesi'\Codes\
  %%
  for m = 1:1
+     
     FOLDERPAR = fullfile(listPAR(m).folder, listPAR(m).name)
     file = dir(FOLDERPAR);
     name = file.name;
@@ -388,42 +389,132 @@ listFP(1) = [];
     % Night -  tag 0 e 5 
     posM_05_N = find(M_notte05(:,1) == 0); M_05_N = M_notte05(posM_05_N,:);
     median_05_N = median(M_05_N(:,2)); max_05_N = max(M_05_N(:,2));
+
+    %% AGGIUNGO ANCHE IL TAG 4 (tag0,4,5)
+     %% Giorno e notte - tag 0 & tag 5 % tag 5
+    R_pp1 = R;
+    for i = 1:length(R_pp1)
+        if R_pp1(i,3) == 5
+            R_pp1(i,3) = 0;
+        elseif R_pp1(i,3) == 4
+            R_pp1(i,3) = 0;
+        end
+    end 
+    M054 = zeros(length(R_pp1), 2);
+    c054 = 0;
+    ln054 = 1;
+    val054 = R_pp1(1,3);
+    for i = 2:length(R_pp1)
+        c054 = c054 + 1;
+        cur_val054 = R_pp1(i,3);
+        if cur_val054 ~= val054
+            M054(ln054, 1) = val054;
+            M054(ln054, 2) = c054;
+            c054 = 0;
+            val054 = cur_val054;
+            ln054 = ln054+1;
+        end
+    end
+    M054(ln054, 1) = val054;
+    M054(ln054, 2) = c054;
+    M054(ln054:end,:) = [];
+    % Intero (giorno e notte insieme) tag 0 e 5 e 4
+    posM_054 = find(M054(:,1) == 0); M_054 = M05(posM_054,:);
+    median_054 = median(M_054(:,2)); max_054 = max(M_054(:,2));
+
+    %% Giorno - tag 0 & tag 5 & tag 4
+    R_giorno054 = R_pp1(Giorno,:);
+    M_giorno054 = zeros(length(R_giorno054), 2);
+    c_giorno054 = 0;
+    ln_giorno054 = 1;
+    val_giorno054 = R_giorno054(1,3);
+    for i = 2:length(R_giorno054)
+        c_giorno054 = c_giorno054 + 1;
+        cur_val_giorno054 = R_giorno054(i,3);
+        if cur_val_giorno054 ~= val_giorno054
+            M_giorno054(ln_giorno054, 1) = val_giorno054;
+            M_giorno054(ln_giorno054, 2) = c_giorno054;
+            c_giorno054 = 0;
+            val_giorno054 = cur_val_giorno054;
+            ln_giorno054 = ln_giorno054+1;
+        end
+    end
+    M_giorno054(ln_giorno054, 1) = val_giorno054;
+    M_giorno054(ln_giorno054, 2) = c_giorno054;
+    M_giorno054(ln_giorno054:end,:) = [];
+    % Giorno -  tag 0 e 5 e 4
+    posM_054_G = find(M_giorno054(:,1) == 0); M_054_G = M_giorno05(posM_054_G,:);
+    median_054_G = median(M_054_G(:,2)); max_054_G = max(M_054_G(:,2));
+
+    %% Notte - tag 0 & tag 5 & tag 4
+    R_notte054 = R_pp1(Notte,:);
+    M_notte054 = zeros(length(R_notte054), 2);
+    c_notte054 = 0;
+    ln_notte054 = 1;
+    val_notte054 = R_notte054(1,3);
+    for i = 2:length(R_notte054)
+        c_notte054 = c_notte054 + 1;
+        cur_val_notte054 = R_notte054(i,3);
+        if cur_val_notte054 ~= val_notte054
+            M_notte054(ln_notte054, 1) = val_notte054;
+            M_notte054(ln_notte054, 2) = c_notte054;
+            c_notte054 = 0;
+            val_notte054 = cur_val_notte054;
+            ln_notte054 = ln_notte054+1;
+        end
+    end
+    M_notte054(ln_notte054, 1) = val_notte054;
+    M_notte054(ln_notte054, 2) = c_notte054;
+    M_notte054(ln_notte054:end,:) = [];
+    % Night -  tag 0 e 5 e 4 
+    posM_054_N = find(M_notte054(:,1) == 0); M_054_N = M_notte054(posM_054_N,:);
+    median_054_N = median(M_054_N(:,2)); max_054_N = max(M_054_N(:,2));
+
 %%
     figure()
-    subplot(131), histogram(M_0(:,2)),title('Number of beats - Tag 0')
-    subplot(132), histogram(M_5(:,2)),title('Number of beats - Tag 5')
-    subplot(133), histogram(M_05(:,2)),title('Number of beats - Tag 0 & 5')
+    subplot(141), histogram(M_0(:,2)),title('Number of beats - Tag 0')
+    subplot(142), histogram(M_5(:,2)),title('Number of beats - Tag 5')
+    subplot(143), histogram(M_05(:,2)),title('Number of beats - Tag 0 & 5')
+    subplot(144), histogram(M_054(:,2)),title('Number of beats - Tag 0 & 5 & 4')
     sgtitle('Histogram All day')
     median_0 
     median_5
     median_05
+    median_054
     max_0
     max_5
     max_05
+    max_054
     pause
     figure()
-    subplot(131), histogram(M_0_G(:,2)),title('Number of beats - Tag 0')
-    subplot(132), histogram(M_5_G(:,2)),title('Number of beats - Tag 5')
-    subplot(133), histogram(M_05_G(:,2)),title('Number of beats - Tag 0 & 5')
+    subplot(141), histogram(M_0_G(:,2)),title('Number of beats - Tag 0')
+    subplot(142), histogram(M_5_G(:,2)),title('Number of beats - Tag 5')
+    subplot(143), histogram(M_05_G(:,2)),title('Number of beats - Tag 0 & 5')
+    subplot(144), histogram(M_054_G(:,2)),title('Number of beats - Tag 0 & 5 & 4')
     sgtitle('Histogram Day')
     median_0_G 
     median_5_G
     median_05_G
+    median_054_G
     max_0_G
     max_5_G
     max_05_G
+    max_054_G
     pause
     figure()
-    subplot(131), histogram(M_0_N(:,2)),title('Number of beats - Tag 0')
-    subplot(132), histogram(M_5_N(:,2)),title('Number of beats - Tag 5')
-    subplot(133), histogram(M_05_N(:,2)),title('Number of beats - Tag 0 & 5')
+    subplot(141), histogram(M_0_N(:,2)),title('Number of beats - Tag 0')
+    subplot(142), histogram(M_5_N(:,2)),title('Number of beats - Tag 5')
+    subplot(143), histogram(M_05_N(:,2)),title('Number of beats - Tag 0 & 5')
+    subplot(144), histogram(M_054_N(:,2)),title('Number of beats - Tag 0 & 5 & 4')
     sgtitle('Histogram Night')
     median_0_N 
     median_5_N
     median_05_N
+    median_054_N
     max_0_N
     max_5_N
     max_05_N
+    max_054_N
     pause
 %%
      % Histogram - Amplitudes - TAG 0

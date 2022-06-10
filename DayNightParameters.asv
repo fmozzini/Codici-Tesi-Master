@@ -20,7 +20,7 @@ listFP(1) = [];
  addpath 'C:\Users\feder\Desktop\Tesi'\Data\'Fiducial Points SCG'\
  addpath 'C:\Users\feder\Desktop\Tesi'\Codes\
  %%
- for m = 1:1
+ for m = 3:3
     FOLDERPAR = fullfile(listPAR(m).folder, listPAR(m).name)
     file = dir(FOLDERPAR);
     name = file.name;
@@ -388,6 +388,87 @@ listFP(1) = [];
     % Night -  tag 0 e 5 
     posM_05_N = find(M_notte05(:,1) == 0); M_05_N = M_notte05(posM_05_N,:);
     median_05_N = median(M_05_N(:,2)); max_05_N = max(M_05_N(:,2));
+
+    %% AGGIUNGO ANCHE IL TAG 4 (tag0,4,5)
+     %% Giorno e notte - tag 0 & tag 5 % tag 5
+    R_pp1 = R;
+    for i = 1:length(R_pp1)
+        if R_pp1(i,3) == 5
+            R_pp1(i,3) = 0;
+        elseif R_pp1(i,3) == 4
+            R_pp1(i,3) = 0;
+        end
+    end 
+    M054 = zeros(length(R_pp1), 2);
+    c054 = 0;
+    ln054 = 1;
+    val054 = R_pp1(1,3);
+    for i = 2:length(R_pp1)
+        c054 = c054 + 1;
+        cur_val054 = R_pp1(i,3);
+        if cur_val054 ~= val054
+            M054(ln054, 1) = val054;
+            M054(ln054, 2) = c054;
+            c054 = 0;
+            val054 = cur_val054;
+            ln054 = ln054+1;
+        end
+    end
+    M054(ln054, 1) = val054;
+    M054(ln054, 2) = c054;
+    M054(ln054:end,:) = [];
+    % Intero (giorno e notte insieme) tag 0 e 5 
+    posM_054 = find(M054(:,1) == 0); M_054 = M05(posM_054,:);
+    median_054 = median(M_054(:,2)); max_054 = max(M_054(:,2));
+
+    %% Giorno - tag 0 & tag 5 & tag 4
+    R_giorno054 = R_pp1(Giorno,:);
+    M_giorno054 = zeros(length(R_giorno054), 2);
+    c_giorno054 = 0;
+    ln_giorno054 = 1;
+    val_giorno054 = R_giorno054(1,3);
+    for i = 2:length(R_giorno054)
+        c_giorno054 = c_giorno054 + 1;
+        cur_val_giorno054 = R_giorno054(i,3);
+        if cur_val_giorno054 ~= val_giorno054
+            M_giorno054(ln_giorno054, 1) = val_giorno054;
+            M_giorno054(ln_giorno054, 2) = c_giorno054;
+            c_giorno054 = 0;
+            val_giorno054 = cur_val_giorno054;
+            ln_giorno054 = ln_giorno054+1;
+        end
+    end
+    M_giorno054(ln_giorno054, 1) = val_giorno054;
+    M_giorno054(ln_giorno054, 2) = c_giorno054;
+    M_giorno054(ln_giorno054:end,:) = [];
+    % Giorno -  tag 0 e 5 
+    posM_054_G = find(M_giorno054(:,1) == 0); M_054_G = M_giorno05(posM_054_G,:);
+    median_054_G = median(M_054_G(:,2)); max_054_G = max(M_054_G(:,2));
+
+    %% Notte - tag 0 & tag 5 & tag 4
+    R_notte05 = R_pp(Notte,:);
+    M_notte05 = zeros(length(R_notte05), 2);
+    c_notte05 = 0;
+    ln_notte05 = 1;
+    val_notte05 = R_notte05(1,3);
+    for i = 2:length(R_notte05)
+        c_notte05 = c_notte05 + 1;
+        cur_val_notte05 = R_notte05(i,3);
+        if cur_val_notte05 ~= val_notte05
+            M_notte05(ln_notte05, 1) = val_notte05;
+            M_notte05(ln_notte05, 2) = c_notte05;
+            c_notte05 = 0;
+            val_notte05 = cur_val_notte05;
+            ln_notte05 = ln_notte05+1;
+        end
+    end
+    M_notte05(ln_notte05, 1) = val_notte05;
+    M_notte05(ln_notte05, 2) = c_notte05;
+    M_notte05(ln_notte05:end,:) = [];
+    % Night -  tag 0 e 5 
+    posM_05_N = find(M_notte05(:,1) == 0); M_05_N = M_notte05(posM_05_N,:);
+    median_05_N = median(M_05_N(:,2)); max_05_N = max(M_05_N(:,2));
+
 %%
     figure()
     subplot(131), histogram(M_0(:,2)),title('Number of beats - Tag 0')
@@ -438,12 +519,12 @@ listFP(1) = [];
 
     % Histogram - Time intervals - TAG 0
      figure()
-     subplot(321),histogram(t_IVCAO_G0.*1000); hold on; histogram(t_IVCAO_N0./1000),xlabel(['ms']),title('Time interval IVC-AO'),legend('Day','Night')
-     subplot(322),histogram(t_IVCAC_G0.*1000); hold on; histogram(t_IVCAC_N0./1000),xlabel(['ms']),title('Time interval IVC-AC'),legend('Day','Night')
-     subplot(323),histogram(t_IVCMC_G0.*1000); hold on; histogram(t_IVCMC_N0./1000),xlabel(['ms']),title('Time interval IVC-MC'),legend('Day','Night')
-     subplot(324),histogram(t_IVCRE_G0.*1000); hold on; histogram(t_IVCRE_N0./1000),xlabel(['ms']),title('Time interval IVC-RE'),legend('Day','Night')
-     subplot(325),histogram(t_IVCminAC_G0.*1000); hold on; histogram(t_IVCminAC_N0./1000),xlabel(['ms']),title('Time interval IVC-minimum before AC'),legend('Day','Night')
-     subplot(326),histogram(t_IVCminAORE_G0.*1000); hold on; histogram(t_IVCminAORE_N0./1000),xlabel(['ms']),title('Time interval IVC-minimum between AO and RE'),legend('Day','Night')
+     subplot(321),histogram(t_IVCAO_G0.*1000); hold on; histogram(t_IVCAO_N0.*1000),xlabel(['ms']),title('Time interval IVC-AO'),legend('Day','Night')
+     subplot(322),histogram(t_IVCAC_G0.*1000); hold on; histogram(t_IVCAC_N0.*1000),xlabel(['ms']),title('Time interval IVC-AC'),legend('Day','Night')
+     subplot(323),histogram(t_IVCMC_G0.*1000); hold on; histogram(t_IVCMC_N0.*1000),xlabel(['ms']),title('Time interval IVC-MC'),legend('Day','Night')
+     subplot(324),histogram(t_IVCRE_G0.*1000); hold on; histogram(t_IVCRE_N0.*1000),xlabel(['ms']),title('Time interval IVC-RE'),legend('Day','Night')
+     subplot(325),histogram(t_IVCminAC_G0.*1000); hold on; histogram(t_IVCminAC_N0.*1000),xlabel(['ms']),title('Time interval IVC-minimum before AC'),legend('Day','Night')
+     subplot(326),histogram(t_IVCminAORE_G0.*1000); hold on; histogram(t_IVCminAORE_N0.*1000),xlabel(['ms']),title('Time interval IVC-minimum between AO and RE'),legend('Day','Night')
      sgtitle('Time Intervals - Tag 0')
  
      % Histogram - Slopes - TAG 0
@@ -455,10 +536,10 @@ listFP(1) = [];
  
      % Histogram - Other parameters - TAG 0
      figure()
-     subplot(221),histogram(LVET_G0./1000); hold on; histogram(LVET_N0./1000),xlabel(['ms']),title('Left Ventricular Ejection Time'),legend('Day','Night')
-     subplot(222),histogram(QS2_G0./1000); hold on; histogram(QS2_N0./1000),xlabel(['ms']),title('QS2'),legend('Day','Night')
-     subplot(223),histogram(QT_G0./1000); hold on; histogram(QT_N0./1000),xlabel(['ms']),title('QT'),legend('Day','Night')
-     subplot(224),histogram(QTc_G0./1000); hold on; histogram(QTc_N0./1000),xlabel(['ms']),title('Corrected QT'),legend('Day','Night')
+     subplot(221),histogram(LVET_G0.*1000); hold on; histogram(LVET_N0.*1000),xlabel(['ms']),title('Left Ventricular Ejection Time'),legend('Day','Night')
+     subplot(222),histogram(QS2_G0.*1000); hold on; histogram(QS2_N0.*1000),xlabel(['ms']),title('QS2'),legend('Day','Night')
+     subplot(223),histogram(QT_G0.*1000); hold on; histogram(QT_N0.*1000),xlabel(['ms']),title('QT'),legend('Day','Night')
+     subplot(224),histogram(QTc_G0.*1000); hold on; histogram(QTc_N0.*1000),xlabel(['ms']),title('Corrected QT'),legend('Day','Night')
      sgtitle('Other Parameters - Tag 0')
 
       %% Histogram - Amplitudes - TAG 0 E 5
@@ -473,12 +554,12 @@ listFP(1) = [];
 
      % Histogram - Time intervals  - TAG 0 E 5 
      figure()
-     subplot(321),histogram(t_IVCAO_G_0_5./1000); hold on; histogram(t_IVCAO_N_0_5./1000),xlabel(['ms']),title('Time interval IVC-AO'),legend('Day','Night')
-     subplot(322),histogram(t_IVCAC_G_0_5./1000); hold on; histogram(t_IVCAC_N_0_5./1000),xlabel(['ms']),title('Time interval IVC-AC'),legend('Day','Night')
-     subplot(323),histogram(t_IVCMC_G_0_5./1000); hold on; histogram(t_IVCMC_N_0_5./1000),xlabel(['ms']),title('Time interval IVC-MC'),legend('Day','Night')
-     subplot(324),histogram(t_IVCRE_G_0_5./1000); hold on; histogram(t_IVCRE_N_0_5./1000),xlabel(['ms']),title('Time interval IVC-RE'),legend('Day','Night')
-     subplot(325),histogram(t_IVCminAC_G_0_5./1000); hold on; histogram(t_IVCminAC_N_0_5./1000),xlabel(['ms']),title('Time interval IVC-minimum before AC'),legend('Day','Night')
-     subplot(326),histogram(t_IVCminAORE_G_0_5./1000); hold on; histogram(t_IVCminAORE_N_0_5./1000),xlabel(['ms']),title('Time interval IVC-minimum between AO and RE'),legend('Day','Night')
+     subplot(321),histogram(t_IVCAO_G_0_5.*1000); hold on; histogram(t_IVCAO_N_0_5.*1000),xlabel(['ms']),title('Time interval IVC-AO'),legend('Day','Night')
+     subplot(322),histogram(t_IVCAC_G_0_5.*1000); hold on; histogram(t_IVCAC_N_0_5.*1000),xlabel(['ms']),title('Time interval IVC-AC'),legend('Day','Night')
+     subplot(323),histogram(t_IVCMC_G_0_5.*1000); hold on; histogram(t_IVCMC_N_0_5.*1000),xlabel(['ms']),title('Time interval IVC-MC'),legend('Day','Night')
+     subplot(324),histogram(t_IVCRE_G_0_5.*1000); hold on; histogram(t_IVCRE_N_0_5.*1000),xlabel(['ms']),title('Time interval IVC-RE'),legend('Day','Night')
+     subplot(325),histogram(t_IVCminAC_G_0_5.*1000); hold on; histogram(t_IVCminAC_N_0_5.*1000),xlabel(['ms']),title('Time interval IVC-minimum before AC'),legend('Day','Night')
+     subplot(326),histogram(t_IVCminAORE_G_0_5.*1000); hold on; histogram(t_IVCminAORE_N_0_5.*1000),xlabel(['ms']),title('Time interval IVC-minimum between AO and RE'),legend('Day','Night')
      sgtitle('Time Intervals - Tag 0 & 5')
  
      % Histogram - Slope - TAG 0 E 5
@@ -490,10 +571,10 @@ listFP(1) = [];
  
      % Histogram - Other parameters - TAG 0 E 5
      figure()
-     subplot(221),histogram(LVET_G_0_5./1000); hold on; histogram(LVET_N_0_5./1000),xlabel(['ms']),title('Left Ventricular Ejection Time'),legend('Day','Night')
-     subplot(222),histogram(QS2_G_0_5./1000); hold on; histogram(QS2_N_0_5./1000),xlabel(['ms']),title('QS2'),legend('Day','Night')
-     subplot(223),histogram(QT_G_0_5./1000); hold on; histogram(QT_N_0_5./1000),xlabel(['ms']),title('QT'),legend('Day','Night')
-     subplot(224),histogram(QTc_G_0_5./1000); hold on; histogram(QTc_N_0_5./1000),xlabel(['ms']),title('Corrected QT'),legend('Day','Night')
+     subplot(221),histogram(LVET_G_0_5.*1000); hold on; histogram(LVET_N_0_5.*1000),xlabel(['ms']),title('Left Ventricular Ejection Time'),legend('Day','Night')
+     subplot(222),histogram(QS2_G_0_5.*1000); hold on; histogram(QS2_N_0_5.*1000),xlabel(['ms']),title('QS2'),legend('Day','Night')
+     subplot(223),histogram(QT_G_0_5.*1000); hold on; histogram(QT_N_0_5.*1000),xlabel(['ms']),title('QT'),legend('Day','Night')
+     subplot(224),histogram(QTc_G_0_5.*1000); hold on; histogram(QTc_N_0_5.*1000),xlabel(['ms']),title('Corrected QT'),legend('Day','Night')
      sgtitle('Other Parameters - Tag 0 & 5')
  end 
 %%
@@ -513,14 +594,14 @@ listFP(1) = [];
 %% 
 % Histogram - Time intervals - TAG 0
      figure()
-     subplot(311),histogram(t_IVCAO_G0./1000); hold on; histogram(t_IVCAO_N0./1000),xlabel(['ms']),title('Time interval IVC-AO'),legend('Day','Night')
-     subplot(312),histogram(t_IVCAC_G0./1000); hold on; histogram(t_IVCAC_N0./1000),xlabel(['ms']),title('Time interval IVC-AC'),legend('Day','Night')
-     subplot(313),histogram(t_IVCMC_G0./1000); hold on; histogram(t_IVCMC_N0./1000),xlabel(['ms']),title('Time interval IVC-MC'),legend('Day','Night')
+     subplot(311),histogram(t_IVCAO_G0.*1000); hold on; histogram(t_IVCAO_N0.*1000),xlabel(['ms']),title('Time interval IVC-AO'),legend('Day','Night')
+     subplot(312),histogram(t_IVCAC_G0.*1000); hold on; histogram(t_IVCAC_N0.*1000),xlabel(['ms']),title('Time interval IVC-AC'),legend('Day','Night')
+     subplot(313),histogram(t_IVCMC_G0.*1000); hold on; histogram(t_IVCMC_N0.*1000),xlabel(['ms']),title('Time interval IVC-MC'),legend('Day','Night')
      sgtitle('Time Intervals - Tag 0')
      figure()
-     subplot(311),histogram(t_IVCRE_G0./1000); hold on; histogram(t_IVCRE_N0./1000),xlabel(['ms']),title('Time interval IVC-RE'),legend('Day','Night')
-     subplot(312),histogram(t_IVCminAC_G0./1000); hold on; histogram(t_IVCminAC_N0./1000),xlabel(['ms']),title('Time interval IVC-minimum before AC'),legend('Day','Night')
-     subplot(313),histogram(t_IVCminAORE_G0./1000); hold on; histogram(t_IVCminAORE_N0./1000),xlabel(['ms']),title('Time interval IVC-minimum between AO and RE'),legend('Day','Night')
+     subplot(311),histogram(t_IVCRE_G0.*1000); hold on; histogram(t_IVCRE_N0.*1000),xlabel(['ms']),title('Time interval IVC-RE'),legend('Day','Night')
+     subplot(312),histogram(t_IVCminAC_G0.*1000); hold on; histogram(t_IVCminAC_N0.*1000),xlabel(['ms']),title('Time interval IVC-minimum before AC'),legend('Day','Night')
+     subplot(313),histogram(t_IVCminAORE_G0.*1000); hold on; histogram(t_IVCminAORE_N0.*1000),xlabel(['ms']),title('Time interval IVC-minimum between AO and RE'),legend('Day','Night')
      sgtitle('Time Intervals - Tag 0')
  %%
     figure()
@@ -538,14 +619,14 @@ listFP(1) = [];
 
      % Histogram - Time intervals  - TAG 0 E 5 
      figure()
-     subplot(311),histogram(t_IVCAO_G_0_5./1000); hold on; histogram(t_IVCAO_N_0_5./1000),xlabel(['ms']),title('Time interval IVC-AO'),legend('Day','Night')
-     subplot(312),histogram(t_IVCAC_G_0_5./1000); hold on; histogram(t_IVCAC_N_0_5./1000),xlabel(['ms']),title('Time interval IVC-AC'),legend('Day','Night')
-     subplot(313),histogram(t_IVCMC_G_0_5./1000); hold on; histogram(t_IVCMC_N_0_5./1000),xlabel(['ms']),title('Time interval IVC-MC'),legend('Day','Night')
+     subplot(311),histogram(t_IVCAO_G_0_5.*1000); hold on; histogram(t_IVCAO_N_0_5.*1000),xlabel(['ms']),title('Time interval IVC-AO'),legend('Day','Night')
+     subplot(312),histogram(t_IVCAC_G_0_5.*1000); hold on; histogram(t_IVCAC_N_0_5.*1000),xlabel(['ms']),title('Time interval IVC-AC'),legend('Day','Night')
+     subplot(313),histogram(t_IVCMC_G_0_5.*1000); hold on; histogram(t_IVCMC_N_0_5.*1000),xlabel(['ms']),title('Time interval IVC-MC'),legend('Day','Night')
      sgtitle('Time Intervals - Tag 0 & 5')
      figure()
-     subplot(311),histogram(t_IVCRE_G_0_5./1000); hold on; histogram(t_IVCRE_N_0_5./1000),xlabel(['ms']),title('Time interval IVC-RE'),legend('Day','Night')
-     subplot(312),histogram(t_IVCminAC_G_0_5./1000); hold on; histogram(t_IVCminAC_N_0_5./1000),xlabel(['ms']),title('Time interval IVC-minimum before AC'),legend('Day','Night')
-     subplot(313),histogram(t_IVCminAORE_G_0_5./1000); hold on; histogram(t_IVCminAORE_N_0_5./1000),xlabel(['ms']),title('Time interval IVC-minimum between AO and RE'),legend('Day','Night')
+     subplot(311),histogram(t_IVCRE_G_0_5.*1000); hold on; histogram(t_IVCRE_N_0_5.*1000),xlabel(['ms']),title('Time interval IVC-RE'),legend('Day','Night')
+     subplot(312),histogram(t_IVCminAC_G_0_5.*1000); hold on; histogram(t_IVCminAC_N_0_5.*1000),xlabel(['ms']),title('Time interval IVC-minimum before AC'),legend('Day','Night')
+     subplot(313),histogram(t_IVCminAORE_G_0_5.*1000); hold on; histogram(t_IVCminAORE_N_0_5.*1000),xlabel(['ms']),title('Time interval IVC-minimum between AO and RE'),legend('Day','Night')
      sgtitle('Time Intervals - Tag 0 & 5')
 
     

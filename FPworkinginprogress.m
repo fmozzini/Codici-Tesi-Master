@@ -18,6 +18,7 @@ listECG(end) = [];
 list = dir(folderSCG);
 list(1) = [];
 list(1) = [];
+list(end) = [];
 N = length(list);
 % list(N-1) = [];
 % list(N-1) = [];
@@ -448,7 +449,9 @@ for i = iniziopicchi:length(qrs_I)-finepicchi-1 %scorro tutti i picchi ECG
 
     %% 
                 picchi_parziali(count,1) = n_picchi(i,1);
-% %             
+%                 R_SCG = (R(i,1)/1024)*64;
+%                 R_MC1(i,1) = R_SCG-MC(i,1);
+%             
 %             figure()
 %             a = subplot(211)
 %             plot((qrs_I(i)-window_ECG:qrs_I(i+1)-window_ECG)./1024,finestrabattito_ECG),xlabel('[s]'); hold on; plot(qrs_I(i)./1024,qrs_AMP(i),'*r'); hold on; plot(T(i,1)/1024,T(i,2),'*g'); hold on;
@@ -474,6 +477,7 @@ for i = iniziopicchi:length(qrs_I)-finepicchi-1 %scorro tutti i picchi ECG
 %             xline(fine_T(i,1)/1024,'--b'); hold on;
 %             xline((AO(i,1)+window_SCG)./64); hold on 
 %             xline(QS2maxlined/64,'--m'); hold on;
+%             xline((qrs1+0.005*64)/64,'r'); hold on;
 %             plot(IVC(i,1)/64,IVC(i,2),'*r'); hold on
 %             plot(AO(i,1)/64,AO(i,2),'*r'); hold on;
 %             plot(RE(i,1)/64,RE(i,2),'*r'); hold on;
@@ -490,6 +494,7 @@ for i = iniziopicchi:length(qrs_I)-finepicchi-1 %scorro tutti i picchi ECG
 %             text(minAO_RE(i,1)/64,minAO_RE(i,2),' min AO-RE');
 %             text(minbeforeAC(i,1)/64,minbeforeAC(i,2), 'min before AC')
 %             sgtitle(i)
+%             R_MC1(i,1)
 %              pause
 %              close all
 % % %     
@@ -524,7 +529,8 @@ for i = iniziopicchi:length(qrs_I)-finepicchi-1 %scorro tutti i picchi ECG
             Q_AC1(i,1) = AC(i,1)-Q_SCG;
             R_AO(i,1) = AO(i,1)-R_SCG;
     
-            if R_MC1(i,1) < 0 
+%             if R_MC1(i,1) < 0 % provo a mettere che può essere positivo ma non più di 5 ms dopo R 
+            if R_MC1(i,1) < -0.005*fs_SCG
                 % no sistole --> no diastole --> elimino tutto
                 tag4 = tag4+1;
                 R(i,3) = 4;

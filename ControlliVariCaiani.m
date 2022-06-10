@@ -93,12 +93,11 @@ for m = 1:1
 % GN = 1 notte; GN = 0 giorno
     fs_ECG = 1024;
     fs_SCG = 64;
-    
     window_SCG = 0.2*fs_SCG;
     window_ECG = 0.2*fs_ECG;
     count = 0;
-    for i = 1:length(R)
-        if n_picchi(i) >=3 && GN(i) == 0
+    for i = 1:length(R)-1
+        if n_picchi(i) == 0 && GN(i) == 1
             count = count+1;
             qrs1 = (R(i,1)/1024)*64;
             qrs2 = (R(i+1,1)/1024)*64;
@@ -302,4 +301,67 @@ end
 % M(ln, 2) = c;
 % M(ln:end,:) = [];
 
+%%  
+    load 'template-2021-01-16 15.01.53.mat'
+    fs_ECG = 1024;
+    fs_SCG = 64;
+    window_SCG = 0.2*fs_SCG;
+    window_ECG = 0.2*fs_ECG;
+    count = 0;
+    for i = 1:length(R)
+        if n_picchi(i) >=3 1 && GN(i) == 1
+            count = count+1;
+            qrs1 = (R(i,1)/1024)*64;
+            cinquesecECG = 5*1024;
+            cinquesecSCG = 5*64;
+            finestrabattito_ECGF = ECG_filt(R(i,1)-cinquesecECG:R(i,1)+cinquesecECG)';
+            finestrabattito_SCG = Acc_z(qrs1-cinquesecSCG:qrs1+cinquesecSCG)';
+            figure()
+            set(gcf, 'WindowState', 'maximized');
+            a = subplot(211); plot((R(i,1)-cinquesecECG:R(i,1)+cinquesecECG)./1024,finestrabattito_ECGF),xlabel('[s]'),title('Ecg'); hold on;
+%             plot(R(i,1)/1024,R(i,2),'*r')
+            b = subplot(212); plot((qrs1-cinquesecSCG:qrs1+cinquesecSCG)./64,finestrabattito_SCG),xlabel('[s]'),title('SCG'); hold on;
+%             for r = 1:length(row)
+%                 plot((POS_picchi_SCG(row(r)))./64,AMP_picchi_SCG(row(r)),'mo')
+%             end
+            hold on; plot((qrs1-cinquesecSCG:qrs1+cinquesecSCG)./64,template,'r')
+            sgtitle(i)
+            pause
+            close all
+        end 
+    end 
+
+%% Provo a plottare tutti i template che uso durante SCG 
+clear all
+close all
+clc
+
+%%
+folderT = 'C:\Users\feder\Desktop\Tesi\Data\Picchi SCG - Acc z\Template';
+listT = dir(folderT);
+listT(1) = [];
+listT(1) = [];
+N = length(listT);
+TEMPLATE = zeros(N,641);
+for m = 1:N
+    FOLDERT = fullfile(listT(m).folder, listT(m).name)
+    file = dir(FOLDERT);
+    name = file.name;
+    load(name)
+    TEMPLATE(m,:) = template';
+end 
+figure()
+subplot(331),plot(TEMPLATE(1,:)),title('1'); subplot(332),plot(TEMPLATE(2,:)),title('2'); subplot(333),plot(TEMPLATE(3,:)),title('3'); 
+subplot(334),plot(TEMPLATE(4,:)),title('4'); subplot(335),plot(TEMPLATE(5,:)),title('5'); subplot(336),plot(TEMPLATE(6,:)),title('6');
+subplot(337),plot(TEMPLATE(7,:)),title('7'); subplot(338),plot(TEMPLATE(8,:)),title('8'); subplot(339),plot(TEMPLATE(9,:)),title('9'); 
+
+figure()
+subplot(331),plot(TEMPLATE(10,:)),title('10'); subplot(332),plot(TEMPLATE(11,:)),title('11'); subplot(333),plot(TEMPLATE(12,:)),title('12'); 
+subplot(334),plot(TEMPLATE(13,:)),title('13'); subplot(335),plot(TEMPLATE(14,:)),title('14'); subplot(336),plot(TEMPLATE(15,:)),title('15');
+subplot(337),plot(TEMPLATE(16,:)),title('16'); subplot(338),plot(TEMPLATE(17,:)),title('17'); subplot(339),plot(TEMPLATE(18,:)),title('18'); 
+
+figure()
+subplot(331),plot(TEMPLATE(19,:)),title('19'); subplot(332),plot(TEMPLATE(20,:)),title('20'); subplot(333),plot(TEMPLATE(21,:)),title('21'); 
+subplot(334),plot(TEMPLATE(22,:)),title('22'); subplot(335),plot(TEMPLATE(23,:)),title('23'); subplot(336),plot(TEMPLATE(24,:)),title('24');
+subplot(337),plot(TEMPLATE(25,:)),title('25'); subplot(338),plot(TEMPLATE(26,:)),title('26');
 
