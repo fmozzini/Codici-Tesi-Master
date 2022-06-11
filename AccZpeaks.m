@@ -23,7 +23,7 @@ addpath 'C:\Users\feder\Desktop\Tesi'\Data\'Filtered Signals'\
 % addpath 'C:\Users\feder\Desktop\Tesi'\Data\'PostProc SCG'\
 addpath 'C:\Users\feder\Desktop\Tesi'\Codes\
 %% 
-for m = 3:N
+for m = 1:1
     FOLDERSCG = fullfile(list(m).folder, list(m).name)
     file = dir(FOLDERSCG);
     name = file.name;
@@ -67,9 +67,12 @@ for m = 3:N
                 break 
         end 
     end 
-    [~,~,~,Template] = SCG_template_matching_corr(templateNight,fs_SCG,'x',[]);
+    [~,~,~,Template] = SCG_template_matching_corr(TemplateNight,fs_SCG,'x',[]);
+    plot(Template)
+    pause
     for i = 1:n_window-1 
         [~, pos_picchi, amp_picchi,~] = SCG_template_matching_corr(Acc_filt.z_filt((i-1)*wind_30sec+1:wind_30sec*i),fs_SCG,'x',Template);
+        pause
         n_peaks_new = size(pos_picchi,1);
         if i == 1
             Pos_picchi(n_peaks+1:n_peaks+n_peaks_new,:) = pos_picchi;
@@ -89,10 +92,10 @@ for m = 3:N
     HR_SCG = 60./(diff(POS_picchi_SCG))*fs_SCG;
 
     % Save
-    name_SCG = erase(name,"FILT-")
-    Acc_z = Acc_filt.z_filt;
-    save(['C:\Users\feder\Desktop\Tesi\Data\Picchi SCG - Acc z\' 'SCG(Az)_picchi-' name_SCG],'Acc_z','AMP_picchi_SCG','POS_picchi_SCG','peaksFORwindow_SCG30','HR_SCG')
-    save(['C:\Users\feder\Desktop\Tesi\Data\Picchi SCG - Acc z\Template\' 'template-' name_SCG],'Template','templateNight')
+%     name_SCG = erase(name,"FILT-")
+%     Acc_z = Acc_filt.z_filt;
+%     save(['C:\Users\feder\Desktop\Tesi\Data\Picchi SCG - Acc z\' 'SCG(Az)_picchi-' name_SCG],'Acc_z','AMP_picchi_SCG','POS_picchi_SCG','peaksFORwindow_SCG30','HR_SCG')
+%     save(['C:\Users\feder\Desktop\Tesi\Data\Picchi SCG - Acc z\Template\' 'template-' name_SCG],'Template','templateNight')
 end 
 
 %% Numero di picchi SCG rilevati

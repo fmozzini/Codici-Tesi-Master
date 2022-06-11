@@ -449,54 +449,54 @@ for i = iniziopicchi:length(qrs_I)-finepicchi-1 %scorro tutti i picchi ECG
 
     %% 
                 picchi_parziali(count,1) = n_picchi(i,1);
-%                 R_SCG = (R(i,1)/1024)*64;
-%                 R_MC1(i,1) = R_SCG-MC(i,1);
-%             
-%             figure()
-%             a = subplot(211)
-%             plot((qrs_I(i)-window_ECG:qrs_I(i+1)-window_ECG)./1024,finestrabattito_ECG),xlabel('[s]'); hold on; plot(qrs_I(i)./1024,qrs_AMP(i),'*r'); hold on; plot(T(i,1)/1024,T(i,2),'*g'); hold on;
-%             xline(qrs_I(i)/1024); hold on; xline(T(i,1)/1024,'--g'); hold on;
-%             xline(T40d/1024,'--m'); hold on; xline(T80d/1024,'--m'); hold on;
-%             plot(Xmd/1024,ym,'*m'); hold on; plot(Xrd/1024,yr,'*m'); hold on;
-%             plot(Xid/1024,yi,'*b'); hold on;
-%             plot(Q(i,1)/1024,Q(i,2),'*b'); hold on;
-% %             xline(QS2maxline_ECGd/1024,'--r'); hold on;
-%               xline(RR_sysd/1024,'--y'); hold on;
-%             plot(fine_T(i,1)/1024,fine_T(i,2),'*b');
-%             hold on; xline(fine_T(i,1)/1024,'--b')
-%             text(qrs_I(i)./1024,qrs_AMP(i),' R')
-%             text(T(i,1)/1024,T(i,2),' T')
-%             text(fine_T(1)/1024,fine_T(2),' fine onda T')
-%             text(Q(i,1)/1024,Q(i,2),' Q')
-%             b = subplot(212)
-%             plot((qrs1-window_SCG:qrs2-window_SCG)./64,finestrabattito_SCG),xlabel('[s]'); hold on; 
-%             for r = 1:length(row)
-%                 plot((POS_picchi_SCG(row(r)))./64,AMP_picchi_SCG(row(r)),'mo')
-%             end 
-%             xline(qrs1/64); hold on; xline(T(i,1)/1024,'--g'); hold on; 
-%             xline(fine_T(i,1)/1024,'--b'); hold on;
-%             xline((AO(i,1)+window_SCG)./64); hold on 
-%             xline(QS2maxlined/64,'--m'); hold on;
-%             xline((qrs1+0.005*64)/64,'r'); hold on;
-%             plot(IVC(i,1)/64,IVC(i,2),'*r'); hold on
-%             plot(AO(i,1)/64,AO(i,2),'*r'); hold on;
-%             plot(RE(i,1)/64,RE(i,2),'*r'); hold on;
-%             plot(AC(i,1)/64,AC(i,2),'*r'); hold on;
-%             plot(MC(i,1)/64,MC(i,2),'*r'); hold on;
-%             line([AO(i,1)/64 IVC(i,1)/64],[AO(i,2) IVC(i,2)],'Color','red','LineStyle','--'); hold on;
-%             plot(minAO_RE(i,1)/64,minAO_RE(i,2),'*r'); hold on;
-%             plot(minbeforeAC(i,1)/64,minbeforeAC(i,2),'*r');
-%             text(IVC(i,1)/64,IVC(i,2),' IVC')
-%             text(AO(i,1)/64,AO(i,2),' AO')
-%             text(RE(i,1)/64,RE(i,2),' RE')
-%             text(AC(i,1)/64,AC(i,2),' AC')
-%             text(MC(i,1)/64,MC(i,2),' MC')
-%             text(minAO_RE(i,1)/64,minAO_RE(i,2),' min AO-RE');
-%             text(minbeforeAC(i,1)/64,minbeforeAC(i,2), 'min before AC')
-%             sgtitle(i)
-%             R_MC1(i,1)
-%              pause
-%              close all
+                R_SCG = (R(i,1)/1024)*64;
+                R_MC1(i,1) = R_SCG-MC(i,1);
+            
+            figure()
+            a = subplot(211)
+            plot((qrs_I(i)-window_ECG:qrs_I(i+1)-window_ECG)./1024,finestrabattito_ECG),xlabel('[s]'); hold on; plot(qrs_I(i)./1024,qrs_AMP(i),'*r'); hold on; plot(T(i,1)/1024,T(i,2),'*g'); hold on;
+            xline(qrs_I(i)/1024); hold on; xline(T(i,1)/1024,'--g'); hold on;
+            xline(T40d/1024,'--m'); hold on; xline(T80d/1024,'--m'); hold on;
+            plot(Xmd/1024,ym,'*m'); hold on; plot(Xrd/1024,yr,'*m'); hold on;
+            plot(Xid/1024,yi,'*b'); hold on;
+            plot(Q(i,1)/1024,Q(i,2),'*b'); hold on;
+%             xline(QS2maxline_ECGd/1024,'--r'); hold on;
+              xline(RR_sysd/1024,'--y'); hold on;
+            plot(fine_T(i,1)/1024,fine_T(i,2),'*b');
+            hold on; xline(fine_T(i,1)/1024,'--b')
+            text(qrs_I(i)./1024,qrs_AMP(i),' R')
+            text(T(i,1)/1024,T(i,2),' T')
+            text(fine_T(1)/1024,fine_T(2),' fine onda T')
+            text(Q(i,1)/1024,Q(i,2),' Q')
+            b = subplot(212)
+            plot((qrs1-window_SCG:qrs2-window_SCG)./64,finestrabattito_SCG),xlabel('[s]'); hold on; 
+            for r = 1:length(row)
+                plot((POS_picchi_SCG(row(r)))./64,AMP_picchi_SCG(row(r)),'mo')
+            end 
+            xline(qrs1/64); hold on; xline(T(i,1)/1024,'--g'); hold on; 
+            xline(fine_T(i,1)/1024,'--b'); hold on;
+            xline((AO(i,1)+window_SCG)./64); hold on 
+            xline(QS2maxlined/64,'--m'); hold on;
+            xline((qrs1+0.005*64)/64,'r'); hold on;
+            plot(IVC(i,1)/64,IVC(i,2),'*r'); hold on
+            plot(AO(i,1)/64,AO(i,2),'*r'); hold on;
+            plot(RE(i,1)/64,RE(i,2),'*r'); hold on;
+            plot(AC(i,1)/64,AC(i,2),'*r'); hold on;
+            plot(MC(i,1)/64,MC(i,2),'*r'); hold on;
+            line([AO(i,1)/64 IVC(i,1)/64],[AO(i,2) IVC(i,2)],'Color','red','LineStyle','--'); hold on;
+            plot(minAO_RE(i,1)/64,minAO_RE(i,2),'*r'); hold on;
+            plot(minbeforeAC(i,1)/64,minbeforeAC(i,2),'*r');
+            text(IVC(i,1)/64,IVC(i,2),' IVC')
+            text(AO(i,1)/64,AO(i,2),' AO')
+            text(RE(i,1)/64,RE(i,2),' RE')
+            text(AC(i,1)/64,AC(i,2),' AC')
+            text(MC(i,1)/64,MC(i,2),' MC')
+            text(minAO_RE(i,1)/64,minAO_RE(i,2),' min AO-RE');
+            text(minbeforeAC(i,1)/64,minbeforeAC(i,2), 'min before AC')
+            sgtitle(i)
+            R_MC1(i,1)
+             pause
+             close all
 % % %     
     %% Estraggo i parameters 
             [tIVCAO,tIVCAC,ampIVCAO,ampIVCAC,slopeIVCAO,lvet,qs2,qt,qtc,tIVCMC,tIVCRE,tIVCminAORE,tIVCminAC,ampIVCMC,ampIVCRE,ampIVCminAORE,...
@@ -529,8 +529,8 @@ for i = iniziopicchi:length(qrs_I)-finepicchi-1 %scorro tutti i picchi ECG
             Q_AC1(i,1) = AC(i,1)-Q_SCG;
             R_AO(i,1) = AO(i,1)-R_SCG;
     
-%             if R_MC1(i,1) < 0 % provo a mettere che può essere positivo ma non più di 5 ms dopo R 
-            if R_MC1(i,1) < -0.005*fs_SCG
+            if R_MC1(i,1) < 0 % provo a mettere che può essere positivo
+%             ma non più di 5 ms dopo R if R_MC1(i,1) < -0.005*fs_SCG
                 % no sistole --> no diastole --> elimino tutto
                 tag4 = tag4+1;
                 R(i,3) = 4;

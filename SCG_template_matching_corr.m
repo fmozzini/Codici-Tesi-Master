@@ -811,13 +811,13 @@ picco_temp = picco_temp(isnan(picco_temp)==0);
 % plot (picco_temp, axis(picco_temp),'r*')
 
 
-% 
+
 % figure
 % plot (axis,'k')
 % hold on
 % plot (picco_temp, axis(picco_temp),'r*')
 % savefig(strcat('Picchi_TempMatch',tempAxis,'.fig'))
-% % pause CON PAUSE OGNI VOLTA DEVO SCHIACCHIARE ENTER 
+%  pause %CON PAUSE OGNI VOLTA DEVO SCHIACCHIARE ENTER 
 % close all
 % 
 pos_picchi = picco_temp;
