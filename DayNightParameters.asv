@@ -249,7 +249,7 @@ listFP(1) = [];
      for l = length(minorizero):-1:1
          LVET_N0(minorizero(l)) = [];
      end
-     clear minorizero
+     claer minorizero
      minorizero = find(QS2_G0<0);
      for l = length(minorizero):-1:1
          QS2_G0(minorizero(l)) = [];
@@ -302,7 +302,7 @@ listFP(1) = [];
      end
      minorizero = find(QS2_N_0_5<0);
      for l = length(minorizero):-1:1
-         QS2_N_0_5(minorizero(l)) = [];
+         _N_0_5(minorizero(l)) = [];
      end 
      clear minorizero
 
@@ -460,7 +460,7 @@ R_notte054 = R_pp1(Notte,:);
      subplot(133),histogram(slope_minACAC_G_0_5); hold on; histogram(slope_minACAC_N_0_5),title('Slope minimum before AC-AC'),legend('Day','Night')
      sgtitle('Slopes - Tag 0 & 5')
  
-     % Histogram - Other parameters - TAG 0 E 5cd
+     % Histogram - Other parameters - TAG 0 E 5
      figure()
      subplot(221),histogram(LVET_G_0_5.*1000); hold on; histogram(LVET_N_0_5.*1000),xlabel(['ms']),title('Left Ventricular Ejection Time'),legend('Day','Night')
      subplot(222),histogram(QS2_G_0_5.*1000); hold on; histogram(QS2_N_0_5.*1000),xlabel(['ms']),title('QS2'),legend('Day','Night')

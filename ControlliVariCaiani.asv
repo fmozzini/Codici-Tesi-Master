@@ -222,34 +222,32 @@ end
             figure()
             set(gcf, 'WindowState', 'maximized');
             a = subplot(211); plot((R_random1(i,1)-window_ECG:R_succ(1)-window_ECG)./1024,finestrabattito_ECGF),xlabel('[s]'),title('Ecg'); hold on;
-%             plot(R_random1(i,1)./1024,R_random1(i,2),'*r'); hold on; plot(T_random1(i,1)/1024,T_random1(i,2),'*g'); hold on;
-%             xline(R_random1(i,1)/1024); hold on; xline(T_random1(i,1)/1024,'--g'); hold on; plot(Q_random1(i,1)/1024,Q_random1(i,2),'*b'); hold on;
-%             plot(fine_T_random1(i,1)/1024,fine_T_random1(i,2),'*b'); hold on; xline(fine_T_random1(i,1)/1024,'--b')
-%             text(R_random1(i,1)./1024,R_random1(i,2),' R')
-%             text(T_random1(i,1)/1024,T_random1(i,2),' T')
-%             text(fine_T_random1(1)/1024,fine_T_random1(2),' fine onda T')
-%             text(Q_random1(i,1)/1024,Q_random1(i,2),' Q')
+            plot(R_random1(i,1)./1024,R_random1(i,2),'*r'); hold on; plot(T_random1(i,1)/1024,T_random1(i,2),'*g'); hold on;
+            xline(R_random1(i,1)/1024); hold on; xline(T_random1(i,1)/1024,'--g'); hold on; plot(Q_random1(i,1)/1024,Q_random1(i,2),'*b'); hold on;
+            plot(fine_T_random1(i,1)/1024,fine_T_random1(i,2),'*b'); hold on; xline(fine_T_random1(i,1)/1024,'--b')
+            text(R_random1(i,1)./1024,R_random1(i,2),' R')
+            text(T_random1(i,1)/1024,T_random1(i,2),' T')
+            text(fine_T_random1(1)/1024,fine_T_random1(2),' fine onda T')
+            text(Q_random1(i,1)/1024,Q_random1(i,2),' Q')
             b = subplot(212); plot((qrs1-window_SCG:qrs2-window_SCG)./64,finestrabattito_SCG),xlabel('[s]'),title('SCG'); hold on;
 %             xline(qrs1/64); hold on; xline(T_random1(i,1)/1024,'--g'); hold on; 
 %             xline(fine_T_random1(i,1)/1024,'--b'); hold on;
 %             xline((AO_random1(i,1)+window_SCG)./64); hold on 
-%             plot(IVC_random1(i,1)/64,IVC_random1(i,2),'*r'); hold on
-%             plot(AO_random1(i,1)/64,AO_random1(i,2),'*r'); hold on;
-%             plot(RE_random1(i,1)/64,RE_random1(i,2),'*r'); hold on;
-%             plot(MC_random1(i,1)/64,MC_random1(i,2),'*r'); hold on;
-% %             line([AO_random1(i,1)/64 IVC_random1(i,1)/64],[AO_random1(i,2) IVC_random1(i,2)],'Color','red','LineStyle','--'); hold on;
-%             plot(minAO_RE_random1(i,1)/64,minAO_RE_random1(i,2),'*r'); hold on;
-%             text(IVC_random1(i,1)/64,IVC_random1(i,2),' IVC')
-%             text(AO_random1(i,1)/64,AO_random1(i,2),' AO')
-%             text(RE_random1(i,1)/64,RE_random1(i,2),' RE')
-%             text(MC_random1(i,1)/64,MC_random1(i,2),' MC')
-%             text(minAO_RE_random1(i,1)/64,minAO_RE_random1(i,2),' min AO-RE');
-%             if R_random1(i,3) == 0
-%                 plot(AC_random1(i,1)/64,AC_random1(i,2),'*r'); hold on;
-%                 plot(minbeforeAC_random1(i,1)/64,minbeforeAC_random1(i,2),'*r');
-%                 text(AC_random1(i,1)/64,AC_random1(i,2),' AC')
-%                 text(minbeforeAC_random1(i,1)/64,minbeforeAC_random1(i,2), 'min before AC')
-%             end 
+            plot(IVC_random1(i,1)/64,IVC_random1(i,2),'*r'); hold on
+            plot(AO_random1(i,1)/64,AO_random1(i,2),'*r'); hold on;
+            plot(RE_random1(i,1)/64,RE_random1(i,2),'*r'); hold on;
+%             plot(AC_random1(i,1)/64,AC_random1(i,2),'*r'); hold on;
+            plot(MC_random1(i,1)/64,MC_random1(i,2),'*r'); hold on;
+%             line([AO_random1(i,1)/64 IVC_random1(i,1)/64],[AO_random1(i,2) IVC_random1(i,2)],'Color','red','LineStyle','--'); hold on;
+            plot(minAO_RE_random1(i,1)/64,minAO_RE_random1(i,2),'*r'); hold on;
+%             plot(minbeforeAC_random1(i,1)/64,minbeforeAC_random1(i,2),'*r');
+            text(IVC_random1(i,1)/64,IVC_random1(i,2),' IVC')
+            text(AO_random1(i,1)/64,AO_random1(i,2),' AO')
+            text(RE_random1(i,1)/64,RE_random1(i,2),' RE')
+            text(AC_random1(i,1)/64,AC_random1(i,2),' AC')
+            text(MC_random1(i,1)/64,MC_random1(i,2),' MC')
+            text(minAO_RE_random1(i,1)/64,minAO_RE_random1(i,2),' min AO-RE');
+%             text(minbeforeAC_random1(i,1)/64,minbeforeAC_random1(i,2), 'min before AC')
             sgtitle(find(R==R_random1(i)))
             pause
             sgtitle(R_random1(i,3))

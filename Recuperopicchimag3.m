@@ -1,10 +1,14 @@
+%% Federica Mozzini - 946400
+% Recupero i picchi che PT ha perso durante l'analisi
  clear all
  close all
  clc
 %%
-folderSCG = 'C:\Users\feder\Desktop\Tesi\Data\Picchi SCG - Acc z';
-folderPT = 'C:\Users\feder\Desktop\Tesi\Data\PostProc PT'; 
+% folderSCG = 'C:\Users\feder\Desktop\Tesi\Data\Picchi SCG - Acc z';
+% folderPT = 'C:\Users\feder\Desktop\Tesi\Data\PostProc PT'; 
 folderECG = 'C:\Users\feder\Desktop\Tesi\Data\Filtered ECG';
+folderSCG = 'C:\Users\feder\Desktop\Tesi\Data\Picchi SCG - Acc z - 10 sec';
+folderPT = 'C:\Users\feder\Desktop\Tesi\Data\PostProc PT_10SEC'; 
 
 listPT = dir(folderPT);
 listPT(1) = [];
@@ -16,15 +20,17 @@ listECG(end) = [];
 list = dir(folderSCG);
 list(1) = [];
 list(1) = [];
-N = length(list);
+N = length(list)-1;
 % list(N-1) = [];
 % list(N-1) = [];
 % N = length(list)
 
  addpath 'C:\Users\feder\Desktop\Tesi'\Data\'Filtered ECG'\
- addpath 'C:\Users\feder\Desktop\Tesi'\Data\'PostProc PT'\
- addpath 'C:\Users\feder\Desktop\Tesi'\Data\'Picchi SCG - Acc z'\
+%  addpath 'C:\Users\feder\Desktop\Tesi'\Data\'PostProc PT'\
+%  addpath 'C:\Users\feder\Desktop\Tesi'\Data\'Picchi SCG - Acc z'\
  addpath 'C:\Users\feder\Desktop\Tesi'\Codes\
+ addpath 'C:\Users\feder\Desktop\Tesi'\Data\'PostProc PT_10SEC'\
+ addpath 'C:\Users\feder\Desktop\Tesi'\Data\'Picchi SCG - Acc z - 10 sec'\
  %%
  for m = 1:N
     FOLDERSCG = fullfile(list(m).folder, list(m).name)
@@ -98,6 +104,7 @@ N = length(list);
     QRS = sortrows(QRS);
     % Save
     name = erase(name,"ECG_FILT-")
-    save(['C:\Users\feder\Desktop\Tesi\Data\PostProc PT 1\' 'PostProc PT 1-' name], 'QRS','HR_min','HR_5min')
+%     save(['C:\Users\feder\Desktop\Tesi\Data\PostProc PT 1\' 'PostProc PT 1-' name], 'QRS','HR_min','HR_5min')
+    save(['C:\Users\feder\Desktop\Tesi\Data\PostProc PT 1_10SEC\' 'PostProc PT 1-' name], 'QRS','HR_min','HR_5min')
     
  end 

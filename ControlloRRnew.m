@@ -6,9 +6,10 @@ clear all
 close all
 clc
 %%
-folderSCG = 'C:\Users\feder\Desktop\Tesi\Data\Picchi SCG - Acc z';
+% folderSCG = 'C:\Users\feder\Desktop\Tesi\Data\Picchi SCG - Acc z';
 folderPT = 'C:\Users\feder\Desktop\Tesi\Data\Pan-Tompkins'; 
 folderECG = 'C:\Users\feder\Desktop\Tesi\Data\Filtered ECG';
+folderSCG = 'C:\Users\feder\Desktop\Tesi\Data\Picchi SCG - Acc z - 10 sec';
 
 listPT = dir(folderPT);
 listPT(1) = [];
@@ -20,18 +21,19 @@ listECG(end) = [];
 list = dir(folderSCG);
 list(1) = [];
 list(1) = [];
-N = length(list);
+N = length(list)-1;
 % list(N-1) = [];
 % list(N-1) = [];
 % N = length(list)
 
  addpath 'C:\Users\feder\Desktop\Tesi'\Data\'Filtered ECG'\
  addpath 'C:\Users\feder\Desktop\Tesi'\Data\Pan-Tompkins\
- addpath 'C:\Users\feder\Desktop\Tesi'\Data\'Picchi SCG - Acc z'\
+%  addpath 'C:\Users\feder\Desktop\Tesi'\Data\'Picchi SCG - Acc z'\
  addpath 'C:\Users\feder\Desktop\Tesi'\Codes\
+ addpath 'C:\Users\feder\Desktop\Tesi'\Data\'Picchi SCG - Acc z - 10 sec'\
 
  %% 
- for m = N:N
+ for m = 1:N
     FOLDERSCG = fullfile(list(m).folder, list(m).name)
     file = dir(FOLDERSCG);
     name = file.name;
@@ -68,8 +70,8 @@ N = length(list);
     eliminare = 0;
         for r = 1:length(RR_sec)-2 
             media = (RR_sec(r)+RR_sec(r+2))/2;
-            diff = media - RR_sec(r+1);
-            realdiff = diff/media;
+            differenza = media - RR_sec(r+1);
+            realdiff = differenza/media;
             if (abs(realdiff)) >= 0.3
                 eliminare = eliminare + 1;
                 ELIMINARE(eliminare,:) = [RR_sec(r+1) RR_tempo(r+1) r+1];
@@ -89,8 +91,10 @@ N = length(list);
 
 %     SALVO IL RISULTATO
     name = erase(name,"ECG_FILT-")
-    save(['C:\Users\feder\Desktop\Tesi\Data\PostProc PT\' 'PostProc PT-' name],'R_post_processing','RR_pp','peaksFORwindow','HR_min','HR_5min')
+%     save(['C:\Users\feder\Desktop\Tesi\Data\PostProc PT\' 'PostProc PT-' name],'R_post_processing','RR_pp','peaksFORwindow','HR_min','HR_5min')
+    save(['C:\Users\feder\Desktop\Tesi\Data\PostProc PT_10SEC\' 'PostProc PT-' name],'R_post_processing','RR_pp','peaksFORwindow','HR_min','HR_5min')
 
+    clearvars R RR R_post_processing RR_pp RR_sec RR_tempo qrs_I qrs_AMP ELIMINARE eliminare peaksFORwindow peaksFORwindow_SCG30
  end 
 
         %% GRAFICO PER PRESENTAZIONE - TESI
