@@ -33,7 +33,7 @@ N = length(list)-1;
  addpath 'C:\Users\feder\Desktop\Tesi'\Data\'Picchi SCG - Acc z - 10 sec'\
 
  %% 
- for m = 1:N
+ for m = 1:1
     FOLDERSCG = fullfile(list(m).folder, list(m).name)
     file = dir(FOLDERSCG);
     name = file.name;
@@ -90,11 +90,11 @@ N = length(list)-1;
 
 
 %     SALVO IL RISULTATO
-    name = erase(name,"ECG_FILT-")
-%     save(['C:\Users\feder\Desktop\Tesi\Data\PostProc PT\' 'PostProc PT-' name],'R_post_processing','RR_pp','peaksFORwindow','HR_min','HR_5min')
-    save(['C:\Users\feder\Desktop\Tesi\Data\PostProc PT_10SEC\' 'PostProc PT-' name],'R_post_processing','RR_pp','peaksFORwindow','HR_min','HR_5min')
-
-    clearvars R RR R_post_processing RR_pp RR_sec RR_tempo qrs_I qrs_AMP ELIMINARE eliminare peaksFORwindow peaksFORwindow_SCG30
+%     name = erase(name,"ECG_FILT-")
+% %     save(['C:\Users\feder\Desktop\Tesi\Data\PostProc PT\' 'PostProc PT-' name],'R_post_processing','RR_pp','peaksFORwindow','HR_min','HR_5min')
+%     save(['C:\Users\feder\Desktop\Tesi\Data\PostProc PT_10SEC\' 'PostProc PT-' name],'R_post_processing','RR_pp','peaksFORwindow','HR_min','HR_5min')
+% 
+%     clearvars R RR R_post_processing RR_pp RR_sec RR_tempo qrs_I qrs_AMP ELIMINARE eliminare peaksFORwindow peaksFORwindow_SCG30
  end 
 
         %% GRAFICO PER PRESENTAZIONE - TESI

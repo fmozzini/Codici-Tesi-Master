@@ -3,12 +3,12 @@ close all
 clc
 
 %%
-folderWID = 'C:\Users\feder\Desktop\Tesi\Data\Windows';
-folderPT = 'C:\Users\feder\Desktop\Tesi\Data\PostProc PT'; 
+folderWID = 'C:\Users\feder\Desktop\Tesi\Data\Windows_10SEC';
+folderPT = 'C:\Users\feder\Desktop\Tesi\Data\PostProc PT_10SEC'; 
 folderECG = 'C:\Users\feder\Desktop\Tesi\Data\Filtered ECG';
-folderPAR = 'C:\Users\feder\Desktop\Tesi\Data\Parameters SCG';
-folderSCG = 'C:\Users\feder\Desktop\Tesi\Data\Picchi SCG - Acc z';
-folderFP = 'C:\Users\feder\Desktop\Tesi\Data\Fiducial Points SCG';
+folderPAR = 'C:\Users\feder\Desktop\Tesi\Data\Parameters SCG_10SEC';
+folderSCG = 'C:\Users\feder\Desktop\Tesi\Data\Picchi SCG - Acc z - 10 sec';
+folderFP = 'C:\Users\feder\Desktop\Tesi\Data\Fiducial Points SCG_10SEC';
 
 listWIND = dir(folderWID);
 listWIND(1) = [];
@@ -31,12 +31,12 @@ listFP(1) = [];
 listFP(1) = [];
 
 addpath 'C:\Users\feder\Desktop\Tesi'\Data\'Filtered ECG'\
-addpath 'C:\Users\feder\Desktop\Tesi'\Data\'PostProc PT'\
-addpath 'C:\Users\feder\Desktop\Tesi'\Data\'Windows'\
-addpath 'C:\Users\feder\Desktop\Tesi'\Data\'Parameters SCG'\
+addpath 'C:\Users\feder\Desktop\Tesi'\Data\'PostProc PT_10SEC'\
+addpath 'C:\Users\feder\Desktop\Tesi'\Data\'Windows_10SEC'\
+addpath 'C:\Users\feder\Desktop\Tesi'\Data\'Parameters SCG_10SEC'\
 addpath 'C:\Users\feder\Desktop\Tesi'\Codes\
-addpath 'C:\Users\feder\Desktop\Tesi'\Data\'Picchi SCG - Acc z'\
-addpath 'C:\Users\feder\Desktop\Tesi\Data\Fiducial Points SCG\';
+addpath 'C:\Users\feder\Desktop\Tesi'\Data\'Picchi SCG - Acc z - 10 sec'\
+addpath 'C:\Users\feder\Desktop\Tesi\Data\Fiducial Points SCG_10SEC\';
 %%
 for m = 1:1
     FOLDERWIND = fullfile(listWIND(m).folder, listWIND(m).name)
@@ -203,15 +203,18 @@ end
      R4_random = R4(randomIndexes4,:); MC4_random = MC4(randomIndexes4,:); IVC4_random = IVC4(randomIndexes4,:); AO4_random = AO4(randomIndexes4,:); minAO_RE4_random = minAO_RE4(randomIndexes4,:);
      RE4_random = RE4(randomIndexes4,:); AC4_random = AC4(randomIndexes4,:); minbeforeAC4_random = minbeforeAC4(randomIndexes4,:); T4_random = T4(randomIndexes4,:); fine_T4_random = fine_T4(randomIndexes4,:);
      Q4_random = Q4(randomIndexes4,:);
+    
      R5_random = R5(randomIndexes5,:); MC5_random = MC5(randomIndexes5,:); IVC5_random = IVC5(randomIndexes5,:); AO5_random = AO5(randomIndexes5,:); minAO_RE5_random = minAO_RE5(randomIndexes5,:);
      RE5_random = RE5(randomIndexes5,:); AC5_random = AC5(randomIndexes5,:); minbeforeAC5_random = minbeforeAC5(randomIndexes5,:); T5_random = T5(randomIndexes5,:); fine_T5_random = fine_T5(randomIndexes5,:);
      Q5_random = Q5(randomIndexes5,:);
-     R_random = [ R0_random; R4_random; R5_random];MC_random = [ MC0_random; MC4_random; MC5_random]; IVC_random = [ IVC0_random; IVC4_random; IVC5_random]; AO_random = [ AO0_random; AO4_random; AO5_random];
-     minAO_RE_random = [ minAO_RE0_random; minAO_RE4_random; minAO_RE5_random]; RE_random = [ RE0_random; RE4_random; RE5_random]; AC_random = [ AC0_random; AC4_random; AC5_random];
-     minbeforeAC_random = [ minbeforeAC0_random; minbeforeAC4_random; minbeforeAC5_random]; T_random = [ T0_random; T4_random; T5_random]; fine_T_random = [ fine_T0_random; fine_T4_random; fine_T5_random];
-     Q_random = [ Q0_random; Q4_random; Q5_random];
-     R_random1 = sortrows(R_random); MC_random1 = sortrows(MC_random); IVC_random1 = sortrows(IVC_random); AO_random1 = sortrows(AO_random); minAO_RE_random1 = sortrows(minAO_RE_random); RE_random1 = sortrows(RE_random);
-     AC_random1 = sortrows(AC_random); minbeforeAC_random1 = sortrows(minbeforeAC_random); T_random1 = sortrows(T_random); fine_T_random1 = sortrows(fine_T_random); Q_random1 = sortrows(Q_random);   
+%      R_random = [ R0_random; R4_random; R5_random]; MC_random = [ MC0_random; MC4_random; MC5_random]; IVC_random = [ IVC0_random; IVC4_random; IVC5_random]; AO_random = [ AO0_random; AO4_random; AO5_random];
+%      minAO_RE_random = [ minAO_RE0_random; minAO_RE4_random; minAO_RE5_random]; RE_random = [ RE0_random; RE4_random; RE5_random]; AC_random = [ AC0_random; AC4_random; AC5_random];
+%      minbeforeAC_random = [ minbeforeAC0_random; minbeforeAC4_random; minbeforeAC5_random]; T_random = [ T0_random; T4_random; T5_random]; fine_T_random = [ fine_T0_random; fine_T4_random; fine_T5_random];
+%      Q_random = [ Q0_random; Q4_random; Q5_random];
+%      R_random1 = sortrows(R_random); MC_random1 = sortrows(MC_random); IVC_random1 = sortrows(IVC_random); AO_random1 = sortrows(AO_random); minAO_RE_random1 = sortrows(minAO_RE_random); RE_random1 = sortrows(RE_random);
+%      AC_random1 = sortrows(AC_random); minbeforeAC_random1 = sortrows(minbeforeAC_random); T_random1 = sortrows(T_random); fine_T_random1 = sortrows(fine_T_random); Q_random1 = sortrows(Q_random);   
+    R_random1 = sortrows(R5_random); MC_random1 = sortrows(MC5_random); IVC_random1 = sortrows(IVC5_random); AO_random1 = sortrows(AO5_random); minAO_RE_random1 = sortrows(minAO_RE5_random); RE_random1 = sortrows(RE5_random);
+     AC_random1 = sortrows(AC0_random); minbeforeAC_random1 = sortrows(minbeforeAC5_random); T_random1 = sortrows(T5_random); fine_T_random1 = sortrows(fine_T5_random); Q_random1 = sortrows(Q5_random);   
      for i = 1:length(R_random1)
 %             count = count+1;
             R_succ = R(find(R==R_random1(i))+1,:);

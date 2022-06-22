@@ -145,7 +145,7 @@ delay = delay + round(0.150*fs)/2;
  if gr
   ax(6)=subplot(326);plot(ecg_m);
   axis tight;
-  title('Averaged with 30 samples length,Black noise,Green Adaptive Threshold,RED Sig Level,Red circles QRS adaptive threshold');
+  title('Averaged with 30 samples length') %Black noise,Green Adaptive Threshold,RED Sig Level,Red circles QRS adaptive threshold');
   axis tight;
  end
 

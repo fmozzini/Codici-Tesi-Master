@@ -4,11 +4,11 @@
  close all
  clc
 %%
-% folderPT = 'C:\Users\feder\Desktop\Tesi\Data\PostProc PT 1_10SEC'; 
-folderSCG = 'C:\Users\feder\Desktop\Tesi\Data\Picchi SCG - Acc z';
-folderPT = 'C:\Users\feder\Desktop\Tesi\Data\PostProc PT 1'; 
+folderPT = 'C:\Users\feder\Desktop\Tesi\Data\PostProc PT 1_10SEC'; 
+% folderSCG = 'C:\Users\feder\Desktop\Tesi\Data\Picchi SCG - Acc z';
+% folderPT = 'C:\Users\feder\Desktop\Tesi\Data\PostProc PT 1'; 
 folderECG = 'C:\Users\feder\Desktop\Tesi\Data\Filtered ECG';
-% folderSCG = 'C:\Users\feder\Desktop\Tesi\Data\Picchi SCG - Acc z - 10 sec';
+folderSCG = 'C:\Users\feder\Desktop\Tesi\Data\Picchi SCG - Acc z - 10 sec';
 
 listPT = dir(folderPT);
 listPT(1) = [];
@@ -26,12 +26,12 @@ N = length(list);
 % list(N-1) = [];
 % N = length(list)
 
-%  addpath 'C:\Users\feder\Desktop\Tesi'\Data\'PostProc PT 1_10SEC'\
+ addpath 'C:\Users\feder\Desktop\Tesi'\Data\'PostProc PT 1_10SEC'\
  addpath 'C:\Users\feder\Desktop\Tesi'\Data\'Filtered ECG'\
- addpath 'C:\Users\feder\Desktop\Tesi'\Data\'PostProc PT 1'\
- addpath 'C:\Users\feder\Desktop\Tesi'\Data\'Picchi SCG - Acc z'\
+%  addpath 'C:\Users\feder\Desktop\Tesi'\Data\'PostProc PT 1'\
+%  addpath 'C:\Users\feder\Desktop\Tesi'\Data\'Picchi SCG - Acc z'\
  addpath 'C:\Users\feder\Desktop\Tesi'\Codes\
-%  addpath 'C:\Users\feder\Desktop\Tesi'\Data\'Picchi SCG - Acc z - 10 sec'\
+ addpath 'C:\Users\feder\Desktop\Tesi'\Data\'Picchi SCG - Acc z - 10 sec'\
 
 % data = xlsread('C:\Users\feder\Desktop\Tesi\Info Pazienti.xlsx','P:P');
 [~, sex] = xlsread('C:\Users\feder\Desktop\Tesi\Info Pazienti.xlsx','D:D');
@@ -43,7 +43,7 @@ Inizio_Periodo_Sonno = txtdata(:,2);
 Fine_Periodo_Sonno = txtdata(:,3);
 
 %% Parto da ECG, per ogni battito di ECG considero una finestra a sx e a dx del picco R.. 
-for m = 18:18
+for m = 1:1
 
     FOLDERSCG = fullfile(list(m).folder, list(m).name)
     file = dir(FOLDERSCG);
@@ -135,6 +135,8 @@ for m = 18:18
     n_picchi = zeros(length(qrs_I)-finepicchi-1,1);
  %%
 for i = iniziopicchi:length(qrs_I)-finepicchi-1 %scorro tutti i picchi ECG
+% for i = 1417:1417
+% for i = 14279:14279
     if (qrs_I(1,i)>tempofinoasonno && qrs_I(1,i)<duratasonnodainizio)
         GN(i) = 1; % notte
     else
@@ -220,13 +222,15 @@ for i = iniziopicchi:length(qrs_I)-finepicchi-1 %scorro tutti i picchi ECG
             % Ricerco il valore corretto di HR in base alla finestra di 5
             % min in cui si trova -> mi serve per tag 5
             qrs_I_min = (qrs_I(i)./fs_ECG)./60;
-            ricercariga = round(round(qrs_I_min)/5);
-            bpm_min = HR_5min(ricercariga+1);
+%             ricercariga = round(round(qrs_I_min)/5);
+%             bpm_min = HR_5min(ricercariga+1);
+            ricercariga = round(qrs_I_min)*2;
+            bpm_30sec = HR_30sec(ricercariga);
 
             if sex{m} == 'F'
-               QS2maxline = -0.0020*bpm_min+0.549;
+               QS2maxline = -0.0020*bpm_30sec+0.549;
            else
-               QS2maxline = -0.0021*bpm_min+0.546;
+               QS2maxline = -0.0021*bpm_30sec+0.546;
             end 
             QS2maxlined = qrs1-window_SCG+(Q_SCG_locs+QS2maxline*64)-1;
             %% AO: aortic valve opening
@@ -365,7 +369,7 @@ for i = iniziopicchi:length(qrs_I)-finepicchi-1 %scorro tutti i picchi ECG
                fine_T(i,1:2) = [Xid yi];
                fine_T_conv = (fine_T(i,1)/1024)*64;
                fine_T_SCG = fine_T_conv-qrs1+window_SCG+1;
-               locsmaxdopofineT = find(locs > fine_T_SCG);
+               locsmaxdopofineT = find(locs > fine_T_SCG-0.004*fs_SCG); % meno 0.4 ms prima della fine dell'onda T
                pksmaxdopofineT = pks(locsmaxdopofineT);
                if ~isempty(locsmaxdopofineT) % se esiste allora posso trovare AC ed il minimo prima di AC
                    nuovalocsAC = locs(locsmaxdopofineT(1));
@@ -457,59 +461,68 @@ for i = iniziopicchi:length(qrs_I)-finepicchi-1 %scorro tutti i picchi ECG
 %                 R_SCG = (R(i,1)/1024)*64;
 %                 R_MC1(i,1) = R_SCG-MC(i,1);
 %             
-%             figure()
-%             set(gcf, 'WindowState', 'maximized');
-%             a = subplot(211)
-%             plot((qrs_I(i)-window_ECG:qrs_I(i+1)-window_ECG)./1024,finestrabattito_ECG),xlabel('[s]'); hold on; plot(qrs_I(i)./1024,qrs_AMP(i),'*r'); hold on; plot(T(i,1)/1024,T(i,2),'*g'); hold on;
-%             xline(qrs_I(i)/1024); hold on; xline(T(i,1)/1024,'--g'); hold on;
+            figure()
+            set(gcf, 'WindowState', 'maximized');
+            a = subplot(211)
+            plot((qrs_I(i)-window_ECG:qrs_I(i+1)-window_ECG)./1024,finestrabattito_ECG),xlabel('[s]'),ylabel('[mV]'); hold on; plot(qrs_I(i)./1024,qrs_AMP(i),'*r'); hold on; 
+            plot(T(i,1)/1024,T(i,2),'*g'); hold on;
+            xline(qrs_I(i)/1024); hold on; 
+%             xline(T(i,1)/1024,'--g'); hold on;
 %             xline(T40d/1024,'--m'); hold on; xline(T80d/1024,'--m'); hold on;
 %             plot(Xmd/1024,ym,'*m'); hold on; plot(Xrd/1024,yr,'*m'); hold on;
 %             plot(Xid/1024,yi,'*b'); hold on;
-%             plot(Q(i,1)/1024,Q(i,2),'*b'); hold on;
+            plot(Q(i,1)/1024,Q(i,2),'*b'); hold on;
 % %             xline(QS2maxline_ECGd/1024,'--r'); hold on;
 %               xline(RR_sys_ECGd/1024,'--g'); hold on;
-%             plot(fine_T(i,1)/1024,fine_T(i,2),'*b');
+            plot(fine_T(i,1)/1024,fine_T(i,2),'*b');
 %             hold on; xline(fine_T(i,1)/1024,'--b')
-%             text(qrs_I(i)./1024,qrs_AMP(i),' R')
-%             text(T(i,1)/1024,T(i,2),' T')
-%             text(fine_T(1)/1024,fine_T(2),' fine onda T')
-%             text(Q(i,1)/1024,Q(i,2),' Q')
-%             b = subplot(212)
-%             plot((qrs1-window_SCG:qrs2-window_SCG)./64,finestrabattito_SCG),xlabel('[s]'); hold on; 
-%             for r = 1:length(row)
-%                 plot((POS_picchi_SCG(row(r)))./64,AMP_picchi_SCG(row(r)),'mo')
-%             end 
-%             xline(qrs1/64); hold on; xline(T(i,1)/1024,'--g'); hold on; 
+            text(qrs_I(i)./1024,qrs_AMP(i),' R')
+            text(T(i,1)/1024,T(i,2),' T')
+            text(fine_T(i,1)/1024,fine_T(i,2),'         T-end')
+            text(Q(i,1)/1024,Q(i,2),' Q')
+            title('Ecg')
+            b = subplot(212)
+            plot((qrs1-window_SCG:qrs2-window_SCG)./64,finestrabattito_SCG),xlabel('[s]'),ylabel('[millig]'); hold on; 
+            for r = 1:length(row)
+                plot((POS_picchi_SCG(row(r)))./64,AMP_picchi_SCG(row(r)),'mo')
+            end 
+            xline(qrs1/64); hold on; 
+%             xline(T(i,1)/1024,'--g'); hold on; 
 %             xline(fine_T(i,1)/1024,'--b'); hold on;
 %             xline((AO(i,1)+window_SCG)./64); hold on 
-%             xline(QS2maxlined/64,'--m'); hold on;
+            xline(QS2maxlined/64,'--m'); hold on;
 %             xline(RR_sys_SCGd/64,'--g'); hold on;
-%             plot(IVC(i,1)/64,IVC(i,2),'*r'); hold on
-%             plot(AO(i,1)/64,AO(i,2),'*r'); hold on;
-%             plot(RE(i,1)/64,RE(i,2),'*r'); hold on;
-%             plot(AC(i,1)/64,AC(i,2),'*r'); hold on;
-%             plot(MC(i,1)/64,MC(i,2),'*r'); hold on;
+            plot(IVC(i,1)/64,IVC(i,2),'*r'); hold on
+            plot(AO(i,1)/64,AO(i,2),'*r'); hold on;
+            plot(RE(i,1)/64,RE(i,2),'*r'); hold on;
+            plot(AC(i,1)/64,AC(i,2),'*r'); hold on;
+            plot(MC(i,1)/64,MC(i,2),'*r'); hold on;
 %             line([AO(i,1)/64 IVC(i,1)/64],[AO(i,2) IVC(i,2)],'Color','red','LineStyle','--'); hold on;
-%             plot(minAO_RE(i,1)/64,minAO_RE(i,2),'*r'); hold on;
-%             plot(minbeforeAC(i,1)/64,minbeforeAC(i,2),'*r');
-%             text(IVC(i,1)/64,IVC(i,2),' IVC')
-%             text(AO(i,1)/64,AO(i,2),' AO')
-%             text(RE(i,1)/64,RE(i,2),' RE')
-%             text(AC(i,1)/64,AC(i,2),' AC')
-%             text(MC(i,1)/64,MC(i,2),' MC')
-%             text(minAO_RE(i,1)/64,minAO_RE(i,2),' min AO-RE');
-%             text(minbeforeAC(i,1)/64,minbeforeAC(i,2), 'min before AC')
+            plot(minAO_RE(i,1)/64,minAO_RE(i,2),'*r'); hold on;
+            plot(minbeforeAC(i,1)/64,minbeforeAC(i,2),'*r');
+            text(IVC(i,1)/64,IVC(i,2),' IVC')
+            text(AO(i,1)/64,AO(i,2),' AO')
+            text(RE(i,1)/64,RE(i,2),' RE')
+            text(AC(i,1)/64,AC(i,2),' AC')
+            text(MC(i,1)/64,MC(i,2),' MC')
+            text(minAO_RE(i,1)/64,minAO_RE(i,2),' min AO-RE');
+            text(minbeforeAC(i,1)/64,minbeforeAC(i,2), 'min before AC')
+%             plot((qrs1-window_SCG+maxsort(2,2)-1)/64,maxsort(2,1),'*r')
+%             plot((qrs1-window_SCG+maxsort(3,2)-1)/64,maxsort(3,1),'*r')
+            title('Scg')
 %             sgtitle(i)
 %             R_MC1(i,1)
-%              pause
-%              close all
-% % %     
+             R(i,3)
+             pause
+             close all
+% % % %     
     %% Estraggo i parameters 
             [tIVCAO,tIVCAC,ampIVCAO,ampIVCAC,slopeIVCAO,lvet,qs2,qt,qtc,tIVCMC,tIVCRE,tIVCminAORE,tIVCminAC,ampIVCMC,ampIVCRE,ampIVCminAORE,...
                 ampIVCminAC,slopeminAORERE,slopeminACAC,RdivT] = extractfeatures(64,1024,AO(i,1),AO(i,2),IVC(i,1),IVC(i,2),AC(i,1),AC(i,2),...
                 RR(i-1,1),Q_SCG,fine_T(i,1),T(i,2),Q(i,1),MC(i,1),MC(i,2),RE(i,1),RE(i,2),minAO_RE(i,1),minAO_RE(i,2),minbeforeAC(i,1),...
                 minbeforeAC(i,2),R(i,2));
             t_IVCAO(i,1) = tIVCAO; t_IVCAC(i,1) = tIVCAC; t_IVCRE(i,1) = tIVCRE; t_IVCminAORE(i,1) = tIVCminAORE; t_IVCminAC(i,1) = tIVCminAC;
+            t_IVCMC(i,1) = tIVCMC;
             amp_IVCAO(i,1) = ampIVCAO; amp_IVCAC(i,1) = ampIVCAC; amp_IVCMC(i,1) = ampIVCMC; amp_IVCRE(i,1)= ampIVCRE; 
             amp_IVCminAORE(i,1) = ampIVCminAORE; amp_IVCminAC(i,1) = ampIVCminAC; R_div_T(i,1) = RdivT;
             LVET(i,1) = lvet; QS2(i,1) = qs2; QT(i,1) = qt; QTc(i,1) = qtc;
@@ -535,8 +548,8 @@ for i = iniziopicchi:length(qrs_I)-finepicchi-1 %scorro tutti i picchi ECG
             Q_AC1(i,1) = AC(i,1)-Q_SCG;
             R_AO(i,1) = AO(i,1)-R_SCG;
     
-            if R_MC1(i,1) < 0 % provo a mettere che può essere positivo ma non più di 5 ms dopo R 
-%              if R_MC1(i,1) < -0.004*fs_SCG
+%             if R_MC1(i,1) < 0 % provo a mettere che può essere positivo ma non più di 5 ms dopo R 
+             if R_MC1(i,1) < -0.004*fs_SCG
                 % no sistole --> no diastole --> elimino tutto
                 tag4 = tag4+1;
                 R(i,3) = 4;
@@ -629,17 +642,17 @@ end % chiude il numero dei picchi totali
     
 
 
-%     Salvo i dati (fiducial points e parameters) SU FINESTRA NORMALE
-    name = erase(name,"ECG_FILT-")
-    save(['C:\Users\feder\Desktop\Tesi\Data\Parameters SCG\' 'Parameters SCG-' name], 't_IVCAO','t_IVCAC','t_IVCMC','t_IVCRE','t_IVCminAORE',...
-        't_IVCminAC','amp_IVCAO','amp_IVCAC','amp_IVCMC','amp_IVCRE','amp_IVCminAORE','amp_IVCminAC','R_div_T','slope_IVCAO','slope_minAORERE',...
-        'slope_minACAC','LVET','QS2','QT','QTc','RR','GN','R_AO','R_MCsec','R_MC1')
-    save(['C:\Users\feder\Desktop\Tesi\Data\Fiducial Points SCG\' 'Fiducials SCG-' name],'MC','RE','AO','AC','R','IVC','minAO_RE','minbeforeAC',...
-    'Q','fine_T','T')
-%     save(['C:\Users\feder\Desktop\Tesi\Data\Windows\' 'Windows-' name],'picchi_totali','picchi_parziali','FINESTREBATTITO_ECG','FINESTREBATTITO_SCG',...
-%     'R','tag0','tag1','tag2','tag3','tag4','tag5','tag6','tag7','tag8','Perc_analizzati')
-    save(['C:\Users\feder\Desktop\Tesi\Data\Windows\' 'Windows-' name],'picchi_totali','picchi_parziali',...
-    'R','tag0','tag1','tag2','tag3','tag4','tag5','tag6','tag7','tag8','Perc_analizzati','n_picchi')
+% %     Salvo i dati (fiducial points e parameters) SU FINESTRA NORMALE
+%     name = erase(name,"ECG_FILT-")
+%     save(['C:\Users\feder\Desktop\Tesi\Data\Parameters SCG\' 'Parameters SCG-' name], 't_IVCAO','t_IVCAC','t_IVCMC','t_IVCRE','t_IVCminAORE',...
+%         't_IVCminAC','amp_IVCAO','amp_IVCAC','amp_IVCMC','amp_IVCRE','amp_IVCminAORE','amp_IVCminAC','R_div_T','slope_IVCAO','slope_minAORERE',...
+%         'slope_minACAC','LVET','QS2','QT','QTc','RR','GN','R_AO','R_MCsec','R_MC1')
+%     save(['C:\Users\feder\Desktop\Tesi\Data\Fiducial Points SCG\' 'Fiducials SCG-' name],'MC','RE','AO','AC','R','IVC','minAO_RE','minbeforeAC',...
+%     'Q','fine_T','T')
+% %     save(['C:\Users\feder\Desktop\Tesi\Data\Windows\' 'Windows-' name],'picchi_totali','picchi_parziali','FINESTREBATTITO_ECG','FINESTREBATTITO_SCG',...
+% %     'R','tag0','tag1','tag2','tag3','tag4','tag5','tag6','tag7','tag8','Perc_analizzati')
+%     save(['C:\Users\feder\Desktop\Tesi\Data\Windows\' 'Windows-' name],'picchi_totali','picchi_parziali',...
+%     'R','tag0','tag1','tag2','tag3','tag4','tag5','tag6','tag7','tag8','Perc_analizzati','n_picchi')
 
 % %      Salvo i dati SU FINESTRA DI 10 SEC
 %         save(['C:\Users\feder\Desktop\Tesi\Data\Parameters SCG_10SEC\' 'Parameters SCG-' name], 't_IVCAO','t_IVCAC','t_IVCMC','t_IVCRE','t_IVCminAORE',...

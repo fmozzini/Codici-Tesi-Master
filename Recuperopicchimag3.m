@@ -32,7 +32,7 @@ N = length(list)-1;
  addpath 'C:\Users\feder\Desktop\Tesi'\Data\'PostProc PT_10SEC'\
  addpath 'C:\Users\feder\Desktop\Tesi'\Data\'Picchi SCG - Acc z - 10 sec'\
  %%
- for m = 1:N
+ for m = 1:1
     FOLDERSCG = fullfile(list(m).folder, list(m).name)
     file = dir(FOLDERSCG);
     name = file.name;
@@ -102,9 +102,21 @@ N = length(list)-1;
     qrs = [qrs_I' qrs_AMP];
     QRS = [qrs; qrs_new];
     QRS = sortrows(QRS);
-    % Save
+    [HR_min,~,~] = HR(QRS(:,1),fs_ECG);
+    RR = diff(QRS(:,1)); %campioni
+    RR_ms = RR./fs_ECG; %sec
+    HR = 60./RR_ms;
+    HR_30sec = zeros(round(length(HR)/30),1);
+    m = 0;
+    for i = 1:30:length(HR)-30
+        m = m+1;
+        HR_30sec(m) = mean(HR(i:i+29));
+    end 
+
+
+%     % Save
     name = erase(name,"ECG_FILT-")
-%     save(['C:\Users\feder\Desktop\Tesi\Data\PostProc PT 1\' 'PostProc PT 1-' name], 'QRS','HR_min','HR_5min')
-    save(['C:\Users\feder\Desktop\Tesi\Data\PostProc PT 1_10SEC\' 'PostProc PT 1-' name], 'QRS','HR_min','HR_5min')
+% % %     save(['C:\Users\feder\Desktop\Tesi\Data\PostProc PT 1\' 'PostProc PT 1-' name], 'QRS','HR_min','HR_5min')
+    save(['C:\Users\feder\Desktop\Tesi\Data\PostProc PT 1_10SEC\' 'PostProc PT 1-' name], 'QRS','HR_30sec','HR_min')
     
  end 

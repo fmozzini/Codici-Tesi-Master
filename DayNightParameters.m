@@ -6,10 +6,10 @@ close all
 clear all
 
 %%
-folderPAR = 'C:\Users\feder\Desktop\Tesi\Data\Parameters SCG';
-folderFP = 'C:\Users\feder\Desktop\Tesi\Data\Fiducial Points SCG'; 
-% folderPAR = 'C:\Users\feder\Desktop\Tesi\Data\Parameters SCG_10SEC';
-% folderFP = 'C:\Users\feder\Desktop\Tesi\Data\Fiducial Points SCG_10SEC'; 
+% folderPAR = 'C:\Users\feder\Desktop\Tesi\Data\Parameters SCG';
+% folderFP = 'C:\Users\feder\Desktop\Tesi\Data\Fiducial Points SCG'; 
+folderPAR = 'C:\Users\feder\Desktop\Tesi\Data\Parameters SCG_10SEC';
+folderFP = 'C:\Users\feder\Desktop\Tesi\Data\Fiducial Points SCG_10SEC'; 
 
 listPAR = dir(folderPAR);
 listPAR(1) = [];
@@ -18,15 +18,14 @@ listFP = dir(folderFP);
 listFP(1) = [];
 listFP(1) = [];
 
- addpath 'C:\Users\feder\Desktop\Tesi'\Data\'Parameters SCG'\
- addpath 'C:\Users\feder\Desktop\Tesi'\Data\'Fiducial Points SCG'\
-%  addpath 'C:\Users\feder\Desktop\Tesi'\Data\'Parameters SCG_10SEC'\
-%  addpath 'C:\Users\feder\Desktop\Tesi'\Data\'Fiducial Points SCG_10SEC'\
+%  addpath 'C:\Users\feder\Desktop\Tesi'\Data\'Parameters SCG'\
+%  addpath 'C:\Users\feder\Desktop\Tesi'\Data\'Fiducial Points SCG'\
+ addpath 'C:\Users\feder\Desktop\Tesi'\Data\'Parameters SCG_10SEC'\
+ addpath 'C:\Users\feder\Desktop\Tesi'\Data\'Fiducial Points SCG_10SEC'\
  addpath 'C:\Users\feder\Desktop\Tesi'\Codes\
  %%
  for m = 1:1
-
-     
+ 
     FOLDERPAR = fullfile(listPAR(m).folder, listPAR(m).name)
     file = dir(FOLDERPAR);
     name = file.name;
@@ -261,6 +260,28 @@ listFP(1) = [];
      end 
      clear minorizero
 
+     minorizero = find(t_IVCAC_G0<0);
+     for l = length(minorizero):-1:1
+         t_IVCAC_G0(minorizero(l)) = [];
+     end 
+     clear minorizero
+     minorizero = find(t_IVCAC_N0<0);
+     for l = length(minorizero):-1:1
+         t_IVCAC_N0(minorizero(l)) = [];
+     end
+     clear minorizero
+
+     minorizero = find(t_IVCminAC_G0<0);
+     for l = length(minorizero):-1:1
+         t_IVCminAC_G0(minorizero(l)) = [];
+     end 
+     clear minorizero
+     minorizero = find(t_IVCminAC_N0<0);
+     for l = length(minorizero):-1:1
+         t_IVCminAC_N0(minorizero(l)) = [];
+     end
+     clear minorizero
+
      % AGGIUSTARE DA TUTTI I LVET E QS2 TOGLIENDO LE RIGHE DEL NAN
      for l = length(LVET_G_0_5):-1:1
          if isnan(LVET_G_0_5(l))
@@ -306,7 +327,95 @@ listFP(1) = [];
      end 
      clear minorizero
 
+     % Tempo IVC-AC
+     for l = length(t_IVCAC_G_0_5):-1:1
+         if isnan(t_IVCAC_G_0_5(l))
+             t_IVCAC_G_0_5(l) = [];
+         end
+     end
+     minorizero = find(t_IVCAC_G_0_5<0);
+     for l = length(minorizero):-1:1
+         t_IVCAC_G_0_5(minorizero(l)) = [];
+     end 
+     clear minorizero
+
+     for l = length(t_IVCAC_N_0_5):-1:1
+         if isnan(t_IVCAC_N_0_5(l))
+             t_IVCAC_N_0_5(l) = [];
+         end
+     end
+     minorizero = find(t_IVCAC_N_0_5<0);
+     for l = length(minorizero):-1:1
+         t_IVCAC_N_0_5(minorizero(l)) = [];
+     end 
+     clear minorizero
+
+      % Tempo IVC-min before AC
+     for l = length(t_IVCminAC_G_0_5):-1:1
+         if isnan(t_IVCminAC_G_0_5(l))
+             t_IVCminAC_G_0_5(l) = [];
+         end
+     end
+     minorizero = find(t_IVCminAC_G_0_5<0);
+     for l = length(minorizero):-1:1
+         t_IVCminAC_G_0_5(minorizero(l)) = [];
+     end 
+     clear minorizero
+
+     for l = length(t_IVCminAC_N_0_5):-1:1
+         if isnan(t_IVCminAC_N_0_5(l))
+             t_IVCminAC_N_0_5(l) = [];
+         end
+     end
+     minorizero = find(t_IVCminAC_N_0_5<0);
+     for l = length(minorizero):-1:1
+         t_IVCminAC_N_0_5(minorizero(l)) = [];
+     end 
+     clear minorizero
     
+     % T IVC-MC
+     for l = length(t_IVCMC_G0):-1:1
+         if isnan(t_IVCMC_G0(l))
+             t_IVCMC_G0(l) = [];
+         end
+     end
+     minorizero = find(t_IVCMC_G0<0);
+     for l = length(minorizero):-1:1
+         t_IVCMC_G0(minorizero(l)) = [];
+     end 
+     clear minorizero
+
+     for l = length(t_IVCMC_N0):-1:1
+         if isnan(t_IVCMC_N0(l))
+             t_IVCMC_N0(l) = [];
+         end
+     end
+     minorizero = find(t_IVCMC_N0<0);
+     for l = length(minorizero):-1:1
+         t_IVCMC_N0(minorizero(l)) = [];
+     end 
+     clear minorizero
+
+     for l = length(t_IVCMC_G_0_5):-1:1
+         if isnan(t_IVCMC_G_0_5(l))
+             t_IVCMC_G_0_5(l) = [];
+         end
+     end
+     minorizero = find(t_IVCMC_G_0_5<0);
+     for l = length(minorizero):-1:1
+         t_IVCMC_G_0_5(minorizero(l)) = [];
+     end 
+     clear minorizero
+
+     for l = length(t_IVCMC_N_0_5):-1:1
+         if isnan(t_IVCMC_N_0_5(l))
+             t_IVCMC_N_0_5(l) = [];
+         end
+     end
+     minorizero = find(t_IVCMC_N_0_5<0);
+     for l = length(minorizero):-1:1
+         t_IVCMC_N_0_5(minorizero(l)) = [];
+     end 
     %% Calcolo quanti tag tag 0 e tag 5 ho consecutivi (lunghezza massima e mediana di ogni finestra)
     % TUTTA LA GIORNATA
 % Durante tutta la giornata quanti tag 0 o 5 ho    

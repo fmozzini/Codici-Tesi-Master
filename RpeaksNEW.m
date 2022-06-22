@@ -35,7 +35,9 @@ for i = 1:N
     peaksFORwindow = zeros(n_window,1);
 
      for j = 1:n_window-1
-        [~,qrs_i_raw,delay]=pan_tompkin(ECG_filt((j-1)*wind+1:j*wind),fs_Ecg,0);
+        [~,qrs_i_raw,delay]=pan_tompkin(ECG_filt((j-1)*wind+1:j*wind),fs_Ecg,1);
+        pause 
+        close all
         n_peaks_new = size(qrs_i_raw,2);
 %         plot(ECG_filt((j-1)*wind+1:j*wind)); hold on; plot(qrs_i_raw,0,'*r')
 %         n_ecg_new = size(ecg_h,1)
