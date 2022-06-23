@@ -1,4 +1,4 @@
-function [M, Amp, phi, RSS, CI_Amp_min, CI_Amp_max, p_3a] = cosinor(t,y,w,alpha)
+function [M, Amp, phi, RSS, CI_Amp_min, CI_Amp_max, p_3a, f] = cosinor(t,y,w,alpha)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % COSINOR 	[]=cosinor(t,y,w,alpha)
 %

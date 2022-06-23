@@ -266,7 +266,7 @@ for i = iniziopicchi:length(qrs_I)-finepicchi-1 %scorro tutti i picchi ECG
                end 
            end 
            if numero == 1 %prendo il massimo, sono certa di prendere solo picchi positivi e non un picco positivo ed il minor negativo
-               pksT = max(pksdopoR_ECG);
+               pksT = max(pksdopoR_ECG);Fì
                locs_T = find(finestrabattito_ECG == pksT);
            else % se ho 2 picchi positivi, prendo il primo in ordine temporale 
                 pks2T = maxk(pksdopoR_ECG,2);

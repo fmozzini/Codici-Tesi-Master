@@ -78,8 +78,8 @@ if fs == 200
  %% ======================= start figure ============================= %%
    if gr
     figure;
-    ax(1) = subplot(321);plot(ecg);axis tight;title('Raw signal');
-    ax(2)=subplot(322);plot(ecg_l);axis tight;title('Low pass filtered');
+    ax(1) = subplot(321);plot(ecg);axis tight;title('Raw signal'),xlabel(['Elements']),ylabel('mV');
+    ax(2)=subplot(322);plot(ecg_l);axis tight;title('Low pass filtered'),xlabel(['Elements']),ylabel('mV');
    end
 %% ==== High Pass filter H(z) = (-1+32z^(-16)+z^(-32))/(1+z^(-1)) ==== %%
 %%It has come to my attention the original filter doesn achieve 5 Hz
@@ -95,7 +95,7 @@ if fs == 200
    ecg_h = filtfilt(a,b,ecg_l); 
    ecg_h = ecg_h/ max(abs(ecg_h));
    if gr
-    ax(3)=subplot(323);plot(ecg_h);axis tight;title('High Pass Filtered');
+    ax(3)=subplot(323);plot(ecg_h);axis tight;title('High Pass Filtered'),xlabel(['Elements']),ylabel('mV');
    end
 else
 %%  bandpass filter for Noise cancelation of other sampling frequencies(Filtering)
@@ -107,8 +107,8 @@ else
  ecg_h = filtfilt(a,b,ecg);
  ecg_h = ecg_h/ max( abs(ecg_h));
  if gr
-  ax(1) = subplot(3,2,[1 2]);plot(ecg);axis tight;title('Raw Signal');
-  ax(3)=subplot(323);plot(ecg_h);axis tight;title('Band Pass Filtered');
+  ax(1) = subplot(3,2,[1 2]);plot(ecg);axis tight;title('Raw Signal');xlabel(['Elements']),ylabel('mV')
+  ax(3)=subplot(323);plot(ecg_h);axis tight;title('Band Pass Filtered');xlabel(['Elements']),ylabel('mV')
  end
 end
 %% ==================== derivative filter ========================== %%
@@ -126,7 +126,7 @@ end
  if gr
   ax(4)=subplot(324);plot(ecg_d);
   axis tight;
-  title('Filtered with the derivative filter');
+  title('Filtered with the derivative filter');xlabel(['Elements']),ylabel('mV')
  end
 %% ========== Squaring nonlinearly enhance the dominant peaks ========== %%
  ecg_s = ecg_d.^2;
@@ -135,6 +135,7 @@ end
   plot(ecg_s);
   axis tight;
   title('Squared');
+  xlabel(['Elements']),ylabel('mV')
  end
 
 %% ============  Moving average ================== %%
@@ -147,6 +148,7 @@ delay = delay + round(0.150*fs)/2;
   axis tight;
   title('Averaged with 30 samples length') %Black noise,Green Adaptive Threshold,RED Sig Level,Red circles QRS adaptive threshold');
   axis tight;
+  xlabel(['Elements']),ylabel('mV')
  end
 
 %% ===================== Fiducial Marks ============================== %% 

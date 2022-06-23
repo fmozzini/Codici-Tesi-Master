@@ -104,19 +104,20 @@ N = length(list)-1;
     QRS = sortrows(QRS);
     [HR_min,~,~] = HR(QRS(:,1),fs_ECG);
     RR = diff(QRS(:,1)); %campioni
-    RR_ms = RR./fs_ECG; %sec
-    HR = 60./RR_ms;
-    HR_30sec = zeros(round(length(HR)/30),1);
+    RR_s = RR./fs_ECG; %sec
+    HR = 60./RR_s; %espressi in sec ma sono campioni ( ho 1 valore per ogni campione)
+    HR_30heartbeat = zeros(round(length(HR)/30),1);
+%         HR_30sec = zeros(length(HR),1);
     m = 0;
     for i = 1:30:length(HR)-30
         m = m+1;
-        HR_30sec(m) = mean(HR(i:i+29));
+        HR_30heartbeat(m) = mean(HR(i:i+29));
     end 
 
 
 %     % Save
     name = erase(name,"ECG_FILT-")
 % % %     save(['C:\Users\feder\Desktop\Tesi\Data\PostProc PT 1\' 'PostProc PT 1-' name], 'QRS','HR_min','HR_5min')
-    save(['C:\Users\feder\Desktop\Tesi\Data\PostProc PT 1_10SEC\' 'PostProc PT 1-' name], 'QRS','HR_30sec','HR_min')
+    save(['C:\Users\feder\Desktop\Tesi\Data\PostProc PT 1_10SEC\' 'PostProc PT 1-' name], 'QRS','HR_30heartbeat','HR_min')
     
  end 

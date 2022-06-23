@@ -4,14 +4,14 @@ close all
 clc
 %%
 folderS = 'C:\Users\feder\Desktop\Tesi\Data\24h Signals'
-fullFileNameS = fullfile(folderS, '2022-04-08 12.15.40.mat');
+fullFileNameS = fullfile(folderS, '2021-01-16 15.01.53.mat');
 load(fullFileNameS)
 %% Check dimension
 Ore_SCG = (size(Acc.X_Acc,1))/(64*3600)
 Ore_ECG = (size(Ecg.Values,1))/(1024*3600)  
 %% Check Signal
 folderACCF = 'C:\Users\feder\Desktop\Tesi\Data\Filtered Signals'
-fullFileNameACCF = fullfile(folderACCF, 'FILT-2022-04-08 12.15.40.mat');
+fullFileNameACCF = fullfile(folderACCF, 'FILT-2021-01-16 15.01.53.mat');
 load(fullFileNameACCF)
 
 figure()
@@ -25,6 +25,8 @@ a(1) = subplot(311), plot((Rot_filt.Var4./3600),Rot_filt.x_rotfilt),title('Rot f
 a(2) = subplot(312), plot((Rot_filt.Var4./3600),Rot_filt.y_rotfilt),title('Rot filtrata y')
 a(3) = subplot(313), plot((Rot_filt.Var4./3600),Rot_filt.z_rotfilt),title('Rot filtrata z')
 linkaxes(a,'x')
+
+
 
 %% Check PT 
 addpath 'C:\Users\feder\Desktop\Tesi\Data'\Pan-Tompkins\
@@ -95,6 +97,17 @@ mean_picchi_min = 2*mean_picchi_30s
 % subplot(325),plot(Rot.Time_Rot./3600,Rot.Z_Rot),xlabel('Hour [H]'),title('Angular Velocity z')
 % subplot(326),plot(Rot.Time_Rot./3600,Rot_filt.z_rotfilt),xlabel('Hour [H]'),title('Filtered Angular Velocity z') 
 % sgtitle('Angular Velocity VS Filtered Angular Velocity')
+
+figure()
+subplot(311),plot(Acc.Time_Acc./3600,Acc.X_Acc),xlabel('Hour [H]'),ylabel('[millig]')
+hold on; plot(Acc.Time_Acc./3600,Acc_filt.x_filt),legend('Acceleration X','Filtered Acceleration X'),
+title('Acceleration - X axis')
+subplot(312),plot(Acc.Time_Acc./3600,Acc.Y_Acc),xlabel('Hour [H]'),ylabel('[millig]')
+hold on; plot(Acc.Time_Acc./3600,Acc_filt.y_filt),legend('Acceleration Y','Filtered Acceleration Y')
+title('Acceleration - Y axis')
+subplot(313),plot(Acc.Time_Acc./3600,Acc.Z_Acc),xlabel('Hour [H]'),ylabel('[millig]')
+hold on; plot(Acc.Time_Acc./3600,Acc_filt.z_filt),legend('Acceleration Z','Filtered Acceleration Z')
+title('Acceleration - Z axis')
 
 
 
