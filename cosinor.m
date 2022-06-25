@@ -1,4 +1,4 @@
-function [M, Amp, phi, RSS, CI_Amp_min, CI_Amp_max, p_3a, f] = cosinor(t,y,w,alpha)
+function [M, Amp, phi, RSS, CI_Amp_min, CI_Amp_max, p_3a, f] = cosinor(t,y,w,alpha,vect_name)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % COSINOR 	[]=cosinor(t,y,w,alpha)
 %
@@ -49,10 +49,10 @@ function [M, Amp, phi, RSS, CI_Amp_min, CI_Amp_max, p_3a, f] = cosinor(t,y,w,alp
 %     6/24/08        Casey Cox          Revisions
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-if nargin ~= 4
+if nargin ~= 5 %fede
     error('Incorrect number of inputs');
 end
-if length(t) < 4
+if length(t) < 5 %fede
     error('There must be atleast four time measurements')
 end
 
@@ -103,6 +103,7 @@ f = M + Amp*cos(w.*t+phi);
     plot(t,f,'r');
         legend('Original', 'Cosinor');
         xlim([min(t) max(t)]);
+        title(vect_name) %fede
  
         
 

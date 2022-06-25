@@ -1,4 +1,4 @@
-function [MESOR, OA, phi, pval] = run_cosinor_fittedcurve(vect)
+function [MESOR, OA, phi, pval] = run_cosinor_fittedcurve(vect,vect_name)
 % INPUT: 
 % vect = series on which to perform the cosino analysis 
 
@@ -28,7 +28,7 @@ w=2*pi;
 alpha=0.05;
 t=[1:size(vect, 1 )]/size(vect, 1 );
 t=t';
-[MESOR, OA, phi, RSS, CI_Amp_min, CI_Amp_max, pval, ~]=cosinor(t,vect,w,alpha);
+[MESOR, OA, phi, RSS, CI_Amp_min, CI_Amp_max, pval, ~]=cosinor(t,vect,w,alpha,vect_name);
 
 close
 % pause
